@@ -18,7 +18,7 @@ import {
   Flag,
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { caseFileLabel } from '@/lib/caseFileLabel';
+import { caseFileDescription, caseFileLabel, caseFileType } from '@/lib/caseFileLabel';
 import {
   getCaseStatusLabel,
   type CaseStatus,
@@ -278,17 +278,17 @@ export default function DossierTimelinePage() {
     const supabase = createClient();
     const { data } = await supabase
       .from('case_files')
-      .select('id, ref, status, type, created_at, updated_at, project_description')
+      .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
     const mapped: CaseFile[] = (data || []).map((row: any) => ({
       id: row.id,
       ref: row.ref ?? null,
       status: row.status as DossierStatus,
-      type: row.type,
+      type: caseFileType(row),
       created_at: row.created_at,
       updated_at: row.updated_at,
-      description: row.project_description ?? null,
+      description: caseFileDescription(row),
     }));
     setCases(mapped);
     if (mapped.length > 0 && !selectedCase) {

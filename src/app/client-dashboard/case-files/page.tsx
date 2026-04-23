@@ -9,7 +9,7 @@ import DashboardLayout from '../components/DashboardLayout';
 import { useRealtimeCaseUpdates } from '@/hooks/useRealtimeAlerts';
 import { usePermissions } from '@/hooks/usePermissions';
 import PermissionGate from '@/components/PermissionGate';
-import { caseFileDescription, caseFileLabel } from '@/lib/caseFileLabel';
+import { caseFileDescription, caseFileLabel, caseFileType } from '@/lib/caseFileLabel';
 
 type CaseFileStatus = 'RECU' | 'EN_ANALYSE' | 'ELIGIBLE' | 'REJETE' | 'A_COMPLETER';
 type CaseFileType = 'Project' | 'SBLC-BG' | 'Other';
@@ -17,12 +17,14 @@ type CaseFileType = 'Project' | 'SBLC-BG' | 'Other';
 interface CaseFile {
   id: string;
   user_id: string;
-  type: CaseFileType;
+  type?: string | null;
   status: CaseFileStatus;
   ref?: string | null;
-  project_name: string | null;
+  project_name?: string | null;
+  title?: string | null;
   project_description?: string | null;
   description?: string | null;
+  metadata?: Record<string, unknown> | null;
   created_at: string;
 }
 
@@ -78,7 +80,7 @@ function CaseFilesContent() {
       }
       const { data, error: fetchError } = await query;
       if (fetchError) throw fetchError;
-      setCaseFiles(data || []);
+      setCaseFiles((data || []) as CaseFile[]);
     } catch (err: any) {
       setError(err.message || 'Erreur lors du chargement des dossiers.');
     } finally {
@@ -98,7 +100,9 @@ function CaseFilesContent() {
         user_id: user.id,
         type: formData.type,
         project_name: formData.title.trim(),
+        title: formData.title.trim(),
         project_description: formData.description.trim() || null,
+        description: formData.description.trim() || null,
         status: 'RECU',
       }).select().single();
 
@@ -295,7 +299,7 @@ function CaseFilesContent() {
                       <div className="min-w-0">
                         <h3 className="font-semibold text-navy text-sm leading-tight truncate">{caseFileLabel(cf)}</h3>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md font-medium">{cf.type}</span>
+                          <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md font-medium">{caseFileType(cf)}</span>
                           <span className="text-xs text-slate-400">{formatDate(cf.created_at)}</span>
                         </div>
                         {caseFileDescription(cf) && (

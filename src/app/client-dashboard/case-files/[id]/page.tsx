@@ -18,7 +18,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import Link from 'next/link';
-import { caseFileDescription, caseFileLabel } from '@/lib/caseFileLabel';
+import { caseFileDescription, caseFileLabel, caseFileType } from '@/lib/caseFileLabel';
 
 type CaseStatus =
   | 'RECU' |'A_COMPLETER' |'EN_ANALYSE' |'EN_REVUE_COMPLIANCE' |'ELIGIBLE' |'SOUMIS_PARTENAIRE' |'RETOUR_PARTENAIRE' |'EN_NEGOCIATION' |'CLOTURE' |'REJETE';
@@ -26,12 +26,14 @@ type CaseStatus =
 interface CaseFile {
   id: string;
   user_id: string;
-  type: string;
+  type?: string | null;
   status: CaseStatus;
   ref?: string | null;
   project_name?: string | null;
+  title?: string | null;
   description: string | null;
   project_description?: string | null;
+  metadata?: Record<string, unknown> | null;
   created_at: string;
   updated_at: string | null;
 }
@@ -343,7 +345,7 @@ function ClientCaseDetailContent() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4 pt-4 border-t border-slate-100">
             <div>
               <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">{t('Type', 'Type')}</p>
-              <p className="text-sm font-semibold text-navy">{caseFile.type}</p>
+              <p className="text-sm font-semibold text-navy">{caseFileType(caseFile)}</p>
             </div>
             <div>
               <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">{t('Créé le', 'Created')}</p>

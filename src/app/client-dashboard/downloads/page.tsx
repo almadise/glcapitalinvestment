@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import DashboardLayout from '../components/DashboardLayout';
 import PermissionGate from '@/components/PermissionGate';
-import { caseFileLabel } from '@/lib/caseFileLabel';
+import { caseFileDescription, caseFileLabel, caseFileType } from '@/lib/caseFileLabel';
 import {
   Download,
   FileText,
@@ -88,11 +88,11 @@ function DownloadsContent() {
       const mapped: CaseFile[] = (data || []).map((row: any) => ({
         id: row.id,
         title: caseFileLabel(row),
-        type: row.type || row.metadata?.type || 'Project Finance',
+        type: caseFileType(row),
         status: row.status as CaseFileStatus,
         created_at: row.created_at,
         updated_at: row.updated_at,
-        description: row.project_description || null,
+        description: caseFileDescription(row),
       }));
       setCaseFiles(mapped);
     } catch (err: any) {
