@@ -35,43 +35,22 @@ export async function GET(request: NextRequest) {
     error,
   } = await supabase.auth.getUser();
 
-  const cookies = request.cookies.getAll().map((c) => ({
-    name: c.name,
-    value: c.name.toLowerCase().includes('token') ? '[REDACTED]' : c.value,
-  }));
-
   const payload = {
-    timestamp: new Date().toISOString(),
-    middleware_matcher: [
-      '/admin/:path*',
-      '/client-dashboard/:path*',
-      '/analyst-dashboard/:path*',
-      '/compliance-dashboard/:path*',
-      '/dashboard/:path*',
-    ],
-    session: session
-      ? {
-          access_token: '[REDACTED]',
-          token_type: session.token_type,
-          expires_at: session.expires_at,
-          expires_in: session.expires_in,
-          user_id: session.user?.id ?? null,
-        }
-      : null,
+    is_authenticated: !!user,
     user: user
       ? {
           id: user.id,
           email: user.email,
           role: user.role,
-          app_metadata: user.app_metadata,
-          user_metadata: user.user_metadata,
-          created_at: user.created_at,
-          last_sign_in_at: user.last_sign_in_at,
+        }
+      : null,
+    session: session
+      ? {
+          expires_at: session.expires_at,
+          expires_in: session.expires_in,
         }
       : null,
     auth_error: error ? { message: error.message, status: error.status } : null,
-    cookies_present: cookies,
-    is_authenticated: !!user,
   };
 
   return NextResponse.json(payload, {

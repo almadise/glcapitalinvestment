@@ -30,13 +30,13 @@ export function useRealtimeSubmissionAlerts({ enabled, lang = 'fr' }: UseRealtim
         (payload) => {
           if (isFirstLoad.current) return;
           const row = payload.new as any;
-          const name = row?.nom_complet || '—';
+          const name = row?.nom_complet || '-';
           const company = row?.societe || '';
           const amount = row?.montant_projet || '';
           toast.success(
             lang === 'fr'
-              ? `Nouvelle soumission de ${name}${company ? ` — ${company}` : ''}${amount ? ` (${amount})` : ''}`
-              : `New submission from ${name}${company ? ` — ${company}` : ''}${amount ? ` (${amount})` : ''}`,
+              ? `Nouvelle soumission de ${name}${company ? ` - ${company}` : ''}${amount ? ` (${amount})` : ''}`
+              : `New submission from ${name}${company ? ` - ${company}` : ''}${amount ? ` (${amount})` : ''}`,
             { duration: 6000, icon: '📬' }
           );
         }

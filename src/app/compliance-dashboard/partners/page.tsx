@@ -59,7 +59,7 @@ export default function CompliancePartnersPage() {
             <Building2 size={20} className="text-emerald-600" />
             <h1 className="font-display text-2xl font-bold text-navy">Répertoire Partenaires</h1>
           </div>
-          <p className="text-slate-500 text-sm">Consultation des partenaires agréés — confidentiel back-office</p>
+          <p className="text-slate-500 text-sm">Consultation des partenaires agréés - confidentiel back-office</p>
         </div>
         <button onClick={fetchPartners} className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50">
           <RefreshCw size={14} />

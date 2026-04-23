@@ -14,8 +14,8 @@ export default function TrustSection() {
       badgeEn: 'NCNDA Protected',
       titleFr: 'Confidentialité partenaire',
       titleEn: 'Partner Confidentiality',
-      descFr: 'Toutes les relations partenaires sont protégées par NCNDA. Les noms et coordonnées des partenaires ne sont jamais divulgués aux clients.',
-      descEn: 'All partner relationships are protected by NCNDA. Partner names and contact details are never disclosed to clients.',
+      descFr: 'Toutes les relations partenaires sont couvertes par NCNDA. Les noms et coordonnées des partenaires ne sont jamais communiqués aux clients.',
+      descEn: 'All partner relationships are covered by NCNDA. Partner names and contact details are never shared with clients.',
     },
     {
       icon: (
@@ -25,8 +25,8 @@ export default function TrustSection() {
       badgeEn: 'KYC/AML Compliant',
       titleFr: 'Rigueur de conformité',
       titleEn: 'Compliance Rigour',
-      descFr: "Chaque dossier fait l'objet d'un screening KYC/AML, de vérifications de sanctions et d'une vérification PPE avant toute soumission.",
-      descEn: 'Every file undergoes KYC/AML screening, sanctions checks and PEP verification before any submission.',
+      descFr: "Chaque dossier passe un screening KYC/AML, des vérifications de sanctions et un contrôle PPE avant toute soumission.",
+      descEn: 'Every dossier goes through KYC/AML screening, sanctions checks, and PEP verification before submission.',
     },
     {
       icon: (
@@ -36,8 +36,8 @@ export default function TrustSection() {
       badgeEn: '47 Countries',
       titleFr: 'Réseau institutionnel',
       titleEn: 'Institutional Network',
-      descFr: 'Accès à un réseau sélectionné de banques agréées, fonds spécialisés et conseillers en finance structurée dans plusieurs juridictions.',
-      descEn: 'Access to a selected network of licensed banks, specialized funds and structured finance advisors across multiple jurisdictions.',
+      descFr: 'Accès à un réseau sélectionné de banques agréées, de fonds spécialisés et de conseillers en finance structurée dans plusieurs juridictions.',
+      descEn: 'Access to a selected network of licensed banks, specialized funds, and structured finance advisors across multiple jurisdictions.',
     },
     {
       icon: (
@@ -47,8 +47,8 @@ export default function TrustSection() {
       badgeEn: 'Immutable Audit Log',
       titleFr: 'Traçabilité complète',
       titleEn: 'Full Traceability',
-      descFr: "Journaux d'audit immuables pour chaque action. Versioning des documents, historique des statuts et enregistrements des décisions conservés.",
-      descEn: 'Immutable audit logs for every action. Document versioning, status history and decision records retained.',
+      descFr: "Journaux d'audit immuables pour chaque action. Versioning des documents, historique des statuts et enregistrements de décision conservés.",
+      descEn: 'Immutable audit logs for every action. Document versioning, status history, and decision records are retained.',
     },
   ];
 
@@ -75,8 +75,8 @@ export default function TrustSection() {
         <div className="text-center mb-16">
           <p className="text-xs font-mono tracking-widest uppercase mb-4" style={{ color: '#B8912A' }}>{t('Pourquoi GL Capital', 'Why GL Capital')}</p>
           <h2 className="text-4xl font-bold mb-6" style={{ color: '#1E2D4A' }}>
-            {t('Fondé sur des', 'Built on')}{' '}
-            <span className="text-gradient-gold">{t('Standards Institutionnels', 'Institutional Standards')}</span>
+            {t('Un cadre fondé sur des', 'A framework built on')}{' '}
+            <span className="text-gradient-gold">{t('standards institutionnels', 'institutional standards')}</span>
           </h2>
         </div>
 

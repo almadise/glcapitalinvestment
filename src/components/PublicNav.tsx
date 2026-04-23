@@ -18,7 +18,7 @@ const serviceItems = [
     icon: Shield,
     labelFr: 'Instruments Bancaires',
     label: 'Banking Instruments',
-    desc: 'SBLC / BG — Montage & structuration',
+    desc: 'SBLC / BG - Montage & structuration',
   },
   {
     href: '/services-page#advisory',

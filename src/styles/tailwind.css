@@ -2,11 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Block any injected Rocket launcher overlays */
+iframe[src*="rocket.new"],
+iframe[src*="builtwithrocket"],
+[id*="rocket-launcher"],
+[class*="rocket-launcher"],
+[data-testid*="rocket-launcher"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 @layer base {
   :root {
-    /* Navy scale — dark institutional navy */
+    /* Navy scale - dark institutional navy */
     --navy-950: #1E2D4A;
     --navy-900: #1E2D4A;
     --navy-800: #1E2D4A;
@@ -17,7 +29,7 @@
     --navy-300: #8A9BB5;
     --navy-200: #D8E0EC;
     --navy-100: #E8EDF5;
-    /* Gold scale — muted institutional gold */
+    /* Gold scale - muted institutional gold */
     --gold-700: #8A6B1E;
     --gold-600: #B8912A;
     --gold-500: #B8912A;
@@ -25,7 +37,7 @@
     --gold-300: #D4B055;
     --gold-200: #E8D090;
     --gold-100: #F5EDD0;
-    /* Surfaces — light institutional */
+    /* Surfaces - light institutional */
     --surface: #F7F8FA;
     --surface-muted: #E8EDF5;
     --surface-card: #FFFFFF;
@@ -77,7 +89,7 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
   }
 
-  /* Section card on dark background — keep dark for dark sections */
+  /* Section card on dark background - keep dark for dark sections */
   .card-dark {
     background: rgba(42, 61, 92, 0.6);
     border: 1px solid rgba(74, 92, 122, 0.3);
@@ -104,12 +116,12 @@
     background-clip: text;
   }
 
-  /* Hero gradient overlay — keep dark for hero sections with images */
+  /* Hero gradient overlay - keep dark for hero sections with images */
   .bg-gradient-hero {
     background: linear-gradient(135deg, #1E2D4A 0%, #1E2D4A 40%, #2A3D5C 100%);
   }
 
-  /* Section gradient — medium navy (for dark sections) */
+  /* Section gradient - medium navy (for dark sections) */
   .bg-gradient-section {
     background: linear-gradient(180deg, #1E2D4A 0%, #2A3D5C 100%);
   }

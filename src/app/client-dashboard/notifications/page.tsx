@@ -209,8 +209,8 @@ export default function NotificationsPage() {
               </h1>
               <p className="text-slate-500 text-sm mt-1">
                 {lang === 'fr'
-                  ? `${notifications.length} notification${notifications.length !== 1 ? 's' : ''} — ${unreadCount} non lue${unreadCount !== 1 ? 's' : ''}`
-                  : `${notifications.length} notification${notifications.length !== 1 ? 's' : ''} — ${unreadCount} unread`}
+                  ? `${notifications.length} notification${notifications.length !== 1 ? 's' : ''} - ${unreadCount} non lue${unreadCount !== 1 ? 's' : ''}`
+                  : `${notifications.length} notification${notifications.length !== 1 ? 's' : ''} - ${unreadCount} unread`}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -350,7 +350,7 @@ export default function NotificationsPage() {
                           </div>
                         </div>
                       </div>
-                      {/* Per-notification actions — only for users with manage_own permission */}
+                      {/* Per-notification actions - only for users with manage_own permission */}
                       {can('notifications:manage_own') && (
                         <div className="flex items-center gap-1 flex-shrink-0 ml-1">
                           {notif.is_read ? (

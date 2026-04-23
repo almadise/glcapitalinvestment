@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import DashboardLayout from '../components/DashboardLayout';
 import PermissionGate from '@/components/PermissionGate';
+import { caseFileLabel } from '@/lib/caseFileLabel';
 import {
   Download,
   FileText,
@@ -80,11 +81,20 @@ function DownloadsContent() {
     try {
       const { data, error: fetchError } = await supabase
         .from('case_files')
-        .select('id, title, type, status, created_at, updated_at, description')
+        .select('id, ref, project_name, type, status, created_at, updated_at, project_description')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       if (fetchError) throw fetchError;
-      setCaseFiles(data || []);
+      const mapped: CaseFile[] = (data || []).map((row: any) => ({
+        id: row.id,
+        title: caseFileLabel(row),
+        type: row.type || 'Project Finance',
+        status: row.status as CaseFileStatus,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        description: row.project_description || null,
+      }));
+      setCaseFiles(mapped);
     } catch (err: any) {
       setError(err.message || 'Erreur lors du chargement.');
     } finally {
@@ -170,7 +180,7 @@ function DownloadsContent() {
     if (filtered.length === 0) return;
     setExporting('pdf');
 
-    const title = lang === 'fr' ? 'Mes dossiers — GL Capital' : 'My Case Files — GL Capital';
+    const title = lang === 'fr' ? 'Mes dossiers - GL Capital' : 'My Case Files - GL Capital';
     const generatedOn = lang === 'fr' ? 'Généré le' : 'Generated on';
     const filterLabel = lang === 'fr' ? 'Filtres appliqués' : 'Applied filters';
     const statusLabel = lang === 'fr' ? 'Statut' : 'Status';
@@ -179,7 +189,7 @@ function DownloadsContent() {
 
     const filterSummary = [
       statusFilter !== 'ALL' ? `${statusLabel}: ${getStatusLabel(statusFilter as CaseFileStatus)}` : '',
-      dateFrom || dateTo ? `${periodLabel}: ${dateFrom || '—'} ${toLabel} ${dateTo || '—'}` : '',
+      dateFrom || dateTo ? `${periodLabel}: ${dateFrom || '-'} ${toLabel} ${dateTo || '-'}` : '',
     ].filter(Boolean).join(' | ');
 
     const tableHeaders = lang === 'fr'
@@ -188,7 +198,7 @@ function DownloadsContent() {
 
     const rows = filtered.map((f) => `
       <tr>
-        <td>${f.title || '—'}</td>
+        <td>${f.title || '-'}</td>
         <td>${f.type}</td>
         <td>${getStatusLabel(f.status as CaseFileStatus) || f.status}</td>
         <td>${formatDate(f.created_at)}</td>

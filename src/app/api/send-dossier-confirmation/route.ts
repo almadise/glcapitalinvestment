@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { requireInternalApiAccess } from '@/lib/apiSecurity';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+const EMAIL_FROM =
+  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
 
 function buildDossierConfirmationHtml(params: {
   clientName: string;
@@ -16,7 +19,7 @@ function buildDossierConfirmationHtml(params: {
   return `<!DOCTYPE html>
 <html lang="${lang}">
 <head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>${isFr ? 'Dossier reçu — GL Capital' : 'File received — GL Capital'}</title></head>
+<title>${isFr ? 'Dossier reçu - GL Capital' : 'File received - GL Capital'}</title></head>
 <body style="margin:0;padding:0;background-color:#f0f4f8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f0f4f8;padding:40px 0;">
     <tr><td align="center">
@@ -31,9 +34,11 @@ function buildDossierConfirmationHtml(params: {
         <tr><td style="background:#c9a84c;height:3px;"></td></tr>
         <tr><td style="background:#ffffff;padding:40px 40px 0;">
           <p style="margin:0 0 8px;color:#0a1941;font-size:16px;font-weight:600;">${isFr ? `Bonjour ${clientName},` : `Dear ${clientName},`}</p>
-          <p style="margin:0 0 28px;color:#475569;font-size:14px;line-height:1.7;">${isFr
-    ? 'Nous avons bien reçu votre dossier de financement. Notre équipe va procéder à son analyse dans les meilleurs délais. Vous serez notifié de chaque mise à jour.'
-    : 'We have received your financing file. Our team will proceed with its analysis as soon as possible. You will be notified of each update.'}</p>
+          <p style="margin:0 0 28px;color:#475569;font-size:14px;line-height:1.7;">${
+            isFr
+              ? 'Nous avons bien reçu votre dossier de financement. Notre équipe va procéder à son analyse dans les meilleurs délais. Vous serez notifié de chaque mise à jour.'
+              : 'We have received your financing file. Our team will proceed with its analysis as soon as possible. You will be notified of each update.'
+          }</p>
         </td></tr>
         <tr><td style="background:#ffffff;padding:0 40px 28px;">
           <table width="100%" cellpadding="0" cellspacing="0">
@@ -69,6 +74,9 @@ function buildDossierConfirmationHtml(params: {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireInternalApiAccess(req, 'send-dossier-confirmation');
+  if (!guard.ok) return guard.response;
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ success: false, error: 'RESEND_API_KEY missing' }, { status: 500 });
@@ -97,14 +105,14 @@ export async function POST(req: NextRequest) {
   const resend = new Resend(apiKey);
   const isFr = lang === 'fr';
   const subject = isFr
-    ? `Dossier reçu — ${caseTitle} | GL Capital`
-    : `File received — ${caseTitle} | GL Capital`;
+    ? `Dossier reçu - ${caseTitle} | GL Capital`
+    : `File received - ${caseTitle} | GL Capital`;
 
   const html = buildDossierConfirmationHtml({ clientName, caseTitle, caseId, lang });
 
   try {
     await resend.emails.send({
-      from: 'GL Capital <noreply@glcapital.com>',
+      from: EMAIL_FROM,
       to: [clientEmail],
       subject,
       html,
@@ -113,7 +121,7 @@ export async function POST(req: NextRequest) {
   } catch {
     try {
       await resend.emails.send({
-        from: 'GL Capital <onboarding@resend.dev>',
+        from: EMAIL_FROM,
         to: [clientEmail],
         subject,
         html,

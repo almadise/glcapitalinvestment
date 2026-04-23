@@ -14,8 +14,8 @@ export default function ServicesSection() {
       badge: '€5M+',
       titleFr: 'Financement de projets',
       titleEn: 'Project Financing',
-      descFr: "Structuration de projets d'infrastructure, d'énergie, d'immobilier et industriels à grande échelle. Nous préparons votre dossier pour soumission aux institutions financières agréées.",
-      descEn: "Structuring of large-scale infrastructure, energy, real estate and industrial projects. We prepare your file for submission to licensed financial institutions.",
+      descFr: "Structuration de projets d'infrastructure, d'énergie, d'immobilier et industriels. Nous préparons votre dossier pour soumission à des institutions financières agréées.",
+      descEn: "Structuring for infrastructure, energy, real estate, and industrial projects. We prepare your dossier for submission to licensed financial institutions.",
       tagsFr: ['Infrastructure', 'Énergie', 'Immobilier', 'Industriel'],
       tagsEn: ['Infrastructure', 'Energy', 'Real Estate', 'Industrial'],
       href: '/services-page#project-financing',
@@ -28,8 +28,8 @@ export default function ServicesSection() {
       badge: '€1M+',
       titleFr: 'Instruments bancaires',
       titleEn: 'Banking Instruments',
-      descFr: 'Conseil et documentation pour SBLC, garanties bancaires et instruments connexes. Cadre clair — aucun code bancaire confidentiel collecté.',
-      descEn: 'Advisory and documentation for SBLC, bank guarantees and related instruments. Clear framework — no confidential banking codes collected.',
+      descFr: 'Conseil et documentation pour SBLC, garanties bancaires et instruments connexes. Cadre clair, sans collecte de codes bancaires confidentiels.',
+      descEn: 'Advisory and documentation for SBLC, bank guarantees, and related instruments. Clear framework, with no collection of confidential banking codes.',
       tagsFr: ['SBLC', 'BG', 'Trade Finance', 'Documentaire'],
       tagsEn: ['SBLC', 'BG', 'Trade Finance', 'Documentary'],
       href: '/services-page#banking-instruments',
@@ -42,8 +42,8 @@ export default function ServicesSection() {
       badge: 'Custom',
       titleFr: 'Conseil & structuration',
       titleEn: 'Advisory & Structuring',
-      descFr: 'Évaluation de la bancabilité, revue documentaire, pré-screening conformité et structuration de dossier pour soumission.',
-      descEn: 'Bankability assessment, document review, compliance pre-screening and file structuring for submission.',
+      descFr: 'Évaluation de bancabilité, revue documentaire, pré-screening conformité et structuration de dossier avant soumission.',
+      descEn: 'Bankability assessment, document review, compliance pre-screening, and dossier structuring ahead of submission.',
       tagsFr: ['KYC/AML', 'Bancabilité', 'Documentation', 'Due Diligence'],
       tagsEn: ['KYC/AML', 'Bankability', 'Documentation', 'Due Diligence'],
       href: '/services-page#advisory',
@@ -58,13 +58,13 @@ export default function ServicesSection() {
         <div className="text-center mb-16">
           <p className="text-xs font-mono tracking-widest uppercase mb-4" style={{ color: '#4A5C7A' }}>{t('Nos Services', 'Our Services')}</p>
           <h2 className="text-4xl lg:text-5xl font-bold mb-6" style={{ color: '#1E2D4A' }}>
-            {t('Structuré pour chaque', 'Structured for every')}{' '}
-            <span className="text-gradient-gold">{t('Besoin de Financement', 'Financing Need')}</span>
+            {t('Des services adaptés à chaque', 'Services tailored to each')}{' '}
+            <span className="text-gradient-gold">{t('besoin de financement', 'financing need')}</span>
           </h2>
           <p className="max-w-2xl mx-auto" style={{ color: '#4A5C7A' }}>
             {t(
-              "Des grands projets d'infrastructure aux instruments bancaires — GL Capital structure votre demande en dossier bancable.",
-              "From large infrastructure projects to banking instruments — GL Capital structures your request into a bankable file."
+              "Des projets d'infrastructure aux instruments bancaires, GL Capital transforme votre demande en dossier exploitable par les institutions.",
+              "From infrastructure projects to banking instruments, GL Capital turns your request into an institution-ready dossier."
             )}
           </p>
         </div>

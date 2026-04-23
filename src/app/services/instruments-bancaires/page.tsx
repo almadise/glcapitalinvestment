@@ -56,7 +56,14 @@ export default function InstrumentsBancairesPage() {
     <div className="min-h-screen bg-white">
       <PublicNavbar />
       {/* Hero */}
-      <section className="pt-28 pb-16 bg-gradient-to-br from-navy-dark via-navy to-navy-light relative overflow-hidden">
+      <section className="pt-28 pb-16 relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-center bg-cover"
+          style={{ backgroundImage: "url('/assets/images/services-hero-bg.png')" }}
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-navy/55" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-br from-navy-dark/90 via-navy/80 to-navy-light/85" aria-hidden="true" />
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-gold blur-3xl" />
           <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gold blur-3xl" />
@@ -156,29 +163,26 @@ export default function InstrumentsBancairesPage() {
         </div>
       </section>
       {/* Confidentiality Banner */}
-      <section className="py-20 bg-gradient-to-br from-navy-dark to-navy relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gold blur-3xl" />
-        </div>
-        <div className="max-w-screen-xl mx-auto px-6 lg:px-10 xl:px-16 relative z-10">
+      <section className="py-20 bg-white">
+        <div className="max-w-screen-xl mx-auto px-6 lg:px-10 xl:px-16">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 bg-gold/10 border border-gold/20 rounded-full px-4 py-1.5 mb-6">
-              <span className="text-gold text-xs font-semibold tracking-widest uppercase">
+            <div className="inline-flex items-center gap-2 bg-navy/5 border border-navy/10 rounded-full px-4 py-1.5 mb-5">
+              <span className="text-navy text-xs font-semibold tracking-widest uppercase">
                 {lang === 'fr' ? 'Confidentialité' : 'Confidentiality'}
               </span>
             </div>
-            <h2 className="font-display text-3xl lg:text-4xl font-bold text-white mb-6">
+            <h2 className="font-display text-3xl lg:text-4xl font-bold text-navy mb-6">
               {lang === 'fr' ? 'Cadre de confidentialité' : 'Confidentiality Framework'}
             </h2>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
+            <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100 shadow-sm">
               <div className="flex items-start gap-4 text-left">
-                <div className="w-10 h-10 rounded-xl bg-gold/20 border border-gold/30 flex items-center justify-center flex-shrink-0 mt-1">
-                  <Shield size={18} className="text-gold" />
+                <div className="w-12 h-12 rounded-xl bg-navy/5 border border-navy/10 flex items-center justify-center flex-shrink-0">
+                  <Shield size={22} className="text-gold" />
                 </div>
-                <p className="text-slate-300 text-base leading-relaxed">
+                <p className="text-navy font-semibold text-base leading-snug">
                   {lang === 'fr'
-                    ? <>Toutes les opérations impliquant des instruments bancaires sont traitées dans le strict respect du{' '}<strong className="text-white">secret bancaire</strong> et des réglementations internationales en vigueur. Les détails des montages, des émetteurs et des bénéficiaires ne sont communiqués qu'aux parties directement impliquées, après validation du dossier de conformité.</>
-                    : <>All operations involving banking instruments are processed in strict compliance with <strong className="text-white">banking secrecy</strong> and applicable international regulations. Details of structures, issuers and beneficiaries are only communicated to directly involved parties, after validation of the compliance file.</>
+                    ? <>Toutes les opérations impliquant des instruments bancaires sont traitées dans le strict respect du <strong>secret bancaire</strong> et des réglementations internationales en vigueur. Les détails des montages, des émetteurs et des bénéficiaires ne sont communiqués qu'aux parties directement impliquées, après validation du dossier de conformité.</>
+                    : <>All operations involving banking instruments are processed in strict compliance with <strong>banking secrecy</strong> and applicable international regulations. Details of structures, issuers and beneficiaries are only communicated to directly involved parties, after validation of the compliance file.</>
                   }
                 </p>
               </div>
@@ -188,9 +192,9 @@ export default function InstrumentsBancairesPage() {
                 ? ['Secret bancaire', 'KYC / AML', 'Conformité internationale']
                 : ['Banking secrecy', 'KYC / AML', 'International compliance']
               )?.map((tag) => (
-                <div key={`tag-${tag}`} className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-5 py-2.5">
+                <div key={`tag-${tag}`} className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-full px-5 py-2.5 shadow-sm">
                   <CheckCircle size={14} className="text-gold" />
-                  <span className="text-slate-300 text-sm font-medium">{tag}</span>
+                  <span className="text-navy text-sm font-medium">{tag}</span>
                 </div>
               ))}
             </div>

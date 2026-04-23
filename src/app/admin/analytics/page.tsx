@@ -12,6 +12,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import AdminLayout from '@/app/admin/components/AdminLayout';
 import { toast } from 'sonner';
 import { logAuditAction } from '@/lib/auditLogger';
+import { caseFileLabel } from '@/lib/caseFileLabel';
 
 interface AnalyticsData {
   totalSubmissions: number;
@@ -59,7 +60,7 @@ export default function AdminAnalyticsDashboard() {
     casesByStatus: lang === 'fr' ? 'Distribution par statut' : 'Status Distribution',
     submissionsByMonth: lang === 'fr' ? 'Soumissions par mois' : 'Submissions by Month',
     casesByType: lang === 'fr' ? 'Dossiers par type de service' : 'Cases by Service Type',
-    pipelineTrend: lang === 'fr' ? 'Tendance pipeline — 6 mois' : 'Pipeline Trend — 6 months',
+    pipelineTrend: lang === 'fr' ? 'Tendance pipeline - 6 mois' : 'Pipeline Trend - 6 months',
     complianceBreakdown: lang === 'fr' ? 'Répartition flags conformité' : 'Compliance Flag Breakdown',
     avgProcessing: lang === 'fr' ? 'Délai moyen par statut (jours)' : 'Avg Processing Time by Status (days)',
     noData: lang === 'fr' ? 'Aucune donnée disponible' : 'No data available',
@@ -210,7 +211,7 @@ export default function AdminAnalyticsDashboard() {
         const { data: cases } = await supabase.from('case_files').select('*').order('created_at', { ascending: false });
         csvContent = 'ID,Titre,Type,Statut,Client Email,Tags Risque,Motif Rejet,Motif Clôture,Créé le,Mis à jour\n';
         (cases || []).forEach((c: any) => {
-          csvContent += `"${c.id}","${c.title || ''}","${c.type || ''}","${c.status || ''}","${c.client_email || ''}","${(c.risk_tags || []).join('; ')}","${(c.rejection_reason || '').replace(/"/g, '""')}","${(c.closure_reason || '').replace(/"/g, '""')}","${formatDate(c.created_at)}","${c.updated_at ? formatDate(c.updated_at) : ''}"\n`;
+          csvContent += `"${c.id}","${caseFileLabel(c)}","${c.type || ''}","${c.status || ''}","${c.client_email || ''}","${(c.risk_tags || []).join('; ')}","${(c.rejection_reason || '').replace(/"/g, '""')}","${(c.closure_reason || '').replace(/"/g, '""')}","${formatDate(c.created_at)}","${c.updated_at ? formatDate(c.updated_at) : ''}"\n`;
         });
         filename = 'dossiers_historique';
       } else if (type === 'history') {
@@ -228,10 +229,10 @@ export default function AdminAnalyticsDashboard() {
         });
         filename = 'notes_internes';
       } else if (type === 'risk_tags') {
-        const { data: cases } = await supabase.from('case_files').select('id, title, status, risk_tags, client_email, created_at').not('risk_tags', 'is', null);
+        const { data: cases } = await supabase.from('case_files').select('id, ref, project_name, status, risk_tags, client_email, created_at').not('risk_tags', 'is', null);
         csvContent = 'Dossier ID,Titre,Statut,Client,Tags Risque,Date\n';
         (cases || []).filter((c: any) => c.risk_tags && c.risk_tags.length > 0).forEach((c: any) => {
-          csvContent += `"${c.id}","${c.title || ''}","${c.status}","${c.client_email || ''}","${(c.risk_tags || []).join('; ')}","${formatDate(c.created_at)}"\n`;
+          csvContent += `"${c.id}","${caseFileLabel(c)}","${c.status}","${c.client_email || ''}","${(c.risk_tags || []).join('; ')}","${formatDate(c.created_at)}"\n`;
         });
         filename = 'tags_risque';
       }

@@ -9,8 +9,9 @@ import DashboardLayout from '../components/DashboardLayout';
 import { useRealtimeCaseUpdates } from '@/hooks/useRealtimeAlerts';
 import { usePermissions } from '@/hooks/usePermissions';
 import PermissionGate from '@/components/PermissionGate';
+import { caseFileDescription, caseFileLabel } from '@/lib/caseFileLabel';
 
-type CaseFileStatus = 'RECU' | 'EN_ANALYSE' | 'ELIGIBLE' | 'REJETE';
+type CaseFileStatus = 'RECU' | 'EN_ANALYSE' | 'ELIGIBLE' | 'REJETE' | 'A_COMPLETER';
 type CaseFileType = 'Project' | 'SBLC-BG' | 'Other';
 
 interface CaseFile {
@@ -18,8 +19,10 @@ interface CaseFile {
   user_id: string;
   type: CaseFileType;
   status: CaseFileStatus;
-  title: string;
-  description: string | null;
+  ref?: string | null;
+  project_name: string | null;
+  project_description?: string | null;
+  description?: string | null;
   created_at: string;
 }
 
@@ -28,6 +31,7 @@ const statusConfig: Record<CaseFileStatus, { label: string; labelEn: string; col
   EN_ANALYSE: { label: 'En analyse', labelEn: 'Under review', color: 'bg-amber-100 text-amber-700 border-amber-200', icon: Loader2 },
   ELIGIBLE: { label: 'Éligible', labelEn: 'Eligible', color: 'bg-emerald-100 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
   REJETE: { label: 'Rejeté', labelEn: 'Rejected', color: 'bg-red-100 text-red-700 border-red-200', icon: XCircle },
+  A_COMPLETER: { label: 'À compléter', labelEn: 'To complete', color: 'bg-orange-100 text-orange-700 border-orange-200', icon: AlertCircle },
 };
 
 function CaseFilesContent() {
@@ -93,8 +97,8 @@ function CaseFilesContent() {
       const { data: insertData, error: insertError } = await supabase.from('case_files').insert({
         user_id: user.id,
         type: formData.type,
-        title: formData.title.trim(),
-        description: formData.description.trim() || null,
+        project_name: formData.title.trim(),
+        project_description: formData.description.trim() || null,
         status: 'RECU',
       }).select().single();
 
@@ -165,12 +169,12 @@ function CaseFilesContent() {
           <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6">
             <CheckCircle2 size={16} className="text-emerald-600 flex-shrink-0" />
             <p className="text-emerald-700 text-sm font-medium">
-              {lang === 'fr' ? 'Dossier soumis avec succès — statut : REÇU' : 'File submitted successfully — status: RECEIVED'}
+              {lang === 'fr' ? 'Dossier soumis avec succès - statut : REÇU' : 'File submitted successfully - status: RECEIVED'}
             </p>
           </div>
         )}
 
-        {/* New file form — gated by create permission */}
+        {/* New file form - gated by create permission */}
         {showForm && can('case_files:create') && (
           <div className="bg-white border border-slate-200 rounded-2xl p-6 mb-6 shadow-sm">
             <h2 className="text-base font-bold text-navy mb-4">
@@ -279,7 +283,7 @@ function CaseFilesContent() {
                     <div className="flex items-center gap-2 mb-3 bg-orange-100 border border-orange-200 rounded-xl px-3 py-2">
                       <AlertCircle size={14} className="text-orange-600 flex-shrink-0" />
                       <p className="text-orange-700 text-xs font-semibold">
-                        {lang === 'fr' ? '⚠️ Documents complémentaires requis — Cliquez pour voir les détails' : '⚠️ Additional documents required — Click to view details'}
+                        {lang === 'fr' ? '⚠️ Documents complémentaires requis - Cliquez pour voir les détails' : '⚠️ Additional documents required - Click to view details'}
                       </p>
                     </div>
                   )}
@@ -289,13 +293,13 @@ function CaseFilesContent() {
                         <FileText size={18} className="text-navy" />
                       </div>
                       <div className="min-w-0">
-                        <h3 className="font-semibold text-navy text-sm leading-tight truncate">{cf.title}</h3>
+                        <h3 className="font-semibold text-navy text-sm leading-tight truncate">{caseFileLabel(cf)}</h3>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md font-medium">{cf.type}</span>
                           <span className="text-xs text-slate-400">{formatDate(cf.created_at)}</span>
                         </div>
-                        {cf.description && (
-                          <p className="text-xs text-slate-500 mt-1.5 line-clamp-2">{cf.description}</p>
+                        {caseFileDescription(cf) && (
+                          <p className="text-xs text-slate-500 mt-1.5 line-clamp-2">{caseFileDescription(cf)}</p>
                         )}
                       </div>
                     </div>

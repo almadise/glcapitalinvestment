@@ -8,6 +8,7 @@ import {
   EyeOff,
   Loader2,
   Shield,
+  Smartphone,
   ArrowRight,
   Lock,
   Mail,
@@ -37,8 +38,10 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [mfaStep, setMfaStep] = useState(false);
+  const [mfaCode, setMfaCode] = useState('');
   const [authError, setAuthError] = useState<string | null>(null);
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, verifyMfa, signOut, getRoleRedirect } = useAuth();
   const router = useRouter();
   const { lang } = useLanguage();
   const emailPlaceholder = lang === 'fr' ? 'vous@exemple.com' : 'you@example.com';
@@ -78,36 +81,43 @@ export default function LoginForm() {
     setAuthError(null);
     try {
       const data = await signIn(email, password);
-      toast.success('Connexion réussie — Bienvenue !');
-      // Fetch role from profiles to determine redirect
-      const supabase = (await import('@/lib/supabase/client')).createClient();
-      const userId = data?.user?.id;
-      let role: string | null = null;
-      if (userId) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', userId)
-          .single();
-        role = profile?.role ?? null;
+      if (data.needsMfa) {
+        setMfaStep(true);
+        return;
       }
-      if (role === 'admin') {
-        router.push('/admin/contact-submissions');
-      } else if (role === 'compliance') {
-        router.push('/compliance-dashboard');
-      } else if (role === 'analyst') {
-        router.push('/analyst-dashboard');
-      } else if (role === 'gestionnaire_contenu') {
-        router.push('/content-dashboard');
-      } else {
-        router.push('/client-dashboard');
-      }
+      toast.success('Connexion réussie - Bienvenue !');
+      router.push(getRoleRedirect());
+      router.refresh();
     } catch (err: any) {
       const msg = err?.message || 'Identifiants invalides. Veuillez réessayer.';
       setAuthError(msg);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleMfaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (mfaCode.length < 6) return;
+    setIsLoading(true);
+    setAuthError(null);
+    try {
+      await verifyMfa(mfaCode);
+      toast.success('Connexion réussie - Bienvenue !');
+      router.push(getRoleRedirect());
+      router.refresh();
+    } catch (err: any) {
+      setAuthError(err?.message || 'Code invalide ou expiré. Réessayez.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleMfaBack = async () => {
+    setMfaStep(false);
+    setMfaCode('');
+    setAuthError(null);
+    await signOut();
   };
 
   const handleRegister = async (data: RegisterValues) => {
@@ -124,7 +134,7 @@ export default function LoginForm() {
         notif_pipeline_alerts: data.notifPipelineAlerts,
         notif_documents_pending: data.notifDocumentsPending,
       });
-      toast.success('Compte créé — Vérifiez votre email pour confirmer votre inscription.');
+      toast.success('Compte créé - Vérifiez votre email pour confirmer votre inscription.');
       router.push('/verify-email');
     } catch (err: any) {
       const msg = err?.message || 'Erreur lors de la création du compte.';
@@ -211,7 +221,7 @@ export default function LoginForm() {
           {/* Tabs */}
           <div className="flex bg-slate-100 rounded-xl p-1 mb-6 sm:mb-8">
             <button
-              onClick={() => { setMode('login'); setAuthError(null); }}
+              onClick={() => { setMode('login'); setAuthError(null); setMfaStep(false); setMfaCode(''); }}
               className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
                 mode === 'login' ? 'bg-white text-navy shadow-sm' : 'text-slate-500 hover:text-slate-700'
               }`}
@@ -219,7 +229,7 @@ export default function LoginForm() {
               Connexion
             </button>
             <button
-              onClick={() => { setMode('register'); setAuthError(null); }}
+              onClick={() => { setMode('register'); setAuthError(null); setMfaStep(false); setMfaCode(''); }}
               className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
                 mode === 'register' ? 'bg-white text-navy shadow-sm' : 'text-slate-500 hover:text-slate-700'
               }`}
@@ -229,7 +239,51 @@ export default function LoginForm() {
           </div>
 
           {/* LOGIN FORM */}
-          {mode === 'login' && (
+          {mode === 'login' && mfaStep && (
+            <form onSubmit={handleMfaSubmit} className="space-y-5">
+              <div className="text-center mb-6">
+                <div className="w-14 h-14 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center mx-auto mb-4">
+                  <Smartphone size={26} className="text-gold" />
+                </div>
+                <h2 className="font-display text-xl font-bold text-navy mb-2">Authentification à deux facteurs</h2>
+                <p className="text-slate-500 text-sm">
+                  Entrez le code à 6 chiffres de votre application d&apos;authentification.
+                </p>
+              </div>
+              <div>
+                <label className="label-field">Code de vérification</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={6}
+                  placeholder="000000"
+                  className="input-field text-center text-2xl font-mono tracking-[0.4em]"
+                  value={mfaCode}
+                  onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, ''))}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isLoading || mfaCode.length < 6}
+                className="w-full flex items-center justify-center gap-2.5 bg-navy text-white font-bold py-3.5 rounded-xl hover:bg-navy-light active:scale-[0.99] transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed"
+                style={{ minHeight: '52px' }}
+              >
+                {isLoading ? <Loader2 size={18} className="animate-spin" /> : <>Valider et se connecter <ArrowRight size={16} /></>}
+              </button>
+              <button type="button" onClick={handleMfaBack} className="w-full text-slate-500 text-sm hover:text-navy py-2">
+                ← Retour à la connexion
+              </button>
+              {authError && (
+                <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4">
+                  <AlertCircle size={16} className="text-red-500 mt-0.5 flex-shrink-0" />
+                  <p className="text-red-700 text-sm leading-snug">{authError}</p>
+                </div>
+              )}
+            </form>
+          )}
+
+          {mode === 'login' && !mfaStep && (
             <form onSubmit={handleLogin} className="space-y-5">
               <div>
                 <label className="label-field">Adresse email</label>

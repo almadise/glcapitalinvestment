@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { createClient } from '../../../lib/supabase/server';
+import { createServiceRoleClient } from '../../../lib/supabase/service';
 import { checkRateLimit, getClientIp, RATE_LIMITS } from '../../../lib/rateLimit';
+
+const EMAIL_FROM =
+  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
 
 export async function POST(req: NextRequest) {
   // ── Rate limiting ──────────────────────────────────────────
@@ -23,29 +26,47 @@ export async function POST(req: NextRequest) {
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    return NextResponse.json({ success: false, error: 'RESEND_API_KEY manquante' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: 'RESEND_API_KEY manquante' },
+      { status: 500 }
+    );
   }
 
   let body: Record<string, string>;
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ success: false, error: 'Corps de requête invalide' }, { status: 400 });
+    return NextResponse.json(
+      { success: false, error: 'Corps de requête invalide' },
+      { status: 400 }
+    );
   }
 
   const { nomComplet, societe, email, projectType, message } = body;
 
   if (!nomComplet || !societe || !email || !projectType || !message) {
-    return NextResponse.json({ success: false, error: 'Champs obligatoires manquants' }, { status: 400 });
+    return NextResponse.json(
+      { success: false, error: 'Champs obligatoires manquants' },
+      { status: 400 }
+    );
   }
 
   // Generate a secure token
   const token = crypto.randomUUID() + '-' + Date.now().toString(36);
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24h
 
-  const supabase = await createClient();
+  let supabase;
+  try {
+    supabase = createServiceRoleClient();
+  } catch (e) {
+    console.error('[send-contact-verify] Supabase service client:', e);
+    return NextResponse.json(
+      { success: false, error: 'Configuration serveur incomplète (SUPABASE_SERVICE_ROLE_KEY)' },
+      { status: 500 }
+    );
+  }
 
-  // Store pending submission
+  // Store pending submission (RLS: service_role only sur cette table)
   const { error: dbError } = await supabase.from('contact_pending_verifications').insert({
     nom_complet: nomComplet,
     societe,
@@ -70,7 +91,7 @@ export async function POST(req: NextRequest) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Confirmez votre demande — GL Capital</title>
+  <title>Confirmez votre demande - GL Capital</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f0f4f8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f0f4f8;padding:40px 0;">
@@ -120,11 +141,22 @@ export async function POST(req: NextRequest) {
 </html>`;
 
   const resend = new Resend(apiKey);
+  const isProduction = process.env.NODE_ENV === 'production';
+  const devRecipient =
+    process.env.RESEND_TEST_RECIPIENT?.trim() || process.env.CONTACT_EMAIL?.trim();
+  const recipientEmail = isProduction ? email : devRecipient || email;
+
+  if (!isProduction && recipientEmail !== email) {
+    console.info(
+      `[send-contact-verify] Mode dev actif: envoi redirige vers ${recipientEmail} (au lieu de ${email})`
+    );
+  }
+
   try {
     const { error: sendError } = await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: email,
-      subject: 'Confirmez votre demande — GL Capital Investment SA',
+      from: EMAIL_FROM,
+      to: recipientEmail,
+      subject: 'Confirmez votre demande - GL Capital Investment SA',
       html,
     });
 

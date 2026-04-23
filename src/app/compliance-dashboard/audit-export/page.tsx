@@ -84,17 +84,17 @@ export default function ComplianceAuditExportPage() {
     if (data.length === 0) { toast.error('Aucune donnée à exporter'); return; }
     let html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Audit Compliance GL Capital</title>
     <style>body{font-family:Arial,sans-serif;font-size:11px;margin:20px}h1{color:#1a2744;font-size:16px}table{width:100%;border-collapse:collapse;margin-top:10px}th{background:#059669;color:white;padding:6px 8px;text-align:left;font-size:10px}td{padding:5px 8px;border-bottom:1px solid #e2e8f0;font-size:10px}tr:nth-child(even){background:#f0fdf4}.meta{color:#64748b;font-size:10px;margin-bottom:10px}</style>
-    </head><body><h1>GL Capital — Export Audit Conformité</h1>
+    </head><body><h1>GL Capital - Export Audit Conformité</h1>
     <div class="meta">Généré le ${new Date().toLocaleDateString('fr-FR')} par ${user?.email} | Rôle: ${userRole}</div>`;
     if (exportType === 'history') {
       html += `<table><thead><tr><th>Dossier</th><th>Ancien statut</th><th>Nouveau statut</th><th>Modifié par</th><th>Note</th><th>Date</th></tr></thead><tbody>`;
       (data as AuditEntry[]).forEach((row) => {
-        html += `<tr><td>${row.case_id.slice(0, 8)}…</td><td>${row.old_status || '—'}</td><td>${row.new_status}</td><td>${row.changed_by_email || '—'}</td><td>${row.note || '—'}</td><td>${formatDate(row.created_at)}</td></tr>`;
+        html += `<tr><td>${row.case_id.slice(0, 8)}…</td><td>${row.old_status || '-'}</td><td>${row.new_status}</td><td>${row.changed_by_email || '-'}</td><td>${row.note || '-'}</td><td>${formatDate(row.created_at)}</td></tr>`;
       });
     } else {
       html += `<table><thead><tr><th>Dossier</th><th>Auteur</th><th>Contenu</th><th>Date</th></tr></thead><tbody>`;
       (data as NoteEntry[]).forEach((row) => {
-        html += `<tr><td>${row.case_id.slice(0, 8)}…</td><td>${row.author_email || '—'}</td><td>${row.content.substring(0, 100)}${row.content.length > 100 ? '…' : ''}</td><td>${formatDate(row.created_at)}</td></tr>`;
+        html += `<tr><td>${row.case_id.slice(0, 8)}…</td><td>${row.author_email || '-'}</td><td>${row.content.substring(0, 100)}${row.content.length > 100 ? '…' : ''}</td><td>${formatDate(row.created_at)}</td></tr>`;
       });
     }
     html += `</tbody></table></body></html>`;
@@ -117,7 +117,7 @@ export default function ComplianceAuditExportPage() {
           <Download size={20} className="text-emerald-600" />
           <h1 className="font-display text-2xl font-bold text-navy">Exports Audit</h1>
         </div>
-        <p className="text-slate-500 text-sm">Historique des décisions et notes internes — accès Compliance uniquement</p>
+        <p className="text-slate-500 text-sm">Historique des décisions et notes internes - accès Compliance uniquement</p>
       </div>
 
       <div className="bg-red-50 border border-red-200 rounded-xl p-3 flex items-center gap-3 mb-6 text-xs text-red-800">
@@ -184,9 +184,9 @@ export default function ComplianceAuditExportPage() {
                   (auditData).slice(0, 50).map((row) => (
                     <tr key={row.id} className="hover:bg-slate-50">
                       <td className="px-4 py-2 font-mono text-slate-500">{row.case_id.slice(0, 8)}…</td>
-                      <td className="px-4 py-2 text-slate-500">{row.old_status || '—'}</td>
+                      <td className="px-4 py-2 text-slate-500">{row.old_status || '-'}</td>
                       <td className="px-4 py-2 font-semibold text-navy">{row.new_status}</td>
-                      <td className="px-4 py-2 text-slate-600">{row.changed_by_email || '—'}</td>
+                      <td className="px-4 py-2 text-slate-600">{row.changed_by_email || '-'}</td>
                       <td className="px-4 py-2 text-slate-400">{formatDate(row.created_at)}</td>
                     </tr>
                   ))
@@ -194,7 +194,7 @@ export default function ComplianceAuditExportPage() {
                   (notesData).slice(0, 50).map((row) => (
                     <tr key={row.id} className="hover:bg-slate-50">
                       <td className="px-4 py-2 font-mono text-slate-500">{row.case_id.slice(0, 8)}…</td>
-                      <td className="px-4 py-2 text-slate-600">{row.author_email || '—'}</td>
+                      <td className="px-4 py-2 text-slate-600">{row.author_email || '-'}</td>
                       <td className="px-4 py-2 text-slate-700 max-w-xs truncate">{row.content}</td>
                       <td className="px-4 py-2 text-slate-400">{formatDate(row.created_at)}</td>
                     </tr>

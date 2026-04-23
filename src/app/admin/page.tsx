@@ -22,6 +22,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { useRealtimeAllCases } from '@/hooks/useRealtimeDashboard';
+import { caseFileLabel } from '@/lib/caseFileLabel';
 import {
   BarChart,
   Bar,
@@ -170,7 +171,7 @@ export default function AdminDashboardPage() {
       const now = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
       let csv = 'ID,Titre,Type,Statut,Client,Tags Risque,Créé le\n';
       (cases || []).forEach((c: any) => {
-        csv += `"${c.id}","${c.title || ''}","${c.type || ''}","${c.status || ''}","${c.client_email || ''}","${(c.risk_tags || []).join('; ')}","${new Date(c.created_at).toLocaleDateString('fr-FR')}"\n`;
+        csv += `"${c.id}","${caseFileLabel(c)}","${c.type || ''}","${c.status || ''}","${c.client_email || ''}","${(c.risk_tags || []).join('; ')}","${new Date(c.created_at).toLocaleDateString('fr-FR')}"\n`;
       });
       const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -188,8 +189,8 @@ export default function AdminDashboardPage() {
     welcome: lang === 'fr' ? 'Tableau de bord Administrateur' : 'Admin Dashboard',
     subtitle: lang === 'fr' ? 'Vue d\'ensemble complète du portail GL Capital' : 'Complete overview of the GL Capital portal',
     quickActions: lang === 'fr' ? 'Accès rapide' : 'Quick Access',
-    kpiTrends: lang === 'fr' ? 'Tendances KPI — 6 mois' : 'KPI Trends — 6 months',
-    scorecard90: lang === 'fr' ? 'Scorecard conformité — 90 jours' : '90-Day Compliance Scorecard',
+    kpiTrends: lang === 'fr' ? 'Tendances KPI - 6 mois' : 'KPI Trends - 6 months',
+    scorecard90: lang === 'fr' ? 'Scorecard conformité - 90 jours' : '90-Day Compliance Scorecard',
     exportReport: lang === 'fr' ? 'Exporter rapport' : 'Export Report',
     serviceBreakdown: lang === 'fr' ? 'Soumissions par service' : 'Submissions by Service',
     avgProcessing: lang === 'fr' ? 'Délai moyen traitement' : 'Avg Processing Time',

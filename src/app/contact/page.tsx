@@ -189,11 +189,11 @@ export default function ContactLeadPage() {
                       <div>
                         <div className="font-semibold text-xs uppercase tracking-wider mb-0.5" style={{ color: '#1E2D4A' }}>Email</div>
                         <a
-                          href="mailto:contact@glcapital.com"
+                          href="mailto:glcontact@glcapitalinvestment.com"
                           className="transition-colors focus-visible:outline-none focus-visible:ring-2 rounded"
                           style={{ color: '#4A5C7A' }}
                         >
-                          contact@glcapital.com
+                          glcontact@glcapitalinvestment.com
                         </a>
                       </div>
                     </div>

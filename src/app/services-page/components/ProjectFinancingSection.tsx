@@ -9,10 +9,10 @@ export default function ProjectFinancingSection() {
 
   const eligibilityCriteria = [
     t('Budget de projet minimum 5M€ (sans plafond)', 'Project budget minimum €5M (no upper limit)'),
-    t('Porteurs de projet identifiés avec capacité démontrée', 'Identified project sponsors with demonstrated capacity'),
+    t('Porteurs de projet identifiés avec capacité d\'exécution démontrée', 'Identified project sponsors with demonstrated execution capacity'),
     t('Secteur viable : énergie, infrastructure, immobilier, agro-industriel, télécom', 'Viable sector: energy, infrastructure, real estate, agri-industrial, telecom'),
     t('Juridiction bancable (pays non sanctionnés uniquement)', 'Bankable jurisdiction (non-sanctioned countries only)'),
-    t('Apport en fonds propres disponible', 'Equity contribution available (skin in the game)'),
+    t('Apport en fonds propres disponible', 'Equity contribution available'),
     t('Visibilité off-take, concession ou revenus', 'Off-take, concession, or revenue visibility'),
     t('Étude de faisabilité ou business plan disponible', 'Feasibility study or business plan available'),
   ];
@@ -67,8 +67,8 @@ export default function ProjectFinancingSection() {
             </div>
             <p className="text-lg max-w-2xl" style={{ color: '#4A5C7A' }}>
               {t(
-                'Structuration et documentation de projets d\'infrastructure, d\'énergie, d\'immobilier et industriels à grande échelle pour soumission aux institutions financières agréées et aux institutions de financement du développement.',
-                'Structuring and documentation of large-scale infrastructure, energy, real estate, and industrial projects for submission to licensed financial institutions and development finance institutions.'
+                'Structuration et documentation de projets d\'infrastructure, d\'énergie, d\'immobilier et industriels, en vue d\'une soumission à des institutions financières agréées et à des institutions de financement du développement.',
+                'Structuring and documentation for infrastructure, energy, real estate, and industrial projects, for submission to licensed financial institutions and development finance institutions.'
               )}
             </p>
           </div>
@@ -148,14 +148,14 @@ export default function ProjectFinancingSection() {
 
         {/* Process preview */}
         <div className="mt-10 p-6 rounded-2xl" style={{ background: '#1E2D4A' }}>
-          <p className="text-xs font-mono uppercase tracking-wider mb-4" style={{ color: '#B8912A' }}>{t('Calendrier type', 'Typical Timeline')}</p>
+          <p className="text-sm md:text-base font-mono uppercase tracking-wider mb-4" style={{ color: '#B8912A' }}>{t('Calendrier type', 'Typical Timeline')}</p>
           <div className="flex flex-col sm:flex-row gap-4">
             {timeline?.map((s, i) => (
               <React.Fragment key={`pf-timeline-${s?.step}`}>
                 <div className="flex-1 text-center">
                   <span className="text-2xl font-bold font-mono block" style={{ color: 'rgba(184,145,42,0.3)' }}>{s?.step}</span>
-                  <p className="text-white text-xs font-semibold">{t(s?.labelFr, s?.labelEn)}</p>
-                  <p className="text-white/40 text-[10px] font-mono">{t(s?.durationFr, s?.durationEn)}</p>
+                  <p className="text-white text-sm font-semibold">{t(s?.labelFr, s?.labelEn)}</p>
+                  <p className="text-white/40 text-xs font-mono">{t(s?.durationFr, s?.durationEn)}</p>
                 </div>
                 {i < 3 && <div className="hidden sm:flex items-center" style={{ color: '#4A5C7A' }}>→</div>}
               </React.Fragment>

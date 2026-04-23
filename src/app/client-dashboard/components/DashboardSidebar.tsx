@@ -90,7 +90,7 @@ export default function DashboardSidebar({ collapsed, mobileOpen, onCloseMobile,
     { id: 'nav-timeline', icon: GitBranch, label: lang === 'fr' ? 'Suivi dossier' : 'File status', badge: undefined as string | undefined, href: '/client-dashboard/dossier-timeline' },
     { id: 'nav-documents', icon: FileText, label: lang === 'fr' ? 'Documents' : 'Documents', badge: documentCount > 0 ? String(documentCount) : undefined, href: '/client-dashboard/documents' },
     { id: 'nav-downloads', icon: Download, label: lang === 'fr' ? 'Téléchargements' : 'Downloads', badge: undefined as string | undefined, href: '/client-dashboard/downloads' },
-    { id: 'nav-messages', icon: MessageSquare, label: lang === 'fr' ? 'Messages' : 'Messages', badge: undefined as string | undefined, href: null },
+    { id: 'nav-messages', icon: MessageSquare, label: lang === 'fr' ? 'Messages' : 'Messages', badge: undefined as string | undefined, href: '/client-dashboard/messages' },
     { id: 'nav-notifications', icon: Bell, label: lang === 'fr' ? 'Notifications' : 'Notifications', badge: unreadNotifications > 0 ? String(unreadNotifications) : undefined, href: '/client-dashboard/notifications' },
     { id: 'nav-support', icon: HelpCircle, label: lang === 'fr' ? 'Centre d\'aide' : 'Help Center', badge: undefined as string | undefined, href: '/client-dashboard/support' },
   ];

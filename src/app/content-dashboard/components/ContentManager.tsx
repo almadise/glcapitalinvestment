@@ -99,7 +99,7 @@ export function ContentManager({ type, title, icon: IconComp }: ContentManagerPr
         .eq('content_id', item.id)
         .order('version_number', { ascending: false });
       if (error) {
-        // Table may not exist yet — show graceful fallback
+        // Table may not exist yet - show graceful fallback
         setVersions([]);
       } else {
         setVersions(data || []);

@@ -54,7 +54,14 @@ export default function FinancementProjetPage() {
     <div className="min-h-screen bg-white">
       <PublicNavbar />
       {/* Hero */}
-      <section className="pt-28 pb-16 bg-gradient-to-br from-navy-dark via-navy to-navy-light relative overflow-hidden">
+      <section className="pt-28 pb-16 relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-center bg-cover"
+          style={{ backgroundImage: "url('/assets/images/financial-hero-v2.png')" }}
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-navy/55" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-br from-navy-dark/90 via-navy/80 to-navy-light/85" aria-hidden="true" />
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-gold blur-3xl" />
           <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gold blur-3xl" />
@@ -165,38 +172,35 @@ export default function FinancementProjetPage() {
         </div>
       </section>
       {/* Partner Network */}
-      <section className="py-20 bg-gradient-to-br from-navy-dark to-navy relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gold blur-3xl" />
-        </div>
-        <div className="max-w-screen-xl mx-auto px-6 lg:px-10 xl:px-16 relative z-10">
+      <section className="py-20 bg-white">
+        <div className="max-w-screen-xl mx-auto px-6 lg:px-10 xl:px-16">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 bg-gold/10 border border-gold/20 rounded-full px-4 py-1.5 mb-6">
-              <span className="text-gold text-xs font-semibold tracking-widest uppercase">
+            <div className="inline-flex items-center gap-2 bg-navy/5 border border-navy/10 rounded-full px-4 py-1.5 mb-6">
+              <span className="text-navy text-xs font-semibold tracking-widest uppercase">
                 {lang === 'fr' ? 'Partenaires' : 'Partners'}
               </span>
             </div>
-            <h2 className="font-display text-3xl lg:text-4xl font-bold text-white mb-6">
+            <h2 className="font-display text-3xl lg:text-4xl font-bold text-navy mb-6">
               {lang === 'fr' ? 'Notre réseau' : 'Our Network'}
             </h2>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-8">
               <div className="flex items-start gap-4 text-left">
-                <div className="w-10 h-10 rounded-xl bg-gold/20 border border-gold/30 flex items-center justify-center flex-shrink-0 mt-1">
-                  <Shield size={18} className="text-gold" />
+                <div className="w-12 h-12 rounded-xl bg-navy/5 border border-navy/10 flex items-center justify-center flex-shrink-0">
+                  <Shield size={22} className="text-gold" />
                 </div>
-                <p className="text-slate-300 text-base leading-relaxed">
+                <p className="text-navy font-semibold text-base leading-snug">
                   {lang === 'fr'
-                    ? <>GL Capital s'appuie sur un réseau de banques d'affaires, d'investisseurs institutionnels et d'opérateurs financiers spécialisés en <strong className="text-white">Europe</strong>, en <strong className="text-white">Afrique</strong> et en <strong className="text-white">Asie</strong>. Les identités de ces partenaires sont protégées par le secret bancaire et ne sont communiquées qu'aux porteurs de dossiers éligibles, dans le cadre strict de la procédure de conformité.</>
-                    : <>GL Capital relies on a network of investment banks, institutional investors and specialised financial operators in <strong className="text-white">Europe</strong>, <strong className="text-white">Africa</strong> and <strong className="text-white">Asia</strong>. The identities of these partners are protected by banking secrecy and are only communicated to eligible file holders, within the strict framework of the compliance procedure.</>
+                    ? <>GL Capital s'appuie sur un réseau de banques d'affaires, d'investisseurs institutionnels et d'opérateurs financiers spécialisés en <strong>Europe</strong>, en <strong>Afrique</strong> et en <strong>Asie</strong>. Les identités de ces partenaires sont protégées par le secret bancaire et ne sont communiquées qu'aux porteurs de dossiers éligibles, dans le cadre strict de la procédure de conformité.</>
+                    : <>GL Capital relies on a network of investment banks, institutional investors and specialised financial operators in <strong>Europe</strong>, <strong>Africa</strong> and <strong>Asia</strong>. The identities of these partners are protected by banking secrecy and are only communicated to eligible file holders, within the strict framework of the compliance procedure.</>
                   }
                 </p>
               </div>
             </div>
             <div className="flex flex-wrap justify-center gap-4 mt-8">
               {(lang === 'fr' ? ['Europe', 'Afrique', 'Asie'] : ['Europe', 'Africa', 'Asia'])?.map((region) => (
-                <div key={`region-${region}`} className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-5 py-2.5">
+                <div key={`region-${region}`} className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-full px-5 py-2.5 shadow-sm">
                   <CheckCircle size={14} className="text-gold" />
-                  <span className="text-slate-300 text-sm font-medium">{region}</span>
+                  <span className="text-navy text-sm font-medium">{region}</span>
                 </div>
               ))}
             </div>

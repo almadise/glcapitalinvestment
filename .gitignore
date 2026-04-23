@@ -33,5 +33,10 @@ jest-test-results.json
 .vscode/
 .idea/
 
+# Environment files (never commit secrets)
+.env
+.env.*
+!.env.example
+
 # Optional: if using TurboRepo or monorepo
 turbo/

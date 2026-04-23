@@ -2,10 +2,11 @@ import { imageHosts } from './image-hosts.config.mjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: false,
   distDir: process.env.DIST_DIR || '.next',
   typescript: {
-    ignoreBuildErrors: true},
+    ignoreBuildErrors: false},
+  // Le dépôt contient encore beaucoup d'écarts Prettier ; le lint en CI reste recommandé.
   eslint: {
     ignoreDuringBuilds: true},
   serverExternalPackages: ['resend'],
@@ -21,6 +22,17 @@ const nextConfig = {
   },
 
   async headers() {
+    const isDev = process.env.NODE_ENV !== 'production';
+    const csp = [
+      "default-src 'self'",
+      `script-src 'self' ${isDev ? "'unsafe-inline' 'unsafe-eval'" : "'unsafe-inline'"}`,
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: https:",
+      `connect-src 'self' https://*.supabase.co wss://*.supabase.co ${isDev ? 'ws://localhost:* ws://127.0.0.1:*' : ''}`.trim(),
+      "font-src 'self' data:",
+      "frame-ancestors 'self'",
+    ].join('; ');
+
     return [
       {
         source: '/:path*',
@@ -39,9 +51,11 @@ const nextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), payment=()'},
           {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'},
+          {
             key: 'Content-Security-Policy',
-            value:
-              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.builtwithrocket.new https://*.rocket.new; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co https://*.builtwithrocket.new https://*.rocket.new; font-src 'self' data:; frame-ancestors 'self' https://*.rocket.new https://www.rocket.new"}]}];
+            value: csp}]}];
   },
 
   webpack(
@@ -50,11 +64,7 @@ const nextConfig = {
       dev: dev
     }
   ) {
-    config.module.rules.push({
-      test: /\.(jsx|tsx)$/,
-      exclude: [/node_modules/],
-      use: [{
-        loader: '@dhiwise/component-tagger/nextLoader'}]});
+    // @dhiwise/component-tagger retiré : injectait le widget flottant (icône / « static router ») en bas à gauche.
     if (dev) {
       const ignoredPaths = (process.env.WATCH_IGNORED_PATHS || '')
         .split(',')

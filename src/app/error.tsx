@@ -33,8 +33,8 @@ export default function ServerError({ error, reset }: ErrorProps) {
     home: { fr: 'Retour à l\'accueil', en: 'Back to Home' },
     contact: { fr: 'Contacter le support', en: 'Contact Support' },
     info: {
-      fr: 'Si le problème persiste, contactez notre équipe à contact@glcapital.com en mentionnant l\'heure et l\'action effectuée.',
-      en: 'If the problem persists, contact our team at contact@glcapital.com mentioning the time and action performed.',
+      fr: "Si le problème persiste, contactez notre équipe à glcontact@glcapitalinvestment.com en mentionnant l'heure et l'action effectuée.",
+      en: 'If the problem persists, contact our team at glcontact@glcapitalinvestment.com mentioning the time and action performed.',
     },
   };
 
@@ -118,8 +118,8 @@ export default function ServerError({ error, reset }: ErrorProps) {
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 px-4 py-4 text-center">
         <p className="text-xs text-slate-400">
-          © {new Date()?.getFullYear()} GL Capital Investment SA —{' '}
-          <a href="mailto:contact@glcapital.com" className="hover:text-navy transition-colors">contact@glcapital.com</a>
+          © {new Date()?.getFullYear()} GL Capital Investment SA -{' '}
+          <a href="mailto:glcontact@glcapitalinvestment.com" className="hover:text-navy transition-colors">glcontact@glcapitalinvestment.com</a>
         </p>
       </footer>
     </div>

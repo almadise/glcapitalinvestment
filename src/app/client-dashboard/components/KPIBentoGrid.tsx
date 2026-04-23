@@ -65,7 +65,7 @@ export default function KPIBentoGrid() {
 
     if (!user) return;
     const channel = supabase
-      .channel('kpi_dossiers')
+      .channel('kpi_case_files')
       .on('postgres_changes', {
         event: '*', schema: 'public', table: 'case_files',
         filter: `user_id=eq.${user.id}`,
@@ -75,7 +75,7 @@ export default function KPIBentoGrid() {
     return () => { supabase.removeChannel(channel); };
   }, [user, fetchKPIs]);
 
-  const val = (n: number | undefined) => (loading ? '—' : String(n ?? 0));
+  const val = (n: number | undefined) => (loading ? '-' : String(n ?? 0));
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-4">
@@ -101,7 +101,7 @@ export default function KPIBentoGrid() {
           <div className="flex items-center gap-1.5">
             <ArrowUpRight size={14} className="text-emerald-400" />
             <span className="text-emerald-400 text-xs font-semibold">
-              {loading ? '—' : lang === 'fr'
+              {loading ? '-' : lang === 'fr'
                 ? `${kpi?.dossiersTotal ?? 0} soumis au total`
                 : `${kpi?.dossiersTotal ?? 0} total submitted`}
             </span>
@@ -141,7 +141,7 @@ export default function KPIBentoGrid() {
           {lang === 'fr' ? 'Dossiers à compléter' : 'Dossiers to complete'}
         </div>
         <div className={(kpi?.documentsEnAttente ?? 0) > 0 ? 'text-red-600 text-xs font-semibold' : 'text-emerald-600 text-xs font-semibold'}>
-          {loading ? '—' : (kpi?.documentsEnAttente ?? 0) > 0
+          {loading ? '-' : (kpi?.documentsEnAttente ?? 0) > 0
             ? (lang === 'fr' ? 'Documents requis' : 'Documents required')
             : (lang === 'fr' ? 'À jour' : 'Up to date')}
         </div>
@@ -158,7 +158,7 @@ export default function KPIBentoGrid() {
             : <ArrowDownRight size={14} className="text-amber-500" />}
         </div>
         <div className="font-mono-data text-2xl font-bold text-navy mb-1">
-          {loading ? '—' : `${kpi?.completudeMoyenne ?? 0}%`}
+          {loading ? '-' : `${kpi?.completudeMoyenne ?? 0}%`}
         </div>
         <div className="text-slate-500 text-xs font-medium mb-1">
           {lang === 'fr' ? 'Complétude moyenne' : 'Avg. completeness'}
@@ -180,7 +180,7 @@ export default function KPIBentoGrid() {
           <ArrowUpRight size={14} className="text-emerald-500" />
         </div>
         <div className="font-mono-data text-2xl font-bold text-navy mb-1">
-          {loading ? '—' : `${kpi?.dossiersTotal ?? 0}`}
+          {loading ? '-' : `${kpi?.dossiersTotal ?? 0}`}
         </div>
         <div className="text-slate-500 text-xs font-medium mb-1">
           {lang === 'fr' ? 'Total dossiers soumis' : 'Total dossiers submitted'}

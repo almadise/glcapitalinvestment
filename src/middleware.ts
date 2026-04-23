@@ -4,11 +4,26 @@ import { checkRateLimit, getClientIp, RATE_LIMITS } from '@/lib/rateLimit';
 
 /** Role → allowed route prefixes */
 const ROLE_ROUTES: Record<string, string[]> = {
-  admin: ['/admin', '/client-dashboard', '/back-office-admin-panel', '/content-dashboard', '/analyst-dashboard', '/compliance-dashboard', '/client-portal-dashboard', '/dossier-submission-wizard', '/onboarding'],
+  admin: [
+    '/admin',
+    '/client-dashboard',
+    '/back-office-admin-panel',
+    '/content-dashboard',
+    '/analyst-dashboard',
+    '/compliance-dashboard',
+    '/client-portal-dashboard',
+    '/dossier-submission-wizard',
+    '/onboarding',
+  ],
   compliance: ['/compliance-dashboard', '/client-portal-dashboard'],
   analyst: ['/analyst-dashboard', '/client-portal-dashboard'],
   gestionnaire_contenu: ['/content-dashboard'],
-  client: ['/client-dashboard', '/client-portal-dashboard', '/dossier-submission-wizard', '/onboarding'],
+  client: [
+    '/client-dashboard',
+    '/client-portal-dashboard',
+    '/dossier-submission-wizard',
+    '/onboarding',
+  ],
 };
 
 /** Default redirect per role when accessing a forbidden route */
@@ -19,6 +34,47 @@ const ROLE_HOME: Record<string, string> = {
   gestionnaire_contenu: '/content-dashboard',
   client: '/client-dashboard',
 };
+
+function logMiddlewareAuthError(err: unknown) {
+  if (process.env.NODE_ENV === 'development') {
+    console.error('[middleware] Supabase auth check failed:', err);
+  }
+}
+
+const AUTH_RETRY_ATTEMPTS = 2;
+const AUTH_RETRY_DELAY_MS = 120;
+
+async function delay(ms: number) {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Conserve les cookies de session (p.ex. après refresh) sur une réponse de redirection. */
+function copySupabaseCookies(source: NextResponse, target: NextResponse) {
+  source.cookies.getAll().forEach((cookie) => {
+    target.cookies.set(cookie.name, cookie.value, cookie);
+  });
+}
+
+async function getUserWithRetry(
+  getUser: () => Promise<{ data: { user: { id: string } | null } }>
+): Promise<{ user: { id: string } | null; ok: boolean }> {
+  let lastError: unknown = null;
+  for (let attempt = 0; attempt <= AUTH_RETRY_ATTEMPTS; attempt++) {
+    try {
+      const {
+        data: { user },
+      } = await getUser();
+      return { user: user ?? null, ok: true };
+    } catch (err) {
+      lastError = err;
+      if (attempt < AUTH_RETRY_ATTEMPTS) {
+        await delay(AUTH_RETRY_DELAY_MS * (attempt + 1));
+      }
+    }
+  }
+  logMiddlewareAuthError(lastError);
+  return { user: null, ok: false };
+}
 
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -66,7 +122,28 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
+  const isProtectedRoute =
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/client-dashboard') ||
+    pathname.startsWith('/analyst-dashboard') ||
+    pathname.startsWith('/compliance-dashboard') ||
+    pathname.startsWith('/dashboard') ||
+    pathname.startsWith('/back-office-admin-panel') ||
+    pathname.startsWith('/content-dashboard') ||
+    pathname.startsWith('/client-portal-dashboard') ||
+    pathname.startsWith('/dossier-submission-wizard') ||
+    pathname.startsWith('/onboarding');
+
+  // Public/auth/api paths only need lightweight middleware checks above.
+  if (!isProtectedRoute) {
+    return NextResponse.next({ request });
+  }
+
   // ── Auth guard for protected routes ───────────────────────
+  // Important : setAll doit écrire les cookies sur la réponse (voir doc Supabase SSR).
+  // Sinon le refresh ne met pas à jour les cookies → jetons désynchronisés / erreurs refresh côté client.
+  let supabaseResponse = NextResponse.next({ request });
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -75,21 +152,39 @@ export default async function middleware(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll() {
-          // no-op: we only need to read the session here
+        setAll(cookiesToSet, cacheHeaders) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          supabaseResponse = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          );
+          if (cacheHeaders && typeof cacheHeaders === 'object') {
+            Object.entries(cacheHeaders).forEach(([key, value]) => {
+              if (typeof value === 'string') {
+                supabaseResponse.headers.set(key, value);
+              }
+            });
+          }
         },
       },
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const authResult = await getUserWithRetry(() => supabase.auth.getUser());
+  const user = authResult.user;
+  const authCheckOk = authResult.ok;
+
+  // If auth backend is temporarily unreachable, avoid false redirects.
+  if (!authCheckOk) {
+    return supabaseResponse;
+  }
 
   if (!user) {
     const loginUrl = new URL('/sign-up-login-screen', request.url);
     loginUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
-    return NextResponse.redirect(loginUrl, 302);
+    const redirect = NextResponse.redirect(loginUrl, 302);
+    copySupabaseCookies(supabaseResponse, redirect);
+    return redirect;
   }
 
   // ── Role-based route enforcement ──────────────────────────
@@ -112,7 +207,7 @@ export default async function middleware(request: NextRequest) {
       role = upData?.role ?? null;
     }
   } catch {
-    // If profile fetch fails, allow through — client-side RoleGuard will handle it
+    // If profile fetch fails, allow through - client-side RoleGuard will handle it
   }
 
   if (role) {
@@ -121,15 +216,22 @@ export default async function middleware(request: NextRequest) {
 
     if (!isAllowed) {
       const home = ROLE_HOME[role] ?? '/sign-up-login-screen';
-      return NextResponse.redirect(new URL(home, request.url), 302);
+      const redirect = NextResponse.redirect(new URL(home, request.url), 302);
+      copySupabaseCookies(supabaseResponse, redirect);
+      return redirect;
     }
   }
 
-  return NextResponse.next();
+  return supabaseResponse;
 }
 
 export const config = {
   matcher: [
+    '/api/:path*',
+    '/sign-up-login-screen/:path*',
+    '/forgot-password/:path*',
+    '/reset-password/:path*',
+    '/auth/:path*',
     '/admin/:path*',
     '/client-dashboard/:path*',
     '/analyst-dashboard/:path*',

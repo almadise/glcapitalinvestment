@@ -84,8 +84,8 @@ export default function ActivityFeed() {
             icon: cfg.icon,
             color: cfg.color,
             title,
-            desc: detail || log.target || '—',
-            dossier: log.target || '—',
+            desc: detail || log.target || '-',
+            dossier: log.target || '-',
             time: formatRelativeTime(log.created_at, lang as 'fr' | 'en'),
           };
         });
@@ -107,7 +107,7 @@ export default function ActivityFeed() {
             color: 'bg-emerald-100 text-emerald-600',
             title: n.title || (lang === 'fr' ? 'Notification' : 'Notification'),
             desc: n.message || '',
-            dossier: n.metadata?.case_ref || '—',
+            dossier: n.metadata?.case_ref || '-',
             time: formatRelativeTime(n.created_at, lang as 'fr' | 'en'),
           }));
           setActivities(mapped);
@@ -174,7 +174,7 @@ export default function ActivityFeed() {
                   <span className="text-[10px] text-slate-400 whitespace-nowrap flex-shrink-0">{activity.time}</span>
                 </div>
                 <p className="text-xs text-slate-500 leading-snug mt-0.5 truncate">{activity.desc}</p>
-                {activity.dossier && activity.dossier !== '—' && (
+                {activity.dossier && activity.dossier !== '-' && (
                   <span className="inline-flex items-center mt-1 px-1.5 py-0.5 bg-navy/5 text-navy text-[10px] font-mono-data font-semibold rounded">
                     {activity.dossier}
                   </span>

@@ -156,8 +156,8 @@ export default function ConseilStructurationPage() {
                 </div>
                 <p className="text-slate-300 text-base leading-relaxed">
                   {lang === 'fr'
-                    ? <>GL Capital coordonne l'ensemble des intervenants — juridiques, financiers et bancaires — pour garantir la{' '}<strong className="text-white">cohérence et la solidité</strong> du dossier présenté aux institutions partenaires. Chaque structuration est adaptée au profil du porteur de projet et aux exigences spécifiques des financeurs ciblés.</>
-                    : <>GL Capital coordinates all stakeholders — legal, financial and banking — to ensure the <strong className="text-white">coherence and solidity</strong> of the file presented to partner institutions. Each structuring is tailored to the project holder's profile and the specific requirements of the targeted financiers.</>
+                    ? <>GL Capital coordonne l'ensemble des intervenants - juridiques, financiers et bancaires - pour garantir la{' '}<strong className="text-white">cohérence et la solidité</strong> du dossier présenté aux institutions partenaires. Chaque structuration est adaptée au profil du porteur de projet et aux exigences spécifiques des financeurs ciblés.</>
+                    : <>GL Capital coordinates all stakeholders - legal, financial and banking - to ensure the <strong className="text-white">coherence and solidity</strong> of the file presented to partner institutions. Each structuring is tailored to the project holder's profile and the specific requirements of the targeted financiers.</>
                   }
                 </p>
               </div>

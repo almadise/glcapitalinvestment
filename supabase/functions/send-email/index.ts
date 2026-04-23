@@ -14,6 +14,8 @@ serve(async (req) => {
   try {
     const { type, to, data } = await req.json();
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+    const RESEND_FROM_EMAIL =
+      Deno.env.get("RESEND_FROM_EMAIL") || "GL Capital <glcontact@glcapitalinvestment.com>";
 
     if (!RESEND_API_KEY) {
       throw new Error("RESEND_API_KEY not configured");
@@ -186,7 +188,7 @@ serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "onboarding@resend.dev",
+        from: RESEND_FROM_EMAIL,
         to: [to],
         subject,
         html,

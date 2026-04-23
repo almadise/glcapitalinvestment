@@ -18,7 +18,7 @@ export default function ServicesComparisonTable() {
   const { t } = useLanguage();
 
   const comparisonRows = [
-    { id: 'cr-1', featureFr: 'Taille d\'engagement minimum', featureEn: 'Minimum engagement size', pf: '€5M+', bi: '€1M+', adv: 'Custom' },
+    { id: 'cr-1', featureFr: 'Montant minimum d\'engagement', featureEn: 'Minimum engagement amount', pf: '€5M+', bi: '€1M+', adv: 'Custom' },
     { id: 'cr-2', featureFr: 'KYC/AML requis', featureEn: 'KYC/AML required', pf: 'full', bi: 'full', adv: 'partial' },
     { id: 'cr-3', featureFr: 'Préparation documentaire incluse', featureEn: 'Document preparation included', pf: 'yes', bi: 'yes', adv: 'yes' },
     { id: 'cr-4', featureFr: 'Soumission institutionnelle', featureEn: 'Institutional submission', pf: 'yes', bi: 'yes', adv: 'no' },
@@ -33,7 +33,7 @@ export default function ServicesComparisonTable() {
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-10">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold text-navy-900 mb-3">{t('Comparaison des services', 'Service Comparison')}</h2>
-          <p className="text-gray-500 text-sm">{t('Les trois lignes de services opèrent sous les mêmes standards de conformité et de confidentialité', 'All three service lines operate under the same compliance and confidentiality standards')}</p>
+          <p className="text-gray-500 text-sm">{t('Les trois lignes de services appliquent les mêmes standards de conformité et de confidentialité', 'All three service lines follow the same compliance and confidentiality standards')}</p>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-card">

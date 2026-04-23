@@ -33,7 +33,7 @@ export default function PublicFooter() {
             <div className="flex items-center gap-3 mb-4">
               <div className="inline-flex items-center justify-center flex-shrink-0" style={{ width: 36, height: 46 }}>
                 <img
-                  alt="GL Capital Investment SA — Logo"
+                  alt="GL Capital Investment SA - Logo"
                   width={36}
                   height={46}
                   className="object-contain w-full h-full"
@@ -52,8 +52,8 @@ export default function PublicFooter() {
               )}
             </p>
             <div className="text-white/40 text-xs font-mono space-y-1">
-              <p>General Luxury SA — 9 Rue Bonnet, 95400 ARNOUVILLE, France</p>
-              <p>almadise84@yahoo.fr · +33 984 046951</p>
+              <p>General Luxury SA - 9 Rue Bonnet, 95400 ARNOUVILLE, France</p>
+              <p>glcontact@glcapitalinvestment.com · +33 984 046951</p>
             </div>
           </div>
 

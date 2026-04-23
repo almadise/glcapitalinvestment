@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { requireInternalApiAccess } from '@/lib/apiSecurity';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+const EMAIL_FROM =
+  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
 
 type NotificationType = 'compliance_flag' | 'antivirus_complete' | 'antivirus_failed';
 
@@ -18,14 +21,14 @@ function buildComplianceFlagHtml(params: {
 
   return `<!DOCTYPE html>
 <html lang="fr">
-<head><meta charset="UTF-8"/><title>⚠️ Flag Conformité — ${caseTitle}</title></head>
+<head><meta charset="UTF-8"/><title>⚠️ Flag Conformité - ${caseTitle}</title></head>
 <body style="margin:0;padding:0;background:#f0f4f8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8;padding:32px 0;">
     <tr><td align="center">
       <table width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;">
         <tr><td style="background:#7f1d1d;border-radius:10px 10px 0 0;padding:24px 32px;">
-          <h1 style="margin:0;color:#fca5a5;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">GL Capital — Alerte Conformité</h1>
-          <p style="margin:6px 0 0;color:#fecaca;font-size:12px;">⚠️ Flag de conformité déclenché — Action requise</p>
+          <h1 style="margin:0;color:#fca5a5;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">GL Capital - Alerte Conformité</h1>
+          <p style="margin:6px 0 0;color:#fecaca;font-size:12px;">⚠️ Flag de conformité déclenché - Action requise</p>
         </td></tr>
         <tr><td style="background:#ef4444;height:2px;"></td></tr>
         <tr><td style="background:#ffffff;padding:28px 32px;">
@@ -43,10 +46,14 @@ function buildComplianceFlagHtml(params: {
               <span style="color:#991b1b;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Motif du flag</span>
               <p style="margin:3px 0 0;color:#7f1d1d;font-size:13px;font-weight:600;">${flagReason}</p>
             </td></tr>
-            ${riskTags.length > 0 ? `<tr><td style="padding:14px 18px;border-bottom:1px solid #fee2e2;">
+            ${
+              riskTags.length > 0
+                ? `<tr><td style="padding:14px 18px;border-bottom:1px solid #fee2e2;">
               <span style="color:#991b1b;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Tags risque</span>
               <p style="margin:3px 0 0;color:#334155;font-size:13px;">${riskTags.join(', ')}</p>
-            </td></tr>` : ''}
+            </td></tr>`
+                : ''
+            }
             <tr><td style="padding:14px 18px;">
               <span style="color:#991b1b;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Déclenché par</span>
               <p style="margin:3px 0 0;color:#334155;font-size:13px;">${triggeredBy}</p>
@@ -57,7 +64,7 @@ function buildComplianceFlagHtml(params: {
           </div>
         </td></tr>
         <tr><td style="background:#f8fafc;border-radius:0 0 10px 10px;padding:16px 32px;text-align:center;border-top:1px solid #e2e8f0;">
-          <p style="margin:0;color:#94a3b8;font-size:11px;">Alerte conformité GL Capital — Équipe Back-Office</p>
+          <p style="margin:0;color:#94a3b8;font-size:11px;">Alerte conformité GL Capital - Équipe Back-Office</p>
         </td></tr>
       </table>
     </td></tr>
@@ -78,14 +85,14 @@ function buildAntivirusHtml(params: {
 
   return `<!DOCTYPE html>
 <html lang="fr">
-<head><meta charset="UTF-8"/><title>${isClean ? '✅' : '🚨'} Scan antivirus — ${documentName}</title></head>
+<head><meta charset="UTF-8"/><title>${isClean ? '✅' : '🚨'} Scan antivirus - ${documentName}</title></head>
 <body style="margin:0;padding:0;background:#f0f4f8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8;padding:32px 0;">
     <tr><td align="center">
       <table width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;">
         <tr><td style="background:${isClean ? '#0a1941' : '#7f1d1d'};border-radius:10px 10px 0 0;padding:24px 32px;">
-          <h1 style="margin:0;color:${isClean ? '#c9a84c' : '#fca5a5'};font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">GL Capital — Scan Antivirus</h1>
-          <p style="margin:6px 0 0;color:${isClean ? '#94a3b8' : '#fecaca'};font-size:12px;">${isClean ? '✅ Document analysé — Aucune menace détectée' : '🚨 Menace détectée — Document mis en quarantaine'}</p>
+          <h1 style="margin:0;color:${isClean ? '#c9a84c' : '#fca5a5'};font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">GL Capital - Scan Antivirus</h1>
+          <p style="margin:6px 0 0;color:${isClean ? '#94a3b8' : '#fecaca'};font-size:12px;">${isClean ? '✅ Document analysé - Aucune menace détectée' : '🚨 Menace détectée - Document mis en quarantaine'}</p>
         </td></tr>
         <tr><td style="background:${isClean ? '#10b981' : '#ef4444'};height:2px;"></td></tr>
         <tr><td style="background:#ffffff;padding:28px 32px;">
@@ -105,7 +112,7 @@ function buildAntivirusHtml(params: {
             </td></tr>
             <tr><td style="padding:14px 18px;">
               <span style="color:#64748b;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Résultat</span>
-              <p style="margin:3px 0 0;font-size:14px;font-weight:700;color:${isClean ? '#10b981' : '#ef4444'};">${isClean ? '✅ Propre — Aucune menace' : '🚨 Menace détectée — Quarantaine'}</p>
+              <p style="margin:3px 0 0;font-size:14px;font-weight:700;color:${isClean ? '#10b981' : '#ef4444'};">${isClean ? '✅ Propre - Aucune menace' : '🚨 Menace détectée - Quarantaine'}</p>
             </td></tr>
           </table>
           <div style="margin-top:20px;text-align:center;">
@@ -113,7 +120,7 @@ function buildAntivirusHtml(params: {
           </div>
         </td></tr>
         <tr><td style="background:#f8fafc;border-radius:0 0 10px 10px;padding:16px 32px;text-align:center;border-top:1px solid #e2e8f0;">
-          <p style="margin:0;color:#94a3b8;font-size:11px;">Notification automatique GL Capital — Système antivirus</p>
+          <p style="margin:0;color:#94a3b8;font-size:11px;">Notification automatique GL Capital - Système antivirus</p>
         </td></tr>
       </table>
     </td></tr>
@@ -122,6 +129,9 @@ function buildAntivirusHtml(params: {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireInternalApiAccess(req, 'send-compliance-notification');
+  if (!guard.ok) return guard.response;
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ success: false, error: 'RESEND_API_KEY missing' }, { status: 500 });
@@ -147,7 +157,10 @@ export async function POST(req: NextRequest) {
   }
 
   const {
-    type, caseTitle, caseId, clientEmail,
+    type,
+    caseTitle,
+    caseId,
+    clientEmail,
     flagReason = 'Anomalie détectée',
     riskTags = [],
     triggeredBy = 'système',
@@ -161,7 +174,7 @@ export async function POST(req: NextRequest) {
   }
 
   const resend = new Resend(apiKey);
-  const contactEmail = process.env.CONTACT_EMAIL || 'noreply@glcapital.com';
+  const contactEmail = process.env.CONTACT_EMAIL || 'glcontact@glcapitalinvestment.com';
   const errors: string[] = [];
   const sent: string[] = [];
 
@@ -169,13 +182,27 @@ export async function POST(req: NextRequest) {
   let subject = '';
 
   if (type === 'compliance_flag') {
-    html = buildComplianceFlagHtml({ caseTitle, caseId, clientEmail, flagReason, riskTags, triggeredBy });
-    subject = `⚠️ Flag conformité — ${caseTitle}`;
+    html = buildComplianceFlagHtml({
+      caseTitle,
+      caseId,
+      clientEmail,
+      flagReason,
+      riskTags,
+      triggeredBy,
+    });
+    subject = `⚠️ Flag conformité - ${caseTitle}`;
   } else if (type === 'antivirus_complete' || type === 'antivirus_failed') {
-    html = buildAntivirusHtml({ caseTitle, caseId, documentName, scanResult: type === 'antivirus_complete' ? 'clean' : 'threat', clientEmail });
-    subject = type === 'antivirus_complete'
-      ? `✅ Scan antivirus terminé — ${documentName}`
-      : `🚨 Menace détectée — ${documentName}`;
+    html = buildAntivirusHtml({
+      caseTitle,
+      caseId,
+      documentName,
+      scanResult: type === 'antivirus_complete' ? 'clean' : 'threat',
+      clientEmail,
+    });
+    subject =
+      type === 'antivirus_complete'
+        ? `✅ Scan antivirus terminé - ${documentName}`
+        : `🚨 Menace détectée - ${documentName}`;
   }
 
   // Send to internal recipients
@@ -183,7 +210,7 @@ export async function POST(req: NextRequest) {
   for (const recipient of allRecipients) {
     try {
       const { error } = await resend.emails.send({
-        from: 'GL Capital <noreply@glcapital.com>',
+        from: EMAIL_FROM,
         to: recipient,
         subject,
         html,

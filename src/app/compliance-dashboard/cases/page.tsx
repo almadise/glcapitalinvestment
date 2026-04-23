@@ -9,6 +9,7 @@ import UploadWidget from '@/components/UploadWidget';
 import { logAuditAction } from '@/lib/auditLogger';
 import AdvancedFilters, { FilterState } from '@/components/AdvancedFilters';
 import { notifyStatusChange } from '@/lib/notificationHelper';
+import { caseFileLabel } from '@/lib/caseFileLabel';
 
 type CaseStatus =
   | 'RECU' | 'A_COMPLETER' | 'EN_ANALYSE' | 'EN_REVUE_COMPLIANCE' |'ELIGIBLE'| 'SOUMIS_PARTENAIRE' | 'RETOUR_PARTENAIRE' |'EN_NEGOCIATION' | 'CLOTURE' | 'REJETE';
@@ -18,8 +19,10 @@ interface CaseFile {
   user_id: string;
   type: string;
   status: CaseStatus;
-  title: string;
+  ref?: string | null;
+  project_name?: string | null;
   description: string | null;
+  project_description?: string | null;
   created_at: string;
   client_email?: string;
   client_name?: string;
@@ -189,7 +192,7 @@ export default function ComplianceCasesPage() {
         await notifyStatusChange({
           userId: selectedCase.user_id,
           caseId: selectedCase.id,
-          caseTitle: selectedCase.title,
+          caseTitle: caseFileLabel(selectedCase),
           newStatus,
           oldStatus: selectedCase.status,
           note: statusNote.trim() || (newStatus === 'REJETE' ? rejectionReason.trim() : null),
@@ -204,7 +207,7 @@ export default function ComplianceCasesPage() {
           body: JSON.stringify({
             clientEmail: selectedCase.client_email,
             clientName: selectedCase.client_name || selectedCase.client_email,
-            caseTitle: selectedCase.title,
+            caseTitle: caseFileLabel(selectedCase),
             caseId: selectedCase.id,
             newStatus,
             oldStatus: selectedCase.status,
@@ -240,7 +243,7 @@ export default function ComplianceCasesPage() {
           caseId: selectedCase.id,
           actorId: user.id,
           actorEmail: user.email || undefined,
-          metadata: { case_title: selectedCase.title, portal: 'compliance' },
+          metadata: { case_title: caseFileLabel(selectedCase), portal: 'compliance' },
         });
       }
 
@@ -266,7 +269,13 @@ export default function ComplianceCasesPage() {
   const toggleTag = (tag: string) => setSelectedTags((prev) => prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]);
 
   const filtered = cases.filter((c) => {
-    const matchSearch = !filters.search || c.title?.toLowerCase().includes(filters.search.toLowerCase()) || c.client_email?.toLowerCase().includes(filters.search.toLowerCase()) || c.id.toLowerCase().includes(filters.search.toLowerCase());
+    const q = filters.search.toLowerCase();
+    const matchSearch =
+      !filters.search ||
+      caseFileLabel(c).toLowerCase().includes(q) ||
+      (c.ref || '').toLowerCase().includes(q) ||
+      c.client_email?.toLowerCase().includes(q) ||
+      c.id.toLowerCase().includes(q);
     const matchStatus = filters.status === 'ALL' || c.status === filters.status;
     const matchTags = filters.riskTags.length === 0 || filters.riskTags.every((t) => c.risk_tags?.includes(t));
     const matchDateFrom = !filters.dateFrom || new Date(c.created_at) >= new Date(filters.dateFrom);
@@ -331,13 +340,13 @@ export default function ComplianceCasesPage() {
               <div key={c.id} className="p-4 hover:bg-slate-50 transition-colors">
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-navy text-sm truncate">{c.title}</div>
+                    <div className="font-medium text-navy text-sm truncate">{caseFileLabel(c)}</div>
                     <div className="text-xs text-slate-400 font-mono">{c.id.slice(0, 8)}…</div>
                   </div>
                   <StatusBadge status={c.status} />
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="text-xs text-slate-500">{c.client_email || '—'}</div>
+                  <div className="text-xs text-slate-500">{c.client_email || '-'}</div>
                   <button onClick={() => openCase(c)} className="flex items-center gap-1 text-emerald-600 hover:text-emerald-800 text-xs font-medium">
                     Ouvrir <ArrowRight size={12} />
                   </button>
@@ -364,10 +373,10 @@ export default function ComplianceCasesPage() {
                 ) : filtered.map((c) => (
                   <tr key={c.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-3">
-                      <div className="font-medium text-navy text-sm">{c.title}</div>
+                      <div className="font-medium text-navy text-sm">{caseFileLabel(c)}</div>
                       <div className="text-xs text-slate-400 font-mono">{c.id.slice(0, 8)}…</div>
                     </td>
-                    <td className="px-4 py-3 text-slate-600 text-xs">{c.client_email || '—'}</td>
+                    <td className="px-4 py-3 text-slate-600 text-xs">{c.client_email || '-'}</td>
                     <td className="px-4 py-3"><StatusBadge status={c.status} /></td>
                     <td className="px-4 py-3 hidden lg:table-cell">
                       {c.risk_tags && c.risk_tags.length > 0 ? (
@@ -379,7 +388,7 @@ export default function ComplianceCasesPage() {
                           ))}
                           {c.risk_tags.length > 2 && <span className="text-xs text-slate-400">+{c.risk_tags.length - 2}</span>}
                         </div>
-                      ) : <span className="text-slate-300 text-xs">—</span>}
+                      ) : <span className="text-slate-300 text-xs">-</span>}
                     </td>
                     <td className="px-4 py-3 text-xs text-slate-400 hidden md:table-cell">{formatDate(c.created_at)}</td>
                     <td className="px-4 py-3">
@@ -402,7 +411,7 @@ export default function ComplianceCasesPage() {
           <div className="w-full max-w-2xl bg-white shadow-2xl flex flex-col overflow-hidden">
             <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-200 bg-slate-50">
               <div className="flex-1 min-w-0 pr-3">
-                <h2 className="font-bold text-navy text-sm sm:text-base truncate">{selectedCase.title}</h2>
+                <h2 className="font-bold text-navy text-sm sm:text-base truncate">{caseFileLabel(selectedCase)}</h2>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
                   <StatusBadge status={selectedCase.status} />
                   <span className="text-xs text-slate-400 font-mono">{selectedCase.id.slice(0, 8)}…</span>

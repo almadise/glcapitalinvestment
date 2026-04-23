@@ -5,10 +5,10 @@ import HomeFooter from '@/app/home-page/components/HomeFooter';
 import { Lock, Shield, Database, Eye, Trash2, AlertCircle } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Politique de Confidentialité — GL Capital Investment SA',
+  title: 'Politique de Confidentialité - GL Capital Investment SA',
   description: 'Politique de confidentialité GL Capital : traitement des données, droits RGPD/CCPA, conservation, sécurité.',
   openGraph: {
-    title: 'Politique de Confidentialité — GL Capital',
+    title: 'Politique de Confidentialité - GL Capital',
     description: 'Politique de confidentialité et protection des données personnelles. Conformité RGPD et CCPA.',
     type: 'website',
     url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital8049.builtwithrocket.new'}/politique-confidentialite`,
@@ -30,7 +30,7 @@ export default function PolitiqueConfidentialitePage() {
             <span className="text-gold-400 text-xs font-mono tracking-widest uppercase">Légal / Legal</span>
           </div>
           <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">Politique de Confidentialité <span className="text-white/40 text-2xl font-normal">/ Privacy Policy</span></h1>
-          <p className="text-white/40 text-sm">Dernière mise à jour : avril 2026 — Last updated: April 2026</p>
+          <p className="text-white/40 text-sm">Dernière mise à jour : avril 2026 - Last updated: April 2026</p>
         </div>
       </section>
       <section className="py-16 px-6 lg:px-10">
@@ -45,7 +45,7 @@ export default function PolitiqueConfidentialitePage() {
               <p><span className="text-white/80 font-medium">Raison sociale / Legal name :</span> General Luxury SA</p>
               <p><span className="text-white/80 font-medium">Nom commercial / Trading name :</span> GL Capital Investment SA</p>
               <p><span className="text-white/80 font-medium">Adresse / Address :</span> 9 Rue Bonnet, 95400 ARNOUVILLE, France</p>
-              <p><span className="text-white/80 font-medium">Email :</span> almadise84@yahoo.fr</p>
+              <p><span className="text-white/80 font-medium">Email :</span> glcontact@glcapitalinvestment.com</p>
               <p><span className="text-white/80 font-medium">Téléphone / Phone :</span> +33 984 046951</p>
             </div>
           </div>
@@ -121,13 +121,13 @@ export default function PolitiqueConfidentialitePage() {
             <p className="text-white/60 text-sm leading-relaxed">
               Pour exercer vos droits RGPD ou CCPA, contactez-nous à :<br />
               <span className="text-white/40">To exercise your GDPR or CCPA rights, contact us at:</span><br />
-              <span className="text-gold-400 font-medium">almadise84@yahoo.fr</span>
+              <span className="text-gold-400 font-medium">glcontact@glcapitalinvestment.com</span>
             </p>
           </div>
 
           <div className="bg-navy-900/60 border border-navy-700 rounded-2xl p-7 text-center">
-            <p className="text-white/40 text-xs">GL Capital Investment SA — General Luxury SA</p>
-            <p className="text-white/40 text-xs">9 Rue Bonnet, 95400 ARNOUVILLE, France — almadise84@yahoo.fr — +33 984 046951</p>
+            <p className="text-white/40 text-xs">GL Capital Investment SA - General Luxury SA</p>
+            <p className="text-white/40 text-xs">9 Rue Bonnet, 95400 ARNOUVILLE, France - glcontact@glcapitalinvestment.com - +33 984 046951</p>
           </div>
         </div>
       </section>

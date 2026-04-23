@@ -88,14 +88,14 @@ export default function DossierTable() {
         const mapped: Dossier[] = (data || []).map((d: any) => ({
           id: d.id,
           ref: d.ref,
-          organisation: d.org_id || user.email || '—',
+          organisation: d.org_id || user.email || '-',
           type: d.type || 'Project Finance',
           statut: d.status as DossierStatus,
-          montant: d.amount || '—',
+          montant: d.amount || '-',
           completude: d.completeness || 0,
           analyste: d.analyst?.full_name || t('Non assigné', 'Unassigned'),
-          dateCreation: d.created_at ? new Date(d.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—',
-          derniereMaj: d.updated_at ? new Date(d.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—',
+          dateCreation: d.created_at ? new Date(d.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-',
+          derniereMaj: d.updated_at ? new Date(d.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-',
         }));
         setDossiers(mapped);
       }
@@ -150,56 +150,37 @@ export default function DossierTable() {
     setPage(1);
   };
 
-  const handleExportPDF = async (dossier: Dossier) => {
+  const handleExport = async (dossier: Dossier) => {
     setExportingId(dossier.id);
     await new Promise((r) => setTimeout(r, 800));
     try {
-      const { default: jsPDF } = await import('jspdf');
-      const { default: autoTable } = await import('jspdf-autotable') as any;
-      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      doc.setFillColor(15, 37, 87);
-      doc.rect(0, 0, 210, 38, 'F');
-      doc.setFillColor(201, 168, 76);
-      doc.rect(0, 38, 210, 2, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(18);
-      doc.setTextColor(255, 255, 255);
-      doc.text('GL Capital Investment SA', 15, 18);
-      doc.setFontSize(11);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(201, 168, 76);
-      doc.text(lang === 'fr' ? 'Récapitulatif de dossier de financement' : 'Financing file summary', 15, 28);
-      doc.setFontSize(10);
-      doc.setTextColor(255, 255, 255);
-      doc.text(dossier.ref, 195, 18, { align: 'right' });
-      autoTable(doc, {
-        startY: 55,
-        head: [],
-        body: [
-          [lang === 'fr' ? 'Référence' : 'Reference', dossier.ref],
-          [lang === 'fr' ? 'Organisation' : 'Organisation', dossier.organisation],
-          [lang === 'fr' ? 'Type' : 'Type', dossier.type],
-          [lang === 'fr' ? 'Statut' : 'Status', statusConfig[dossier.statut]?.label || dossier.statut],
-          [lang === 'fr' ? 'Montant' : 'Amount', dossier.montant],
-          [lang === 'fr' ? 'Complétude' : 'Completeness', `${dossier.completude}%`],
-          [lang === 'fr' ? 'Analyste' : 'Analyst', dossier.analyste],
-          [lang === 'fr' ? 'Créé le' : 'Created', dossier.dateCreation],
-          [lang === 'fr' ? 'Mis à jour' : 'Updated', dossier.derniereMaj],
-        ],
-        theme: 'plain',
-        styles: { fontSize: 9, cellPadding: 3 },
-        columnStyles: { 0: { fontStyle: 'bold', textColor: [71, 85, 105], cellWidth: 65 }, 1: { textColor: [15, 23, 42] } },
-        alternateRowStyles: { fillColor: [248, 249, 252] },
-      });
-      doc.setFontSize(7);
-      doc.setTextColor(150, 150, 150);
-      doc.text('Document confidentiel — GL Capital Investment SA', 105, 287, { align: 'center' });
-      doc.setFillColor(201, 168, 76);
-      doc.rect(0, 290, 210, 2, 'F');
-      doc.save(`GL_Capital_${dossier.ref}_Recapitulatif.pdf`);
-      toast.success(lang === 'fr' ? `PDF exporté — ${dossier.ref}` : `PDF exported — ${dossier.ref}`);
+      // CSV export avoids heavyweight PDF runtime deps that can break client bundle compilation.
+      const rows = [
+        [lang === 'fr' ? 'Référence' : 'Reference', dossier.ref],
+        [lang === 'fr' ? 'Organisation' : 'Organisation', dossier.organisation],
+        [lang === 'fr' ? 'Type' : 'Type', dossier.type],
+        [lang === 'fr' ? 'Statut' : 'Status', statusConfig[dossier.statut]?.label || dossier.statut],
+        [lang === 'fr' ? 'Montant' : 'Amount', dossier.montant],
+        [lang === 'fr' ? 'Complétude' : 'Completeness', `${dossier.completude}%`],
+        [lang === 'fr' ? 'Analyste' : 'Analyst', dossier.analyste],
+        [lang === 'fr' ? 'Créé le' : 'Created', dossier.dateCreation],
+        [lang === 'fr' ? 'Mis à jour' : 'Updated', dossier.derniereMaj],
+      ];
+      const csv = rows
+        .map(([k, v]) => `"${String(k).replace(/"/g, '""')}","${String(v).replace(/"/g, '""')}"`)
+        .join('\n');
+      const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `GL_Capital_${dossier.ref}_Recapitulatif.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success(lang === 'fr' ? `Export CSV - ${dossier.ref}` : `CSV exported - ${dossier.ref}`);
     } catch {
-      toast.error(lang === 'fr' ? 'Erreur lors de la génération du PDF.' : 'Error generating PDF.');
+      toast.error(lang === 'fr' ? "Erreur lors de l'export du fichier." : 'Error while exporting file.');
     }
     setExportingId(null);
   };
@@ -232,8 +213,8 @@ export default function DossierTable() {
             {loading
               ? (lang === 'fr' ? 'Chargement...' : 'Loading...')
               : lang === 'fr'
-                ? `${filtered.length} dossier(s) — ${dossiers.length} au total`
-                : `${filtered.length} file(s) — ${dossiers.length} total`}
+                ? `${filtered.length} dossier(s) - ${dossiers.length} au total`
+                : `${filtered.length} file(s) - ${dossiers.length} total`}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -358,8 +339,8 @@ export default function DossierTable() {
                           <Eye size={14} />
                         </button>
                         <button
-                          title={lang === 'fr' ? 'Exporter en PDF' : 'Export as PDF'}
-                          onClick={() => handleExportPDF(dossier)}
+                          title={lang === 'fr' ? 'Exporter (CSV)' : 'Export (CSV)'}
+                          onClick={() => handleExport(dossier)}
                           disabled={exportingId === dossier.id}
                           className="p-1.5 rounded-lg hover:bg-gold/10 text-slate-500 hover:text-gold-dark transition-colors disabled:opacity-50"
                         >
@@ -380,7 +361,7 @@ export default function DossierTable() {
 
       <div className="px-5 py-3.5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="text-xs text-slate-500">
-          {loading ? '—' : lang === 'fr'
+          {loading ? '-' : lang === 'fr'
             ? `Affichage ${Math.min((page - 1) * perPage + 1, sorted.length)}–${Math.min(page * perPage, sorted.length)} sur ${sorted.length}`
             : `Showing ${Math.min((page - 1) * perPage + 1, sorted.length)}–${Math.min(page * perPage, sorted.length)} of ${sorted.length}`}
         </div>

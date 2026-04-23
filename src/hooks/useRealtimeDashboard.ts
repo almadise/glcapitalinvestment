@@ -75,8 +75,8 @@ export function useRealtimeCaseDashboard({
           const row = payload.new as any;
           toast.success(
             lang === 'fr'
-              ? `Statut changé : ${row?.old_status || '—'} → ${row?.new_status || ''}`
-              : `Status changed: ${row?.old_status || '—'} → ${row?.new_status || ''}`,
+              ? `Statut changé : ${row?.old_status || '-'} → ${row?.new_status || ''}`
+              : `Status changed: ${row?.old_status || '-'} → ${row?.new_status || ''}`,
             { duration: 7000, icon: '🔄' }
           );
           onStatusChange?.(payload);
@@ -165,8 +165,8 @@ export function useRealtimeAllCases({
           const row = payload.new as any;
           toast.success(
             lang === 'fr'
-              ? `Changement de statut : ${row?.old_status || '—'} → ${row?.new_status || ''}`
-              : `Status change: ${row?.old_status || '—'} → ${row?.new_status || ''}`,
+              ? `Changement de statut : ${row?.old_status || '-'} → ${row?.new_status || ''}`
+              : `Status change: ${row?.old_status || '-'} → ${row?.new_status || ''}`,
             { duration: 7000, icon: '✅' }
           );
           onAnyUpdate?.(payload);

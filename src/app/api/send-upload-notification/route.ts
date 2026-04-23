@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { requireInternalApiAccess } from '@/lib/apiSecurity';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+const EMAIL_FROM =
+  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -19,13 +22,15 @@ function buildUploadEmailHtml(params: {
   uploadedAt: string;
   portal: 'analyst' | 'compliance';
 }): string {
-  const { analystName, analystEmail, caseTitle, caseId, fileName, fileSize, uploadedAt, portal } = params;
-  const dashboardLink = portal === 'analyst'
-    ? `${SITE_URL}/analyst-dashboard/cases`
-    : `${SITE_URL}/compliance-dashboard/cases`;
+  const { analystName, analystEmail, caseTitle, caseId, fileName, fileSize, uploadedAt, portal } =
+    params;
+  const dashboardLink =
+    portal === 'analyst'
+      ? `${SITE_URL}/analyst-dashboard/cases`
+      : `${SITE_URL}/compliance-dashboard/cases`;
 
   const portalLabel = portal === 'analyst' ? 'Analyste' : 'Conformité';
-  const subject = `Document téléversé — ${caseTitle}`;
+  const subject = `Document téléversé - ${caseTitle}`;
 
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -81,7 +86,7 @@ function buildUploadEmailHtml(params: {
         <!-- Footer -->
         <tr><td style="background:#0a1941;border-radius:0 0 12px 12px;padding:20px 36px;text-align:center;">
           <p style="margin:0 0 4px;color:#c9a84c;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">GL Capital Investment SA</p>
-          <p style="margin:0;color:#475569;font-size:10px;">Notification automatique — Piste d'audit interne</p>
+          <p style="margin:0;color:#475569;font-size:10px;">Notification automatique - Piste d'audit interne</p>
         </td></tr>
       </table>
     </td></tr>
@@ -90,6 +95,9 @@ function buildUploadEmailHtml(params: {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireInternalApiAccess(req, 'send-upload-notification');
+  if (!guard.ok) return guard.response;
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ success: false, error: 'RESEND_API_KEY missing' }, { status: 500 });
@@ -113,8 +121,14 @@ export async function POST(req: NextRequest) {
   }
 
   const {
-    analystName, analystEmail, caseTitle, caseId,
-    fileName, fileSize, portal, internalRecipients = [],
+    analystName,
+    analystEmail,
+    caseTitle,
+    caseId,
+    fileName,
+    fileSize,
+    portal,
+    internalRecipients = [],
   } = body;
 
   if (!analystEmail || !caseTitle || !caseId || !fileName) {
@@ -123,21 +137,32 @@ export async function POST(req: NextRequest) {
 
   const resend = new Resend(apiKey);
   const uploadedAt = new Date().toLocaleDateString('fr-FR', {
-    day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit',
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   });
 
   const html = buildUploadEmailHtml({
-    analystName, analystEmail, caseTitle, caseId, fileName, fileSize, uploadedAt, portal,
+    analystName,
+    analystEmail,
+    caseTitle,
+    caseId,
+    fileName,
+    fileSize,
+    uploadedAt,
+    portal,
   });
 
-  const subject = `Document téléversé — ${caseTitle}`;
+  const subject = `Document téléversé - ${caseTitle}`;
 
   // Send to analyst + any internal recipients
   const recipients = Array.from(new Set([analystEmail, ...internalRecipients]));
 
   try {
     await resend.emails.send({
-      from: 'GL Capital <onboarding@resend.dev>',
+      from: EMAIL_FROM,
       to: recipients,
       subject,
       html,

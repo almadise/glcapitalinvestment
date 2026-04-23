@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { checkRateLimit, getClientIp, RATE_LIMITS } from '@/lib/rateLimit';
+import { ensureTrustedUrl } from '@/lib/apiSecurity';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+const EMAIL_FROM =
+  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
 
 function buildPasswordResetHtml(params: {
   email: string;
@@ -15,7 +18,7 @@ function buildPasswordResetHtml(params: {
   return `<!DOCTYPE html>
 <html lang="${lang}">
 <head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>${isFr ? 'Réinitialisation de mot de passe — GL Capital' : 'Password Reset — GL Capital'}</title></head>
+<title>${isFr ? 'Réinitialisation de mot de passe - GL Capital' : 'Password Reset - GL Capital'}</title></head>
 <body style="margin:0;padding:0;background-color:#f0f4f8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f0f4f8;padding:40px 0;">
     <tr><td align="center">
@@ -31,8 +34,11 @@ function buildPasswordResetHtml(params: {
         <tr><td style="background:#ffffff;padding:40px 40px 0;">
           <p style="margin:0 0 8px;color:#0a1941;font-size:16px;font-weight:600;">${isFr ? 'Bonjour,' : 'Hello,'}</p>
           <p style="margin:0 0 28px;color:#475569;font-size:14px;line-height:1.7;">
-            ${isFr
-              ? 'Vous avez demandé la réinitialisation de votre mot de passe GL Capital. Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe.' :'You requested a password reset for your GL Capital account. Click the button below to choose a new password.'}
+            ${
+              isFr
+                ? 'Vous avez demandé la réinitialisation de votre mot de passe GL Capital. Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe.'
+                : 'You requested a password reset for your GL Capital account. Click the button below to choose a new password.'
+            }
           </p>
         </td></tr>
         <tr><td style="background:#ffffff;padding:0 40px 28px;">
@@ -50,8 +56,11 @@ function buildPasswordResetHtml(params: {
         </td></tr>
         <tr><td style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:20px 40px;">
           <p style="margin:0;color:#94a3b8;font-size:12px;line-height:1.6;text-align:center;">
-            ${isFr
-              ? "Ce lien est valable 1 heure. Si vous n'avez pas demandé cette réinitialisation, ignorez cet email." :"This link is valid for 1 hour. If you did not request this reset, please ignore this email."}
+            ${
+              isFr
+                ? "Ce lien est valable 1 heure. Si vous n'avez pas demandé cette réinitialisation, ignorez cet email."
+                : 'This link is valid for 1 hour. If you did not request this reset, please ignore this email.'
+            }
           </p>
         </td></tr>
         <tr><td style="background:#0a1941;border-radius:0 0 12px 12px;padding:24px 40px;text-align:center;">
@@ -86,18 +95,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Invalid request body' }, { status: 400 });
   }
 
-  const { email, resetUrl = `${SITE_URL}/reset-password`, lang = 'fr' } = body;
+  const { email, resetUrl, lang = 'fr' } = body;
   if (!email) {
     return NextResponse.json({ success: false, error: 'Missing email' }, { status: 400 });
   }
+  const safeResetUrl = ensureTrustedUrl(resetUrl, SITE_URL, '/reset-password');
 
   const resend = new Resend(apiKey);
-  const subject = lang === 'fr' ?'Réinitialisation de mot de passe — GL Capital' :'Password Reset — GL Capital';
-  const html = buildPasswordResetHtml({ email, resetUrl, lang });
+  const subject =
+    lang === 'fr' ? 'Réinitialisation de mot de passe - GL Capital' : 'Password Reset - GL Capital';
+  const html = buildPasswordResetHtml({ email, resetUrl: safeResetUrl, lang });
 
   try {
     await resend.emails.send({
-      from: 'GL Capital <noreply@glcapital.com>',
+      from: EMAIL_FROM,
       to: [email],
       subject,
       html,
@@ -106,7 +117,7 @@ export async function POST(req: NextRequest) {
   } catch {
     try {
       await resend.emails.send({
-        from: 'GL Capital <onboarding@resend.dev>',
+        from: EMAIL_FROM,
         to: [email],
         subject,
         html,

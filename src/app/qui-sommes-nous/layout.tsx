@@ -3,13 +3,13 @@ import type { Metadata } from 'next';
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital8049.builtwithrocket.new';
 
 export const metadata: Metadata = {
-  title: 'Qui Sommes-Nous — GL Capital Investment SA',
+  title: 'Qui Sommes-Nous - GL Capital Investment SA',
   description:
     'Découvrez GL Capital Investment SA : notre mission, nos valeurs de conformité, confidentialité et transparence, et notre engagement envers les porteurs de projets institutionnels en Europe et en Afrique.',
   keywords: 'GL Capital équipe, mission financement institutionnel, valeurs conformité, structuration financière',
   alternates: { canonical: `${baseUrl}/qui-sommes-nous` },
   openGraph: {
-    title: 'Qui Sommes-Nous — GL Capital Investment SA',
+    title: 'Qui Sommes-Nous - GL Capital Investment SA',
     description: 'Notre mission, nos valeurs et notre engagement envers les porteurs de projets institutionnels.',
     url: `${baseUrl}/qui-sommes-nous`,
     type: 'website',

@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import AdminLayout from '../components/AdminLayout';
 import { Building2, Plus, Search, Loader2, AlertCircle, X, Edit2, Check, ChevronDown, Globe, Mail, Phone, RefreshCw, BookOpen, Send, Clock, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import { caseFileLabel } from '@/lib/caseFileLabel';
 
 interface Partner {
   id: string;
@@ -104,8 +105,15 @@ export default function AdminPartnersPage() {
 
   const fetchCases = useCallback(async () => {
     try {
-      const { data } = await supabase.from('case_files').select('id, title').order('created_at', { ascending: false });
-      setCases(data || []);
+      const { data } = await supabase
+        .from('case_files')
+        .select('id, ref, project_name')
+        .order('created_at', { ascending: false });
+      const mapped = (data || []).map((c: any) => ({
+        id: c.id,
+        title: caseFileLabel(c),
+      }));
+      setCases(mapped);
     } catch {}
   }, []);
 
@@ -209,7 +217,7 @@ export default function AdminPartnersPage() {
             <Building2 size={20} className="text-gold" />
             <h1 className="font-display text-2xl font-bold text-navy">Répertoire Partenaires</h1>
           </div>
-          <p className="text-slate-500 text-sm">Gestion confidentielle des partenaires — non exposé côté client</p>
+          <p className="text-slate-500 text-sm">Gestion confidentielle des partenaires - non exposé côté client</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => { fetchPartners(); if (activeTab === 'journal') fetchSubmissions(); }} className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50">
@@ -342,8 +350,8 @@ export default function AdminPartnersPage() {
                         <td className="px-4 py-3">
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${statusCfg.bg} ${statusCfg.color}`}>{statusCfg.label}</span>
                         </td>
-                        <td className="px-4 py-3 text-xs text-slate-600">{s.submitted_by_email || '—'}</td>
-                        <td className="px-4 py-3 text-xs text-slate-500 max-w-xs truncate">{s.note || '—'}</td>
+                        <td className="px-4 py-3 text-xs text-slate-600">{s.submitted_by_email || '-'}</td>
+                        <td className="px-4 py-3 text-xs text-slate-500 max-w-xs truncate">{s.note || '-'}</td>
                         <td className="px-4 py-3 text-xs text-slate-400 flex items-center gap-1"><Clock size={10} />{formatDate(s.created_at)}</td>
                       </tr>
                     );

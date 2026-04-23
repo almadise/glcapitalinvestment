@@ -37,8 +37,8 @@ const faqs = [
   {
     q: { fr: 'Quelles juridictions sont acceptées ?', en: 'Which jurisdictions are accepted?' },
     a: {
-      fr: `GL Capital opère principalement avec des dossiers provenant des juridictions suivantes :\n\n• Union Européenne (tous États membres)\n• Royaume-Uni, Suisse, Norvège\n• Amérique du Nord (États-Unis, Canada)\n• Afrique francophone et anglophone (selon évaluation au cas par cas)\n• Moyen-Orient (EAU, Qatar, Arabie Saoudite — sous conditions)\n• Asie du Sud-Est (selon évaluation)\n\nSont généralement exclus : les pays sous sanctions internationales (OFAC, UE, ONU), les juridictions figurant sur les listes noires ou grises du GAFI, ainsi que les territoires présentant un risque de blanchiment ou de financement du terrorisme élevé.\n\nChaque dossier fait l'objet d'une évaluation individuelle du risque juridictionnel. Contactez-nous pour vérifier l'éligibilité de votre pays.`,
-      en: `GL Capital primarily operates with files from the following jurisdictions:\n\n• European Union (all member states)\n• United Kingdom, Switzerland, Norway\n• North America (United States, Canada)\n• French and English-speaking Africa (on a case-by-case basis)\n• Middle East (UAE, Qatar, Saudi Arabia — subject to conditions)\n• Southeast Asia (subject to evaluation)\n\nGenerally excluded are: countries under international sanctions (OFAC, EU, UN), jurisdictions on FATF blacklists or grey lists, and territories presenting high money laundering or terrorist financing risk.\n\nEach file is subject to an individual jurisdictional risk assessment. Contact us to verify your country's eligibility.`,
+      fr: `GL Capital opère principalement avec des dossiers provenant des juridictions suivantes :\n\n• Union Européenne (tous États membres)\n• Royaume-Uni, Suisse, Norvège\n• Amérique du Nord (États-Unis, Canada)\n• Afrique francophone et anglophone (selon évaluation au cas par cas)\n• Moyen-Orient (EAU, Qatar, Arabie Saoudite - sous conditions)\n• Asie du Sud-Est (selon évaluation)\n\nSont généralement exclus : les pays sous sanctions internationales (OFAC, UE, ONU), les juridictions figurant sur les listes noires ou grises du GAFI, ainsi que les territoires présentant un risque de blanchiment ou de financement du terrorisme élevé.\n\nChaque dossier fait l'objet d'une évaluation individuelle du risque juridictionnel. Contactez-nous pour vérifier l'éligibilité de votre pays.`,
+      en: `GL Capital primarily operates with files from the following jurisdictions:\n\n• European Union (all member states)\n• United Kingdom, Switzerland, Norway\n• North America (United States, Canada)\n• French and English-speaking Africa (on a case-by-case basis)\n• Middle East (UAE, Qatar, Saudi Arabia - subject to conditions)\n• Southeast Asia (subject to evaluation)\n\nGenerally excluded are: countries under international sanctions (OFAC, EU, UN), jurisdictions on FATF blacklists or grey lists, and territories presenting high money laundering or terrorist financing risk.\n\nEach file is subject to an individual jurisdictional risk assessment. Contact us to verify your country's eligibility.`,
     },
   },
   {
@@ -93,7 +93,7 @@ export default function FAQPage() {
 
   const t = {
     badge: { fr: 'Questions fréquentes', en: 'Frequently Asked Questions' },
-    title: { fr: 'FAQ — GL Capital', en: 'FAQ — GL Capital' },
+    title: { fr: 'FAQ - GL Capital', en: 'FAQ - GL Capital' },
     subtitle: {
       fr: 'Retrouvez les réponses aux questions les plus fréquemment posées sur nos services, nos processus et nos exigences.',
       en: 'Find answers to the most frequently asked questions about our services, processes, and requirements.',

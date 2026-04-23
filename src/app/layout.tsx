@@ -14,7 +14,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'GL Capital Investment SA — Structuration & Financement de Dossiers',
+    default: 'GL Capital Investment SA - Structuration & Financement de Dossiers',
     template: '%s | GL Capital Investment SA',
   },
   description:
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'GL Capital Investment SA',
-    title: 'GL Capital Investment SA — Structuration & Financement de Dossiers',
+    title: 'GL Capital Investment SA - Structuration & Financement de Dossiers',
     description:
       'GL Capital accompagne la structuration et la présentation de dossiers de financement. Plateforme institutionnelle sécurisée pour entreprises et porteurs de projets.',
     url: 'https://glcapital9393.builtwithrocket.new',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'GL Capital Investment SA — Structuration & Financement de Dossiers',
+    title: 'GL Capital Investment SA - Structuration & Financement de Dossiers',
     description:
       'GL Capital accompagne la structuration et la présentation de dossiers de financement.',
     images: ['/assets/images/gl-capital-financial-district.png'],
@@ -67,9 +67,7 @@ export default function RootLayout({
         </LanguageProvider>
         <CookieBanner />
         <GoogleAnalytics />
-
-        <script type="module" async src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fglcapital7919back.builtwithrocket.new&_be=https%3A%2F%2Fappanalytics.rocket.new&_v=0.1.18" />
-        <script type="module" defer src="https://static.rocket.new/rocket-shot.js?v=0.0.2" /></body>
+      </body>
     </html>
   );
 }

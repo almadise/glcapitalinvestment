@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import AuthScreen from './components/AuthScreen';
 
 export const metadata = {
-  title: 'Connexion — GL Capital Investment SA',
+  title: 'Connexion - GL Capital Investment SA',
   description: 'Accédez à votre espace client sécurisé GL Capital. Soumettez et suivez vos dossiers de financement.',
 };
 

@@ -17,8 +17,8 @@ export default function CaseStudiesSection() {
       regionEn: 'West Africa',
       descFr: 'Projet de ferme solaire SPV. KYC/AML validé. Plan de financement structuré avec composantes dette senior et fonds propres.',
       descEn: 'Solar farm SPV project. KYC/AML validated. Financing plan structured with senior debt and equity components.',
-      statusFr: 'Éligible — Soumis',
-      statusEn: 'Eligible — Submitted',
+      statusFr: 'Éligible - Soumis',
+      statusEn: 'Eligible - Submitted',
     },
     {
       typeFr: 'Conseil SBLC',
@@ -31,8 +31,8 @@ export default function CaseStudiesSection() {
       regionEn: 'Southern Europe',
       descFr: 'Structuration de garantie de performance pour un développement mixte. Cadre SBLC documenté et soumis à la banque émettrice.',
       descEn: 'Performance guarantee structuring for a mixed-use development. SBLC framework documented and submitted to issuing bank.',
-      statusFr: 'Clôturé — Succès',
-      statusEn: 'Closed — Success',
+      statusFr: 'Clôturé - Succès',
+      statusEn: 'Closed - Success',
     },
     {
       typeFr: 'Conseil & Structuration',
@@ -45,8 +45,8 @@ export default function CaseStudiesSection() {
       regionEn: 'East Africa',
       descFr: "Financement d\'usine de transformation. Évaluation de bancabilité complétée. Documentation restructurée pour soumission à un IFD.",
       descEn: "Processing plant financing. Bankability assessment completed. Documentation restructured for submission to a DFI.",
-      statusFr: 'Éligible — En négociation',
-      statusEn: 'Eligible — In Negotiation',
+      statusFr: 'Éligible - En négociation',
+      statusEn: 'Eligible - In Negotiation',
     },
   ];
 
@@ -57,13 +57,13 @@ export default function CaseStudiesSection() {
         <div className="text-center mb-16">
           <p className="text-xs font-mono tracking-widest uppercase mb-4" style={{ color: '#4A5C7A' }}>{t('Cas anonymisés', 'Anonymized Cases')}</p>
           <h2 className="text-4xl font-bold mb-4" style={{ color: '#1E2D4A' }}>
-            {t('Engagements', 'Representative')}{' '}
-            <span className="text-gradient-gold">{t('Représentatifs', 'Engagements')}</span>
+            {t('Dossiers', 'Representative')}{' '}
+            <span className="text-gradient-gold">{t('représentatifs', 'cases')}</span>
           </h2>
           <p className="text-sm max-w-xl mx-auto" style={{ color: '#4A5C7A' }}>
             {t(
-              'Tous les cas sont anonymisés. Le secteur, la fourchette de montant et le type de résultat sont illustratifs de notre périmètre de conseil.',
-              'All cases are anonymized. The sector, amount range and outcome type are illustrative of our advisory scope.'
+              'Tous les dossiers sont anonymisés. Le secteur, la fourchette de montant et le type de résultat illustrent notre périmètre de conseil.',
+              'All cases are anonymized. The sector, amount range, and outcome type illustrate our advisory scope.'
             )}
           </p>
         </div>
@@ -106,8 +106,8 @@ export default function CaseStudiesSection() {
 
         <p className="text-center text-xs mt-6" style={{ color: '#6B7E9A' }}>
           {t(
-            'Cas anonymisés pour des raisons de confidentialité. GL Capital ne garantit pas des résultats similaires pour les engagements futurs.',
-            'Cases anonymized for confidentiality. GL Capital does not guarantee similar results for future engagements.'
+            'Dossiers anonymisés pour des raisons de confidentialité. GL Capital ne garantit pas de résultats similaires sur les missions futures.',
+            'Cases are anonymized for confidentiality. GL Capital does not guarantee similar outcomes for future engagements.'
           )}
         </p>
       </div>

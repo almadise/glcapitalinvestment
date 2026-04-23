@@ -18,7 +18,7 @@ interface PermissionGateProps {
 }
 
 /**
- * PermissionGate — renders children only when the current user holds the required permission(s).
+ * PermissionGate - renders children only when the current user holds the required permission(s).
  *
  * Usage:
  *   <PermissionGate require="case_files:create">

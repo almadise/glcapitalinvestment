@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createClient } from '../../../lib/supabase/server';
 import { checkRateLimit, getClientIp, RATE_LIMITS } from '../../../lib/rateLimit';
+import { escapeHtml } from '@/lib/apiSecurity';
+
+const EMAIL_FROM =
+  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
 
 export async function POST(req: NextRequest) {
   // ── Rate limiting ──────────────────────────────────────────
@@ -54,6 +58,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const safeNomComplet = escapeHtml(nomComplet);
+  const safeSociete = escapeHtml(societe);
+  const safeEmail = escapeHtml(email);
+  const safeTelephone = telephone ? escapeHtml(telephone) : '';
+  const safePays = escapeHtml(pays);
+  const safeMontantProjet = escapeHtml(montantProjet);
+  const safeMessage = escapeHtml(message).replace(/\n/g, '<br/>');
+
   // Save to Supabase
   try {
     const supabase = await createClient();
@@ -75,7 +87,7 @@ export async function POST(req: NextRequest) {
     console.error('[send-contact] Unexpected DB error:', dbErr);
   }
 
-  const to = 'almadise84@yahoo.fr';
+  const to = process.env.CONTACT_EMAIL || 'glcontact@glcapitalinvestment.com';
 
   const submittedAt = new Date().toLocaleString('fr-FR', {
     timeZone: 'Europe/Paris',
@@ -155,7 +167,7 @@ export async function POST(req: NextRequest) {
                           <span style="color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Nom complet</span>
                         </td>
                         <td style="padding:14px 20px;border-bottom:1px solid #f1f5f9;">
-                          <span style="color:#0a1941;font-size:14px;font-weight:600;">${nomComplet}</span>
+                          <span style="color:#0a1941;font-size:14px;font-weight:600;">${safeNomComplet}</span>
                         </td>
                       </tr>
                       <tr>
@@ -163,7 +175,7 @@ export async function POST(req: NextRequest) {
                           <span style="color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Société</span>
                         </td>
                         <td style="padding:14px 20px;border-bottom:1px solid #f1f5f9;">
-                          <span style="color:#0a1941;font-size:14px;font-weight:600;">${societe}</span>
+                          <span style="color:#0a1941;font-size:14px;font-weight:600;">${safeSociete}</span>
                         </td>
                       </tr>
                       <tr>
@@ -171,7 +183,7 @@ export async function POST(req: NextRequest) {
                           <span style="color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Email</span>
                         </td>
                         <td style="padding:14px 20px;border-bottom:1px solid #f1f5f9;">
-                          <a href="mailto:${email}" style="color:#c9a84c;font-size:14px;font-weight:600;text-decoration:none;">${email}</a>
+                          <a href="mailto:${safeEmail}" style="color:#c9a84c;font-size:14px;font-weight:600;text-decoration:none;">${safeEmail}</a>
                         </td>
                       </tr>
                       <tr>
@@ -179,7 +191,7 @@ export async function POST(req: NextRequest) {
                           <span style="color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Téléphone</span>
                         </td>
                         <td style="padding:14px 20px;border-bottom:1px solid #f1f5f9;">
-                          <span style="color:#0a1941;font-size:14px;">${telephone || '<em style="color:#94a3b8;">Non renseigné</em>'}</span>
+                          <span style="color:#0a1941;font-size:14px;">${safeTelephone || '<em style="color:#94a3b8;">Non renseigné</em>'}</span>
                         </td>
                       </tr>
                       <tr>
@@ -187,7 +199,7 @@ export async function POST(req: NextRequest) {
                           <span style="color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Pays</span>
                         </td>
                         <td style="padding:14px 20px;">
-                          <span style="color:#0a1941;font-size:14px;font-weight:600;">${pays}</span>
+                          <span style="color:#0a1941;font-size:14px;font-weight:600;">${safePays}</span>
                         </td>
                       </tr>
                     </table>
@@ -210,7 +222,7 @@ export async function POST(req: NextRequest) {
                           <span style="color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Montant</span>
                         </td>
                         <td style="padding:14px 20px;border-bottom:1px solid #f1f5f9;">
-                          <span style="color:#c9a84c;font-size:15px;font-weight:700;">${montantProjet}</span>
+                          <span style="color:#c9a84c;font-size:15px;font-weight:700;">${safeMontantProjet}</span>
                         </td>
                       </tr>
                       <tr>
@@ -218,7 +230,7 @@ export async function POST(req: NextRequest) {
                           <span style="color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Message</span>
                         </td>
                         <td style="padding:14px 20px;">
-                          <p style="margin:0;color:#334155;font-size:14px;line-height:1.7;">${message.replace(/\n/g, '<br/>')}</p>
+                          <p style="margin:0;color:#334155;font-size:14px;line-height:1.7;">${safeMessage}</p>
                         </td>
                       </tr>
                     </table>
@@ -230,7 +242,7 @@ export async function POST(req: NextRequest) {
               <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
                 <tr>
                   <td align="center">
-                    <a href="mailto:${email}?subject=RE: Dossier GL Capital — ${nomComplet} (${societe})"
+                    <a href="mailto:${safeEmail}?subject=RE: Dossier GL Capital - ${safeNomComplet} (${safeSociete})"
                        style="display:inline-block;background:#c9a84c;color:#0a1941;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:14px 32px;border-radius:8px;text-decoration:none;">
                       Répondre au prospect
                     </a>
@@ -272,19 +284,16 @@ export async function POST(req: NextRequest) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: EMAIL_FROM,
       to,
-      reply_to: email,
-      subject: `Nouveau dossier GL Capital — ${nomComplet} (${societe}) · ${montantProjet}`,
+      replyTo: email,
+      subject: `Nouveau dossier GL Capital - ${nomComplet} (${societe}) · ${montantProjet}`,
       html,
     });
 
     if (error) {
       console.error('[send-contact] Resend API error:', JSON.stringify(error, null, 2));
-      return NextResponse.json(
-        { success: false, error: error.message },
-        { status: 422 }
-      );
+      return NextResponse.json({ success: false, error: error.message }, { status: 422 });
     }
 
     console.log('[send-contact] Email sent successfully. ID:', data?.id);

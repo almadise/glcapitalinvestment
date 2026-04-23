@@ -294,7 +294,7 @@ export default function NotificationsPage() {
               <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             </div>
 
-            {/* Bulk actions — only when items selected */}
+            {/* Bulk actions - only when items selected */}
             {selectedIds.size > 0 && can('notifications:manage_own') && (
               <div className="flex items-center gap-2 ml-auto">
                 <span className="text-xs text-slate-500 font-medium">{selectedIds.size} {lang === 'fr' ? 'sélectionnée(s)' : 'selected'}</span>

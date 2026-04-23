@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { requireInternalApiAccess } from '@/lib/apiSecurity';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+const EMAIL_FROM =
+  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
 
 function buildNotificationHtml(params: {
   recipientName: string;
@@ -31,12 +34,14 @@ function buildNotificationHtml(params: {
     DOCUMENT_REQUEST: { fr: 'Document requis', en: 'Document Request' },
     GENERAL: { fr: 'Notification', en: 'Notification' },
   };
-  const typeLabel = isFr ? (typeLabels[type]?.fr ?? 'Notification') : (typeLabels[type]?.en ?? 'Notification');
+  const typeLabel = isFr
+    ? (typeLabels[type]?.fr ?? 'Notification')
+    : (typeLabels[type]?.en ?? 'Notification');
 
   return `<!DOCTYPE html>
 <html lang="${lang}">
 <head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>${title} — GL Capital</title></head>
+<title>${title} - GL Capital</title></head>
 <body style="margin:0;padding:0;background-color:#f0f4f8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f0f4f8;padding:40px 0;">
     <tr><td align="center">
@@ -54,7 +59,9 @@ function buildNotificationHtml(params: {
           <h2 style="margin:0 0 12px;color:#0a1941;font-size:18px;font-weight:700;">${title}</h2>
           <p style="margin:0 0 28px;color:#475569;font-size:14px;line-height:1.7;">${message}</p>
         </td></tr>
-        ${caseTitle ? `
+        ${
+          caseTitle
+            ? `
         <tr><td style="background:#ffffff;padding:0 40px 28px;">
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr><td style="background:#f8fafc;border:1px solid #e2e8f0;border-left:3px solid ${typeColor};border-radius:0 8px 8px 0;padding:16px 20px;">
@@ -62,13 +69,19 @@ function buildNotificationHtml(params: {
               <p style="margin:4px 0 0;color:#0a1941;font-size:14px;font-weight:600;">${caseTitle}</p>
             </td></tr>
           </table>
-        </td></tr>` : ''}
-        ${actionUrl ? `
+        </td></tr>`
+            : ''
+        }
+        ${
+          actionUrl
+            ? `
         <tr><td style="background:#ffffff;padding:0 40px 36px;text-align:center;">
           <a href="${actionUrl}" style="display:inline-block;background:#c9a84c;color:#0a1941;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:14px 32px;border-radius:8px;text-decoration:none;">
             ${isFr ? 'Voir dans le portail' : 'View in portal'}
           </a>
-        </td></tr>` : ''}
+        </td></tr>`
+            : ''
+        }
         <tr><td style="background:#0a1941;border-radius:0 0 12px 12px;padding:24px 40px;text-align:center;">
           <p style="margin:0 0 6px;color:#c9a84c;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">GL Capital Investment SA</p>
           <p style="margin:0;color:#475569;font-size:11px;">${isFr ? 'Notification automatique du portail.' : 'Automated portal notification.'}</p>
@@ -80,6 +93,9 @@ function buildNotificationHtml(params: {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireInternalApiAccess(req, 'send-notification');
+  if (!guard.ok) return guard.response;
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ success: false, error: 'RESEND_API_KEY missing' }, { status: 500 });
@@ -102,18 +118,35 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Invalid request body' }, { status: 400 });
   }
 
-  const { recipientEmail, recipientName, title, message, type, caseTitle, actionUrl, lang = 'fr' } = body;
+  const {
+    recipientEmail,
+    recipientName,
+    title,
+    message,
+    type,
+    caseTitle,
+    actionUrl,
+    lang = 'fr',
+  } = body;
   if (!recipientEmail || !title || !message) {
     return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
   }
 
   const resend = new Resend(apiKey);
-  const subject = `${title} — GL Capital`;
-  const html = buildNotificationHtml({ recipientName, title, message, type, caseTitle, actionUrl, lang });
+  const subject = `${title} - GL Capital`;
+  const html = buildNotificationHtml({
+    recipientName,
+    title,
+    message,
+    type,
+    caseTitle,
+    actionUrl,
+    lang,
+  });
 
   try {
     await resend.emails.send({
-      from: 'GL Capital <noreply@glcapital.com>',
+      from: EMAIL_FROM,
       to: [recipientEmail],
       subject,
       html,
@@ -122,7 +155,7 @@ export async function POST(req: NextRequest) {
   } catch {
     try {
       await resend.emails.send({
-        from: 'GL Capital <onboarding@resend.dev>',
+        from: EMAIL_FROM,
         to: [recipientEmail],
         subject,
         html,

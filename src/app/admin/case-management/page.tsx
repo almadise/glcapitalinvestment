@@ -8,6 +8,7 @@ import { FolderOpen, RefreshCw, Loader2, AlertCircle, CheckCircle2, Clock, XCirc
 import AdminLayout from '@/app/admin/components/AdminLayout';
 import Icon from '@/components/ui/AppIcon';
 import AdvancedFilters, { FilterState } from '@/components/AdvancedFilters';
+import { caseFileLabel } from '@/lib/caseFileLabel';
 
 type CaseFileStatus = 'RECU' | 'EN_ANALYSE' | 'ELIGIBLE' | 'REJETE' | 'A_COMPLETER';
 
@@ -16,8 +17,10 @@ interface CaseFile {
   user_id: string;
   type: string;
   status: CaseFileStatus;
-  title: string;
+  ref?: string | null;
+  project_name?: string | null;
   description: string | null;
+  project_description?: string | null;
   created_at: string;
   updated_at: string | null;
   client_email?: string;
@@ -206,7 +209,7 @@ function AdminCaseManagementContent() {
             body: JSON.stringify({
               clientEmail: selectedCase.client_email,
               clientName: selectedCase.client_name || selectedCase.client_email,
-              caseTitle: selectedCase.title,
+              caseTitle: caseFileLabel(selectedCase),
               caseId: selectedCase.id,
               newStatus,
               oldStatus,
@@ -259,12 +262,14 @@ function AdminCaseManagementContent() {
 
   // ── Bulk select handlers ──────────────────────────────────────────────────
   const filteredCases = cases.filter((c) => {
+    const q = filters.search.toLowerCase();
     const matchSearch =
       !filters.search ||
-      c.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-      c.type.toLowerCase().includes(filters.search.toLowerCase()) ||
-      c.id.toLowerCase().includes(filters.search.toLowerCase()) ||
-      (c.client_email || '').toLowerCase().includes(filters.search.toLowerCase());
+      caseFileLabel(c).toLowerCase().includes(q) ||
+      (c.ref || '').toLowerCase().includes(q) ||
+      c.type.toLowerCase().includes(q) ||
+      c.id.toLowerCase().includes(q) ||
+      (c.client_email || '').toLowerCase().includes(q);
     const matchStatus = filters.status === 'ALL' || c.status === filters.status;
     const matchDateFrom = !filters.dateFrom || new Date(c.created_at) >= new Date(filters.dateFrom);
     const matchDateTo = !filters.dateTo || new Date(c.created_at) <= new Date(filters.dateTo + 'T23:59:59');
@@ -331,7 +336,7 @@ function AdminCaseManagementContent() {
     const selectedCases = filteredCases.filter((c) => selectedIds.has(c.id));
     const csvHeader = 'ID,Titre,Type,Statut,Client Email,Créé le\n';
     const csvRows = selectedCases.map((c) =>
-      `"${c.id}","${c.title}","${c.type}","${c.status}","${c.client_email || ''}","${new Date(c.created_at).toLocaleDateString('fr-FR')}"`
+      `"${c.id}","${caseFileLabel(c)}","${c.type}","${c.status}","${c.client_email || ''}","${new Date(c.created_at).toLocaleDateString('fr-FR')}"`
     ).join('\n');
     const blob = new Blob(['\uFEFF' + csvHeader + csvRows], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -352,6 +357,76 @@ function AdminCaseManagementContent() {
     });
 
   const t = (fr: string, en: string) => (lang === 'fr' ? fr : en);
+
+  const handleRequestDocuments = async () => {
+    if (!requestDocsCase || !requestDocsMessage.trim()) return;
+    setRequestDocsSending(true);
+    setRequestDocsError(null);
+    setRequestDocsSuccess(false);
+
+    try {
+      const note = requestDocsMessage.trim();
+
+      const { error: updateErr } = await supabase
+        .from('case_files')
+        .update({ status: 'A_COMPLETER' })
+        .eq('id', requestDocsCase.id);
+      if (updateErr) throw updateErr;
+
+      const { error: historyErr } = await supabase.from('case_status_history').insert({
+        case_id: requestDocsCase.id,
+        old_status: requestDocsCase.status,
+        new_status: 'A_COMPLETER',
+        changed_by: user?.id,
+        note,
+      });
+      if (historyErr) throw historyErr;
+
+      const { error: noteErr } = await supabase.from('case_internal_notes').insert({
+        case_id: requestDocsCase.id,
+        author_id: user?.id,
+        content: `[REQUEST_DOCUMENTS] ${note}`,
+      });
+      if (noteErr) throw noteErr;
+
+      if (requestDocsCase.client_email) {
+        await fetch('/api/send-request-documents', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            clientEmail: requestDocsCase.client_email,
+            clientName: requestDocsCase.client_name || requestDocsCase.client_email,
+            caseTitle: caseFileLabel(requestDocsCase),
+            caseId: requestDocsCase.id,
+            adminMessage: note,
+            lang,
+          }),
+        });
+      }
+
+      setCases((prev) =>
+        prev.map((c) =>
+          c.id === requestDocsCase.id ? { ...c, status: 'A_COMPLETER' } : c
+        )
+      );
+
+      if (selectedCase?.id === requestDocsCase.id) {
+        setSelectedCase({ ...selectedCase, status: 'A_COMPLETER' });
+        await fetchCaseDetails(requestDocsCase.id);
+      }
+
+      setRequestDocsSuccess(true);
+      setRequestDocsMessage('');
+      setTimeout(() => {
+        setRequestDocsCase(null);
+        setRequestDocsSuccess(false);
+      }, 1200);
+    } catch (err: any) {
+      setRequestDocsError(err?.message || t('Erreur lors de la demande', 'Error while sending request'));
+    } finally {
+      setRequestDocsSending(false);
+    }
+  };
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -510,7 +585,7 @@ function AdminCaseManagementContent() {
                         </button>
                       </td>
                       <td className="px-4 py-4">
-                        <p className="font-semibold text-navy line-clamp-1">{c.title}</p>
+                        <p className="font-semibold text-navy line-clamp-1">{caseFileLabel(c)}</p>
                         <p className="text-slate-400 text-xs mt-0.5 font-mono">{c.id.slice(0, 8)}…</p>
                       </td>
                       <td className="px-4 py-4">
@@ -575,7 +650,7 @@ function AdminCaseManagementContent() {
           <div className="w-full max-w-xl bg-white shadow-2xl flex flex-col overflow-hidden">
             <div className="flex items-start justify-between p-6 border-b border-slate-100 bg-navy">
               <div>
-                <h2 className="text-white font-display font-bold text-lg line-clamp-2">{selectedCase.title}</h2>
+                <h2 className="text-white font-display font-bold text-lg line-clamp-2">{caseFileLabel(selectedCase)}</h2>
                 <p className="text-slate-400 text-xs mt-1 font-mono">{selectedCase.id}</p>
               </div>
               <button onClick={closeCase} className="text-slate-400 hover:text-white p-1 rounded-lg ml-4 flex-shrink-0">
@@ -766,7 +841,7 @@ function AdminCaseManagementContent() {
                   <FileQuestion size={18} className="text-orange-500" />
                   {t('Demander des documents', 'Request documents')}
                 </h2>
-                <p className="text-slate-500 text-sm mt-1 line-clamp-1">{requestDocsCase.title}</p>
+                <p className="text-slate-500 text-sm mt-1 line-clamp-1">{caseFileLabel(requestDocsCase)}</p>
               </div>
               <button onClick={() => setRequestDocsCase(null)} className="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
                 <X size={18} />

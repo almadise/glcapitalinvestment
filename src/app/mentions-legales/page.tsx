@@ -19,8 +19,8 @@ const content = {
 **GL Capital Investment SA**
 Raison sociale : GL Capital Investment SA
 Numéro d'immatriculation : [Numéro RCS à compléter]
-Adresse du siège social : General Luxury SA — ARNOUVILLE, France
-Email : contact@glcapital.com
+Adresse du siège social : General Luxury SA - ARNOUVILLE, France
+Email : glcontact@glcapitalinvestment.com
 Téléphone : +33 984 046951`,
       },
       {
@@ -49,7 +49,7 @@ Toute reproduction, représentation, modification, publication, adaptation de to
       },
       {
         id: 'disclaimer',
-        title: '5. Avertissement — Disclaimer',
+        title: '5. Avertissement - Disclaimer',
         body: `**GL Capital Investment SA n'est pas une banque**, ne collecte pas de dépôts, ne propose pas d'offre au public de titres financiers et ne fournit pas de conseil en investissement au sens de la réglementation financière applicable.
 
 GL Capital Investment SA est une plateforme de structuration et de présentation de dossiers de financement. Elle agit exclusivement en qualité d'intermédiaire dans la mise en relation entre porteurs de projets et institutions financières dûment agréées.**Toute transaction financière est exécutée exclusivement par des institutions dûment agréées** par les autorités compétentes (AMF, ACPR, ou équivalents étrangers). GL Capital Investment SA ne garantit pas l'obtention d'un financement et ne saurait être tenue responsable des décisions prises par les partenaires financiers.
@@ -58,7 +58,7 @@ Les informations présentées sur ce site ont un caractère purement informatif 
       },
       {
         id: 'donnees',title: '6. Protection des données personnelles',
-        body: `Conformément au Règlement Général sur la Protection des Données (RGPD — Règlement UE 2016/679) et à la loi Informatique et Libertés modifiée, GL Capital Investment SA s'engage à protéger les données personnelles de ses utilisateurs.
+        body: `Conformément au Règlement Général sur la Protection des Données (RGPD - Règlement UE 2016/679) et à la loi Informatique et Libertés modifiée, GL Capital Investment SA s'engage à protéger les données personnelles de ses utilisateurs.
 
 **Base légale du traitement :** Exécution d'un contrat ou de mesures précontractuelles prises à la demande de la personne concernée (article 6.1.b du RGPD).
 
@@ -75,7 +75,7 @@ Conformément au RGPD, vous disposez des droits suivants :
 
 Pour exercer ces droits ou pour toute question relative à la protection de vos données, vous pouvez contacter notre délégué à la protection des données à l'adresse suivante :
 
-**compliance@glcapital.com**`,
+**glcontact@glcapitalinvestment.com**`,
       },
     ],
   },
@@ -91,8 +91,8 @@ Pour exercer ces droits ou pour toute question relative à la protection de vos 
 **GL Capital Investment SA**
 Company name: GL Capital Investment SA
 Registration number: [RCS number to be completed]
-Registered office: General Luxury SA — ARNOUVILLE, France
-Email: contact@glcapital.com
+Registered office: General Luxury SA - ARNOUVILLE, France
+Email: glcontact@glcapitalinvestment.com
 Phone: +33 984 046951`,
       },
       {
@@ -135,7 +135,7 @@ The information presented on this website is purely informational and does not c
       },
       {
         id: 'donnees',title: '6. Personal Data Protection',
-        body: `In accordance with the General Data Protection Regulation (GDPR — EU Regulation 2016/679) and the amended French Data Protection Act, GL Capital Investment SA is committed to protecting the personal data of its users.
+        body: `In accordance with the General Data Protection Regulation (GDPR - EU Regulation 2016/679) and the amended French Data Protection Act, GL Capital Investment SA is committed to protecting the personal data of its users.
 
 **Legal basis for processing:** Performance of a contract or pre-contractual measures taken at the request of the data subject (Article 6.1.b of the GDPR).
 
@@ -152,7 +152,7 @@ In accordance with the GDPR, you have the following rights:
 
 To exercise these rights or for any questions regarding the protection of your data, you may contact our data protection officer at:
 
-**compliance@glcapital.com**`,
+**glcontact@glcapitalinvestment.com**`,
       },
     ],
   },
@@ -272,10 +272,10 @@ export default function MentionsLegalesPage() {
             {activeLang === 'fr' ?'Pour toute question juridique ou relative à la protection des données :' :'For any legal or data protection questions:'}
           </p>
           <a
-            href="mailto:compliance@glcapital.com"
+            href="mailto:glcontact@glcapitalinvestment.com"
             className="inline-block bg-gold text-navy font-bold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity"
           >
-            compliance@glcapital.com
+            glcontact@glcapitalinvestment.com
           </a>
         </div>
       </main>

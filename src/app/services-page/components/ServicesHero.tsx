@@ -19,7 +19,7 @@ export default function ServicesHero() {
           backgroundRepeat: 'no-repeat',
         }}
       />
-      {/* Gradient overlay — keep dark for image hero */}
+      {/* Gradient overlay - keep dark for image hero */}
       <div
         className="absolute inset-0 w-full h-full"
         style={{ background: 'linear-gradient(135deg, rgba(30,45,74,0.90) 0%, rgba(30,45,74,0.82) 50%, rgba(42,61,92,0.75) 100%)' }}
@@ -39,12 +39,12 @@ export default function ServicesHero() {
         <p className="text-xs font-mono tracking-widest uppercase mb-4" style={{ color: '#D4B055' }}>GL Capital Services</p>
         <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
           {t('Solutions de financement', 'Financing Solutions')}<br />
-          <span className="text-gradient-gold">{t('Conçues pour la complexité', 'Built for Complexity')}</span>
+          <span className="text-gradient-gold">{t('Adaptées aux montages complexes', 'Designed for complex deal structures')}</span>
         </h1>
         <p className="text-white/75 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
           {t(
-            'Trois lignes de services spécialisées couvrant la finance de projet, les instruments bancaires et le conseil en structuration. Tous les services opèrent sous des protocoles de conformité stricts.',
-            'Three specialized service lines covering project finance, banking instruments, and advisory structuring. All services operate under strict compliance protocols.'
+            'Trois lignes de services couvrent la finance de projet, les instruments bancaires et le conseil en structuration. Chaque mission suit un cadre de conformité strict.',
+            'Three service lines cover project finance, banking instruments, and structuring advisory. Every engagement follows a strict compliance framework.'
           )}
         </p>
         <div className="flex items-center justify-center gap-4 flex-wrap">

@@ -384,7 +384,7 @@ export default function AdminContactSubmissionsPage() {
                       <td className="px-3 py-3 text-slate-600 whitespace-nowrap">
                         <a href={`mailto:${row.email}`} className="text-gold hover:text-gold/80 transition-colors">{row.email}</a>
                       </td>
-                      <td className="px-3 py-3 text-slate-500 whitespace-nowrap text-xs">{row.telephone || '—'}</td>
+                      <td className="px-3 py-3 text-slate-500 whitespace-nowrap text-xs">{row.telephone || '-'}</td>
                       <td className="px-3 py-3 text-slate-600 whitespace-nowrap">{row.pays}</td>
                       <td className="px-3 py-3 whitespace-nowrap">
                         <span className="inline-flex items-center gap-1 bg-gold/10 border border-gold/20 text-gold text-xs font-semibold px-2 py-0.5 rounded-full">
@@ -451,7 +451,7 @@ export default function AdminContactSubmissionsPage() {
                 <DetailField icon={<Mail size={11} />} label={t.colName} value={selectedRow.nom_complet} />
                 <DetailField icon={<Building2 size={11} />} label={t.colCompany} value={selectedRow.societe} />
                 <DetailField icon={<Mail size={11} />} label={t.colEmail} value={selectedRow.email} link={`mailto:${selectedRow.email}`} />
-                <DetailField icon={<Phone size={11} />} label={t.colPhone} value={selectedRow.telephone || '—'} />
+                <DetailField icon={<Phone size={11} />} label={t.colPhone} value={selectedRow.telephone || '-'} />
                 <DetailField icon={<DollarSign size={11} />} label={t.colAmount} value={selectedRow.montant_projet} highlight />
               </div>
               <div>

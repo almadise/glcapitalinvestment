@@ -44,7 +44,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
           id: `sub-${d.id}`,
           type: 'new_submission',
           title: t('Nouveau dossier soumis', 'New Dossier Submission'),
-          description: `${d.org?.name || 'Unknown'} — ${d.ref}`,
+          description: `${d.org?.name || 'Unknown'} - ${d.ref}`,
           ref: d.ref,
           dossierId: d.id,
           createdAt: d.created_at,
@@ -61,7 +61,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
           id: `flag-${l.id}`,
           type: 'compliance_flag',
           title: l.action === 'COMPLIANCE_BLOCK' ? t('Blocage Compliance', 'Compliance Block Triggered') : t('Alerte Compliance', 'Compliance Flag Raised'),
-          description: l.metadata?.detail || `${l.action} — ${l.target}`,
+          description: l.metadata?.detail || `${l.action} - ${l.target}`,
           ref: l.target,
           createdAt: l.created_at,
           read: false,
@@ -77,7 +77,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
           id: `email-${l.id}`,
           type: 'email_failure',
           title: t('Échec envoi email', 'Email Delivery Failure'),
-          description: l.metadata?.detail || `Email failed — ${l.target}`,
+          description: l.metadata?.detail || `Email failed - ${l.target}`,
           ref: l.target,
           createdAt: l.created_at,
           read: false,
@@ -173,7 +173,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
           original_notif_id: notif.id,
         },
       });
-      toast.success(t(`Alerte acquittée — ${notif.ref}`, `Flag acknowledged — ${notif.ref}`));
+      toast.success(t(`Alerte acquittée - ${notif.ref}`, `Flag acknowledged - ${notif.ref}`));
       fetchNotifications();
     } catch (err: any) {
       toast.error(err.message || t('Erreur lors de l\'acquittement', 'Error acknowledging flag'));
@@ -197,7 +197,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
           severity: 'info',
         },
       });
-      toast.success(t(`Renvoi email déclenché — ${notif.ref}`, `Email retry triggered — ${notif.ref}`));
+      toast.success(t(`Renvoi email déclenché - ${notif.ref}`, `Email retry triggered - ${notif.ref}`));
       fetchNotifications();
     } catch (err: any) {
       toast.error(err.message || t('Erreur lors du renvoi', 'Error retrying email'));
@@ -235,7 +235,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
         user_id: user.id,
         case_id: notif.dossierId,
         type: 'ACTION_REQUIRED',
-        title: t('Rappel — Documents manquants', 'Reminder — Missing documents'),
+        title: t('Rappel - Documents manquants', 'Reminder - Missing documents'),
         message: t(
           `Votre dossier ${notif.ref} nécessite des documents complémentaires. Merci de compléter votre dossier.`,
           `Your dossier ${notif.ref} requires additional documents. Please complete your file.`
@@ -243,7 +243,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
         metadata: { case_ref: notif.ref, triggered_by: user.email },
       });
 
-      toast.success(t(`Rappel envoyé — ${notif.ref}`, `Reminder sent — ${notif.ref}`));
+      toast.success(t(`Rappel envoyé - ${notif.ref}`, `Reminder sent - ${notif.ref}`));
       fetchNotifications();
     } catch (err: any) {
       toast.error(err.message || t('Erreur lors de l\'envoi du rappel', 'Error sending reminder'));
@@ -266,7 +266,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
           severity: 'sensitive',
         },
       });
-      toast.success(t(`Dossier escaladé — ${notif.ref}`, `Case escalated — ${notif.ref}`));
+      toast.success(t(`Dossier escaladé - ${notif.ref}`, `Case escalated - ${notif.ref}`));
       fetchNotifications();
     } catch (err: any) {
       toast.error(err.message || t('Erreur lors de l\'escalade', 'Error escalating case'));
@@ -387,12 +387,12 @@ export default function AdminNotificationHub({ onClose }: Props) {
                         <span className="text-[10px] font-mono text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">{notif.ref}</span>
                       )}
                       <p className="text-[10px] text-gray-300 mt-1.5">
-                        {notif.createdAt ? new Date(notif.createdAt).toLocaleString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—'}
+                        {notif.createdAt ? new Date(notif.createdAt).toLocaleString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-'}
                       </p>
                     </div>
                   </div>
 
-                  {/* Action buttons — wired to Supabase */}
+                  {/* Action buttons - wired to Supabase */}
                   <div className="flex items-center gap-2 mt-3 pl-11">
                     {notif.type === 'new_submission' && notif.dossierId && (
                       <button

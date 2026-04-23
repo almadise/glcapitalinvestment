@@ -1,10 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { requireInternalApiAccess } from '@/lib/apiSecurity';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+const EMAIL_FROM =
+  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
 
 type CaseStatus =
-  | 'RECU' | 'A_COMPLETER' | 'EN_ANALYSE' | 'EN_REVUE_COMPLIANCE' |'ELIGIBLE'| 'SOUMIS_PARTENAIRE' | 'RETOUR_PARTENAIRE' |'EN_NEGOCIATION' | 'CLOTURE' | 'REJETE';
+  | 'RECU'
+  | 'A_COMPLETER'
+  | 'EN_ANALYSE'
+  | 'EN_REVUE_COMPLIANCE'
+  | 'ELIGIBLE'
+  | 'SOUMIS_PARTENAIRE'
+  | 'RETOUR_PARTENAIRE'
+  | 'EN_NEGOCIATION'
+  | 'CLOTURE'
+  | 'REJETE';
 
 const statusLabels: Record<CaseStatus, { fr: string; en: string; color: string }> = {
   RECU: { fr: 'Reçu', en: 'Received', color: '#3b82f6' },
@@ -21,7 +33,13 @@ const statusLabels: Record<CaseStatus, { fr: string; en: string; color: string }
 
 // Statuses that trigger client notification
 const CLIENT_NOTIFY_STATUSES: CaseStatus[] = [
-  'RECU', 'A_COMPLETER', 'EN_REVUE_COMPLIANCE', 'ELIGIBLE', 'SOUMIS_PARTENAIRE', 'REJETE', 'CLOTURE',
+  'RECU',
+  'A_COMPLETER',
+  'EN_REVUE_COMPLIANCE',
+  'ELIGIBLE',
+  'SOUMIS_PARTENAIRE',
+  'REJETE',
+  'CLOTURE',
 ];
 
 function buildClientEmailHtml(params: {
@@ -39,8 +57,8 @@ function buildClientEmailHtml(params: {
   const portalLink = `${SITE_URL}/client-dashboard/case-files`;
 
   const subject = isFr
-    ? `Mise à jour de votre dossier — ${caseTitle}`
-    : `Update on your case file — ${caseTitle}`;
+    ? `Mise à jour de votre dossier - ${caseTitle}`
+    : `Update on your case file - ${caseTitle}`;
 
   const greeting = isFr ? `Bonjour ${clientName},` : `Dear ${clientName},`;
   const intro = isFr
@@ -48,15 +66,19 @@ function buildClientEmailHtml(params: {
     : `We are writing to inform you that the status of your case file <strong>${caseTitle}</strong> has been updated.`;
 
   const statusLabel = isFr ? statusInfo.fr : statusInfo.en;
-  const oldStatusLabel = oldStatus ? (isFr ? statusLabels[oldStatus]?.fr : statusLabels[oldStatus]?.en) : null;
+  const oldStatusLabel = oldStatus
+    ? isFr
+      ? statusLabels[oldStatus]?.fr
+      : statusLabels[oldStatus]?.en
+    : null;
 
   const statusChangeText = oldStatusLabel
-    ? (isFr
-        ? `Statut précédent : <strong>${oldStatusLabel}</strong> → Nouveau statut : <strong style="color:${statusInfo.color}">${statusLabel}</strong>`
-        : `Previous status: <strong>${oldStatusLabel}</strong> → New status: <strong style="color:${statusInfo.color}">${statusLabel}</strong>`)
-    : (isFr
-        ? `Statut actuel : <strong style="color:${statusInfo.color}">${statusLabel}</strong>`
-        : `Current status: <strong style="color:${statusInfo.color}">${statusLabel}</strong>`);
+    ? isFr
+      ? `Statut précédent : <strong>${oldStatusLabel}</strong> → Nouveau statut : <strong style="color:${statusInfo.color}">${statusLabel}</strong>`
+      : `Previous status: <strong>${oldStatusLabel}</strong> → New status: <strong style="color:${statusInfo.color}">${statusLabel}</strong>`
+    : isFr
+      ? `Statut actuel : <strong style="color:${statusInfo.color}">${statusLabel}</strong>`
+      : `Current status: <strong style="color:${statusInfo.color}">${statusLabel}</strong>`;
 
   const noteSection = note
     ? `<tr><td style="padding:0 40px 24px;">
@@ -70,7 +92,8 @@ function buildClientEmailHtml(params: {
             <p style="margin:0;color:#334155;font-size:14px;line-height:1.7;">${note.replace(/\n/g, '<br/>')}</p>
           </td></tr>
         </table>
-      </td></tr>` : '';
+      </td></tr>`
+    : '';
 
   const ctaText = isFr ? 'Accéder à mon portail' : 'Access my portal';
   const footerNote = isFr
@@ -137,15 +160,25 @@ function buildInternalNotificationHtml(params: {
   note: string | null;
   notificationType: 'new_submission' | 'status_change';
 }): string {
-  const { caseTitle, caseId, clientEmail, clientName, newStatus, oldStatus, changedByEmail, note, notificationType } = params;
+  const {
+    caseTitle,
+    caseId,
+    clientEmail,
+    clientName,
+    newStatus,
+    oldStatus,
+    changedByEmail,
+    note,
+    notificationType,
+  } = params;
   const statusInfo = statusLabels[newStatus];
   const oldStatusInfo = oldStatus ? statusLabels[oldStatus] : null;
   const dashboardLink = `${SITE_URL}/admin/case-management`;
 
   const isNewSubmission = notificationType === 'new_submission';
   const subject = isNewSubmission
-    ? `Nouveau dossier soumis — ${caseTitle}`
-    : `Changement de statut — ${caseTitle}`;
+    ? `Nouveau dossier soumis - ${caseTitle}`
+    : `Changement de statut - ${caseTitle}`;
 
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -155,7 +188,7 @@ function buildInternalNotificationHtml(params: {
     <tr><td align="center">
       <table width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;">
         <tr><td style="background:#0a1941;border-radius:10px 10px 0 0;padding:24px 32px;">
-          <h1 style="margin:0;color:#c9a84c;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">GL Capital — Back-Office</h1>
+          <h1 style="margin:0;color:#c9a84c;font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">GL Capital - Back-Office</h1>
           <p style="margin:6px 0 0;color:#94a3b8;font-size:12px;">${isNewSubmission ? '🆕 Nouvelle soumission de dossier' : '🔄 Changement de statut de dossier'}</p>
         </td></tr>
         <tr><td style="background:#c9a84c;height:2px;"></td></tr>
@@ -168,7 +201,7 @@ function buildInternalNotificationHtml(params: {
             </td></tr>
             <tr><td style="padding:14px 18px;border-bottom:1px solid #e2e8f0;">
               <span style="color:#64748b;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Client</span>
-              <p style="margin:3px 0 0;color:#334155;font-size:13px;">${clientName || '—'} &lt;${clientEmail}&gt;</p>
+              <p style="margin:3px 0 0;color:#334155;font-size:13px;">${clientName || '-'} &lt;${clientEmail}&gt;</p>
             </td></tr>
             <tr><td style="padding:14px 18px;border-bottom:1px solid #e2e8f0;">
               <span style="color:#64748b;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Statut</span>
@@ -181,17 +214,21 @@ function buildInternalNotificationHtml(params: {
               <span style="color:#64748b;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Modifié par</span>
               <p style="margin:3px 0 0;color:#334155;font-size:13px;">${changedByEmail}</p>
             </td></tr>
-            ${note ? `<tr><td style="padding:14px 18px;background:#fffbeb;">
+            ${
+              note
+                ? `<tr><td style="padding:14px 18px;background:#fffbeb;">
               <span style="color:#92400e;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Note</span>
               <p style="margin:3px 0 0;color:#78350f;font-size:13px;line-height:1.6;">${note.replace(/\n/g, '<br/>')}</p>
-            </td></tr>` : ''}
+            </td></tr>`
+                : ''
+            }
           </table>
           <div style="margin-top:20px;text-align:center;">
             <a href="${dashboardLink}" style="display:inline-block;background:#0a1941;color:#c9a84c;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:12px 28px;border-radius:8px;text-decoration:none;">Voir dans le back-office</a>
           </div>
         </td></tr>
         <tr><td style="background:#f8fafc;border-radius:0 0 10px 10px;padding:16px 32px;text-align:center;border-top:1px solid #e2e8f0;">
-          <p style="margin:0;color:#94a3b8;font-size:11px;">Notification interne GL Capital — Ne pas répondre à cet email</p>
+          <p style="margin:0;color:#94a3b8;font-size:11px;">Notification interne GL Capital - Ne pas répondre à cet email</p>
         </td></tr>
       </table>
     </td></tr>
@@ -200,6 +237,9 @@ function buildInternalNotificationHtml(params: {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireInternalApiAccess(req, 'send-status-notification');
+  if (!guard.ok) return guard.response;
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ success: false, error: 'RESEND_API_KEY missing' }, { status: 500 });
@@ -226,9 +266,17 @@ export async function POST(req: NextRequest) {
   }
 
   const {
-    clientEmail, clientName, caseTitle, caseId, newStatus, oldStatus,
-    note = null, lang = 'fr', changedByEmail = 'système',
-    internalRecipients = [], notificationType = 'status_change',
+    clientEmail,
+    clientName,
+    caseTitle,
+    caseId,
+    newStatus,
+    oldStatus,
+    note = null,
+    lang = 'fr',
+    changedByEmail = 'système',
+    internalRecipients = [],
+    notificationType = 'status_change',
   } = body;
 
   if (!clientEmail || !clientName || !caseTitle || !caseId || !newStatus) {
@@ -240,17 +288,25 @@ export async function POST(req: NextRequest) {
   const errors: string[] = [];
   const sent: string[] = [];
 
-  // 1. Client notification — only for relevant statuses
+  // 1. Client notification - only for relevant statuses
   if (CLIENT_NOTIFY_STATUSES.includes(newStatus)) {
     const clientSubject = isFr
-      ? `Mise à jour de votre dossier — ${caseTitle}`
-      : `Update on your case file — ${caseTitle}`;
+      ? `Mise à jour de votre dossier - ${caseTitle}`
+      : `Update on your case file - ${caseTitle}`;
     try {
       const { error } = await resend.emails.send({
-        from: 'GL Capital <noreply@glcapital.com>',
+        from: EMAIL_FROM,
         to: clientEmail,
         subject: clientSubject,
-        html: buildClientEmailHtml({ clientName, caseTitle, caseId, newStatus, oldStatus, note, lang }),
+        html: buildClientEmailHtml({
+          clientName,
+          caseTitle,
+          caseId,
+          newStatus,
+          oldStatus,
+          note,
+          lang,
+        }),
       });
       if (error) errors.push(`Client: ${error.message}`);
       else sent.push('client');
@@ -259,19 +315,27 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // 2. Internal notifications (analysts/admins) — always send if recipients provided
+  // 2. Internal notifications (analysts/admins) - always send if recipients provided
   if (internalRecipients.length > 0) {
-    const internalSubject = notificationType === 'new_submission'
-      ? `[GL Capital] Nouveau dossier soumis — ${caseTitle}`
-      : `[GL Capital] Statut mis à jour — ${caseTitle} → ${statusLabels[newStatus]?.fr}`;
+    const internalSubject =
+      notificationType === 'new_submission'
+        ? `[GL Capital] Nouveau dossier soumis - ${caseTitle}`
+        : `[GL Capital] Statut mis à jour - ${caseTitle} → ${statusLabels[newStatus]?.fr}`;
     try {
       const { error } = await resend.emails.send({
-        from: 'GL Capital Back-Office <onboarding@resend.dev>',
+        from: EMAIL_FROM,
         to: internalRecipients,
         subject: internalSubject,
         html: buildInternalNotificationHtml({
-          caseTitle, caseId, clientEmail, clientName, newStatus, oldStatus,
-          changedByEmail, note, notificationType,
+          caseTitle,
+          caseId,
+          clientEmail,
+          clientName,
+          newStatus,
+          oldStatus,
+          changedByEmail,
+          note,
+          notificationType,
         }),
       });
       if (error) errors.push(`Internal: ${error.message}`);

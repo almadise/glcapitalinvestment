@@ -489,7 +489,7 @@ export default function BackOfficeUsersPage() {
                               <span className="text-white text-[10px] font-bold">{initials(u.full_name)}</span>
                             </div>
                             <div className="min-w-0">
-                              <p className="text-sm font-semibold text-slate-800 truncate">{u.full_name || '—'}</p>
+                              <p className="text-sm font-semibold text-slate-800 truncate">{u.full_name || '-'}</p>
                               <div className="flex items-center gap-1.5 mt-0.5">
                                 <Mail size={10} className="text-slate-400 flex-shrink-0" />
                                 <p className="text-xs text-slate-400 truncate">{u.email}</p>
@@ -500,7 +500,7 @@ export default function BackOfficeUsersPage() {
                         <td className="px-4 py-3.5 hidden md:table-cell">
                           <div className="flex items-center gap-1.5">
                             {u.organization && <Building2 size={11} className="text-slate-400 flex-shrink-0" />}
-                            <span className="text-sm text-slate-600 truncate max-w-[140px]">{u.organization || '—'}</span>
+                            <span className="text-sm text-slate-600 truncate max-w-[140px]">{u.organization || '-'}</span>
                           </div>
                           {u.country && (
                             <div className="flex items-center gap-1 mt-0.5">

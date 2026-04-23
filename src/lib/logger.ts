@@ -23,7 +23,7 @@ async function logToSupabase(payload: LogPayload) {
       metadata: payload.metadata || null,
     });
   } catch {
-    // Silently fail — never throw from logger
+    // Silently fail - never throw from logger
   }
 }
 

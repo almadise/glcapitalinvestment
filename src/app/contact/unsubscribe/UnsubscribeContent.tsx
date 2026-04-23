@@ -108,7 +108,7 @@ export default function UnsubscribeContent() {
 
             <p className="text-slate-400 text-xs mt-4">
               Vous pouvez toujours nous contacter directement à{' '}
-              <a href="mailto:contact@glcapital.com" className="text-gold hover:underline">contact@glcapital.com</a>
+              <a href="mailto:glcontact@glcapitalinvestment.com" className="text-gold hover:underline">glcontact@glcapitalinvestment.com</a>
             </p>
           </>
         )}

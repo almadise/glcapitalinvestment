@@ -254,7 +254,7 @@ export default function ContactSuccessPage() {
 
         {/* Footer note */}
         <p className="text-center text-slate-600 text-xs mt-12">
-          GL Capital Investment SA — {lang === 'fr' ? 'Confidentiel' : 'Confidential'}
+          GL Capital Investment SA - {lang === 'fr' ? 'Confidentiel' : 'Confidential'}
         </p>
       </div>
     </div>

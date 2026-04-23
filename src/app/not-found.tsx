@@ -119,8 +119,8 @@ export default function NotFound() {
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 px-4 py-4 text-center">
         <p className="text-xs text-slate-400">
-          © {new Date()?.getFullYear()} GL Capital Investment SA —{' '}
-          <a href="mailto:contact@glcapital.com" className="hover:text-navy transition-colors">contact@glcapital.com</a>
+          © {new Date()?.getFullYear()} GL Capital Investment SA -{' '}
+          <a href="mailto:glcontact@glcapitalinvestment.com" className="hover:text-navy transition-colors">glcontact@glcapitalinvestment.com</a>
         </p>
       </footer>
     </div>

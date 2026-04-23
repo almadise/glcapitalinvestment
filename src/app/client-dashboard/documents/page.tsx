@@ -204,7 +204,7 @@ function DocumentsContent() {
                 {lang === 'fr' ? 'Glissez un fichier ici ou cliquez pour parcourir' : 'Drag a file here or click to browse'}
               </p>
               <p className="text-slate-400 text-xs mt-1">
-                {lang === 'fr' ? 'PDF, DOCX, XLSX — max 10 Mo' : 'PDF, DOCX, XLSX — max 10MB'}
+                {lang === 'fr' ? 'PDF, DOCX, XLSX - max 10 Mo' : 'PDF, DOCX, XLSX - max 10MB'}
               </p>
             </div>
           </div>

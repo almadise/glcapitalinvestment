@@ -13,13 +13,13 @@ import HomeFooter from '../home-page/components/HomeFooter';
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital8049.builtwithrocket.new';
 
 export const metadata: Metadata = {
-  title: 'Services — Financement de Projets, Instruments Bancaires & Conseil',
+  title: 'Services - Financement de Projets, Instruments Bancaires & Conseil',
   description:
     'Découvrez les services de GL Capital : structuration de dossiers de financement de projets, instruments bancaires (SBLC/BG) et conseil en structuration financière pour entreprises et investisseurs institutionnels.',
   keywords: 'financement projet, instruments bancaires, SBLC, BG, conseil structuration, KYC, AML, financement institutionnel',
   alternates: { canonical: `${baseUrl}/services-page` },
   openGraph: {
-    title: 'Services GL Capital — Financement & Instruments Bancaires',
+    title: 'Services GL Capital - Financement & Instruments Bancaires',
     description: 'Structuration de dossiers, instruments bancaires SBLC/BG, et conseil financier institutionnel.',
     url: `${baseUrl}/services-page`,
     type: 'website',

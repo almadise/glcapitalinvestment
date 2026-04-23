@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { requireInternalApiAccess } from '@/lib/apiSecurity';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+const EMAIL_FROM =
+  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
 
 function buildAuditFlagHtml(params: {
   caseTitle: string;
@@ -27,14 +30,14 @@ function buildAuditFlagHtml(params: {
 
   return `<!DOCTYPE html>
 <html lang="fr">
-<head><meta charset="UTF-8"/><title>${icon} Audit Flag — ${caseTitle}</title></head>
+<head><meta charset="UTF-8"/><title>${icon} Audit Flag - ${caseTitle}</title></head>
 <body style="margin:0;padding:0;background:#f0f4f8;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8;padding:32px 0;">
     <tr><td align="center">
       <table width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;">
         <tr><td style="background:${headerBg};border-radius:10px 10px 0 0;padding:24px 32px;">
-          <h1 style="margin:0;color:${headerTextColor};font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">GL Capital — Journal Audit</h1>
-          <p style="margin:6px 0 0;color:${isCritical ? '#fecaca' : '#94a3b8'};font-size:12px;">${icon} Entrée audit ${isCritical ? 'critique' : 'sensible'} — Action requise</p>
+          <h1 style="margin:0;color:${headerTextColor};font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">GL Capital - Journal Audit</h1>
+          <p style="margin:6px 0 0;color:${isCritical ? '#fecaca' : '#94a3b8'};font-size:12px;">${icon} Entrée audit ${isCritical ? 'critique' : 'sensible'} - Action requise</p>
         </td></tr>
         <tr><td style="background:${accentColor};height:2px;"></td></tr>
         <tr><td style="background:#ffffff;padding:28px 32px;">
@@ -66,7 +69,7 @@ function buildAuditFlagHtml(params: {
           </div>
         </td></tr>
         <tr><td style="background:#f8fafc;border-radius:0 0 10px 10px;padding:16px 32px;text-align:center;border-top:1px solid #e2e8f0;">
-          <p style="margin:0;color:#94a3b8;font-size:11px;">Alerte audit GL Capital — Équipe Conformité &amp; Administration</p>
+          <p style="margin:0;color:#94a3b8;font-size:11px;">Alerte audit GL Capital - Équipe Conformité &amp; Administration</p>
         </td></tr>
       </table>
     </td></tr>
@@ -75,6 +78,9 @@ function buildAuditFlagHtml(params: {
 }
 
 export async function POST(req: NextRequest) {
+  const guard = await requireInternalApiAccess(req, 'send-audit-flag-notification');
+  if (!guard.ok) return guard.response;
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ success: false, error: 'RESEND_API_KEY missing' }, { status: 500 });
@@ -99,7 +105,13 @@ export async function POST(req: NextRequest) {
   }
 
   const {
-    caseTitle, caseRef, caseId, action, detail, actorEmail, severity,
+    caseTitle,
+    caseRef,
+    caseId,
+    action,
+    detail,
+    actorEmail,
+    severity,
     timestamp = new Date().toISOString(),
     internalRecipients = [],
   } = body;
@@ -115,15 +127,24 @@ export async function POST(req: NextRequest) {
   }
 
   const resend = new Resend(apiKey);
-  const contactEmail = process.env.CONTACT_EMAIL || 'noreply@glcapital.com';
+  const contactEmail = process.env.CONTACT_EMAIL || 'glcontact@glcapitalinvestment.com';
   const allRecipients = Array.from(new Set([contactEmail, ...internalRecipients].filter(Boolean)));
 
   const html = buildAuditFlagHtml({
-    caseTitle, caseRef: caseRef || caseId, caseId, action, detail, actorEmail, severity,
-    timestamp: new Date(timestamp).toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'medium' }),
+    caseTitle,
+    caseRef: caseRef || caseId,
+    caseId,
+    action,
+    detail,
+    actorEmail,
+    severity,
+    timestamp: new Date(timestamp).toLocaleString('fr-FR', {
+      dateStyle: 'full',
+      timeStyle: 'medium',
+    }),
   });
   const icon = severity === 'critical' ? '🚨' : '⚠️';
-  const subject = `${icon} Audit ${severity} — ${action} sur ${caseTitle}`;
+  const subject = `${icon} Audit ${severity} - ${action} sur ${caseTitle}`;
 
   const errors: string[] = [];
   const sent: string[] = [];
@@ -131,7 +152,7 @@ export async function POST(req: NextRequest) {
   for (const recipient of allRecipients) {
     try {
       const { error } = await resend.emails.send({
-        from: 'GL Capital <onboarding@resend.dev>',
+        from: EMAIL_FROM,
         to: recipient,
         subject,
         html,

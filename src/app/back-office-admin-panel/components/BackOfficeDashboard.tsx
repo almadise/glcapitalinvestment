@@ -7,10 +7,12 @@ import { createClient } from '@/lib/supabase/client';
 import StatusBadge, { DossierStatus } from '@/components/ui/StatusBadge';
 import { FolderOpen, Shield, Clock, AlertTriangle, CheckCircle2, TrendingUp, Search, Filter, Download, Eye, MessageSquare, FileText, ChevronDown, RefreshCw, X, Edit3, Lock, Network, ClipboardList, File, Bell, History, ChevronRight,  } from 'lucide-react';
 import AdminNotificationHub from './AdminNotificationHub';
+import { caseFileLabel } from '@/lib/caseFileLabel';
 
 interface CaseFile {
   id: string;
   ref: string;
+  projectName: string;
   org: string;
   country: string;
   type: string;
@@ -145,17 +147,18 @@ export default function BackOfficeDashboard() {
         const mapped: CaseFile[] = (data || []).map((d: any) => ({
           id: d.id,
           ref: d.ref,
+          projectName: caseFileLabel(d),
           org: d.org?.name || 'Unknown',
-          country: d.country || '—',
+          country: d.country || '-',
           type: d.type || 'Project Finance',
-          amount: d.amount || '—',
+          amount: d.amount || '-',
           status: d.status as DossierStatus,
           statusReason: d.status_reason || '',
           completeness: d.completeness || 0,
           analyst: d.analyst?.full_name || 'Non assigné',
           complianceOfficer: d.compliance?.full_name || 'Non assigné',
-          submittedAt: d.created_at ? new Date(d.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—',
-          lastUpdate: d.updated_at ? new Date(d.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—',
+          submittedAt: d.created_at ? new Date(d.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '-',
+          lastUpdate: d.updated_at ? new Date(d.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '-',
           riskTags: d.risk_tags || [],
           unreadMessages: d.unread_messages || 0,
           complianceScore: d.compliance_score || 0,
@@ -197,11 +200,11 @@ export default function BackOfficeDashboard() {
       if (!error && data) {
         const mapped = data.map((l: any) => ({
           id: l.id,
-          actor_email: l.metadata?.actor_email || l.actor_id?.slice(0, 8) || '—',
+          actor_email: l.metadata?.actor_email || l.actor_id?.slice(0, 8) || '-',
           action: l.action,
-          target_ref: l.target || '—',
+          target_ref: l.target || '-',
           detail: l.metadata?.detail || '',
-          ip_address: l.ip || '—',
+          ip_address: l.ip || '-',
           severity: l.metadata?.severity || 'info',
           created_at: l.created_at,
         }));
@@ -242,7 +245,7 @@ export default function BackOfficeDashboard() {
         fetchAuditLogs();
         const log = payload.new as any;
         if (log.metadata?.severity === 'critical') {
-          toast.error(`Compliance BLOCK — ${log.target}: ${log.metadata?.detail || ''}`, { duration: 8000 });
+          toast.error(`Compliance BLOCK - ${log.target}: ${log.metadata?.detail || ''}`, { duration: 8000 });
           setNotifCount((c) => c + 1);
         }
       })
@@ -265,12 +268,12 @@ export default function BackOfficeDashboard() {
   });
 
   const kpiCards = [
-    { id: 'kpi-total', label: t('Dossiers actifs', 'Active files'), value: loading ? '—' : String(kpi.totalActive), sub: t('Hors clôturés/rejetés', 'Excl. closed/rejected'), icon: FolderOpen, color: 'bg-white border-gray-200', valueColor: 'text-navy-900' },
-    { id: 'kpi-compliance', label: t('File compliance', 'Compliance queue'), value: loading ? '—' : String(kpi.complianceQueue), sub: t('En attente KYC/AML', 'Pending KYC/AML'), icon: Shield, color: 'bg-purple-50 border-purple-200', valueColor: 'text-purple-700' },
-    { id: 'kpi-alerts', label: t('Alertes risque', 'Risk alerts'), value: loading ? '—' : String(kpi.riskAlerts), sub: t('Flags PEP/sanctions', 'PEP/sanctions flags'), icon: AlertTriangle, color: 'bg-red-50 border-red-200', valueColor: 'text-red-600' },
-    { id: 'kpi-eligible', label: t('Éligibles', 'Eligible'), value: loading ? '—' : String(kpi.eligible), sub: t('Prêts pour soumission', 'Ready for submission'), icon: CheckCircle2, color: 'bg-emerald-50 border-emerald-200', valueColor: 'text-emerald-700' },
-    { id: 'kpi-total-all', label: t('Total dossiers', 'Total files'), value: loading ? '—' : String(kpi.totalCases), sub: t('Tous statuts confondus', 'All statuses'), icon: TrendingUp, color: 'bg-blue-50 border-blue-200', valueColor: 'text-blue-700' },
-    { id: 'kpi-rejected', label: t('Rejetés ce mois', 'Rejected this month'), value: loading ? '—' : String(kpi.rejectedThisMonth), sub: t('Motif requis', 'Reason required'), icon: Clock, color: 'bg-amber-50 border-amber-200', valueColor: 'text-amber-700' },
+    { id: 'kpi-total', label: t('Dossiers actifs', 'Active files'), value: loading ? '-' : String(kpi.totalActive), sub: t('Hors clôturés/rejetés', 'Excl. closed/rejected'), icon: FolderOpen, color: 'bg-white border-gray-200', valueColor: 'text-navy-900' },
+    { id: 'kpi-compliance', label: t('File compliance', 'Compliance queue'), value: loading ? '-' : String(kpi.complianceQueue), sub: t('En attente KYC/AML', 'Pending KYC/AML'), icon: Shield, color: 'bg-purple-50 border-purple-200', valueColor: 'text-purple-700' },
+    { id: 'kpi-alerts', label: t('Alertes risque', 'Risk alerts'), value: loading ? '-' : String(kpi.riskAlerts), sub: t('Flags PEP/sanctions', 'PEP/sanctions flags'), icon: AlertTriangle, color: 'bg-red-50 border-red-200', valueColor: 'text-red-600' },
+    { id: 'kpi-eligible', label: t('Éligibles', 'Eligible'), value: loading ? '-' : String(kpi.eligible), sub: t('Prêts pour soumission', 'Ready for submission'), icon: CheckCircle2, color: 'bg-emerald-50 border-emerald-200', valueColor: 'text-emerald-700' },
+    { id: 'kpi-total-all', label: t('Total dossiers', 'Total files'), value: loading ? '-' : String(kpi.totalCases), sub: t('Tous statuts confondus', 'All statuses'), icon: TrendingUp, color: 'bg-blue-50 border-blue-200', valueColor: 'text-blue-700' },
+    { id: 'kpi-rejected', label: t('Rejetés ce mois', 'Rejected this month'), value: loading ? '-' : String(kpi.rejectedThisMonth), sub: t('Motif requis', 'Reason required'), icon: Clock, color: 'bg-amber-50 border-amber-200', valueColor: 'text-amber-700' },
   ];
 
   const handleStatusChange = async (caseId: string, newStatus: DossierStatus) => {
@@ -325,7 +328,7 @@ export default function BackOfficeDashboard() {
         ip: null,
         metadata: {
           actor_email: user?.email,
-          detail: `${caseItem.status} → ${newStatus}${note ? ` — ${note}` : ''}`,
+          detail: `${caseItem.status} → ${newStatus}${note ? ` - ${note}` : ''}`,
           severity: auditSeverity,
         },
       });
@@ -359,7 +362,7 @@ export default function BackOfficeDashboard() {
             caseRef: caseItem.ref,
             caseId: caseItem.id,
             action: 'STATUS_CHANGE',
-            detail: `${caseItem.status} → ${newStatus}${note ? ` — ${note}` : ''}`,
+            detail: `${caseItem.status} → ${newStatus}${note ? ` - ${note}` : ''}`,
             actorEmail: user?.email || 'système',
             severity: auditSeverity,
             timestamp: new Date().toISOString(),
@@ -398,7 +401,7 @@ export default function BackOfficeDashboard() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          caseTitle: selectedCase.org || selectedCase.ref,
+          caseTitle: caseFileLabel(selectedCase),
           caseRef: selectedCase.ref,
           caseId: selectedCase.id,
           authorEmail: user.email || 'système',
@@ -408,7 +411,7 @@ export default function BackOfficeDashboard() {
         }),
       }).catch(() => {});
 
-      toast.success('Note interne ajoutée — non visible par le client');
+      toast.success('Note interne ajoutée - non visible par le client');
       setInternalNote('');
       fetchAuditLogs();
     } catch (err: any) {
@@ -505,7 +508,7 @@ export default function BackOfficeDashboard() {
       {/* Header */}
       <div className="flex items-start justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-navy-900">{t('Back Office — Panneau Admin', 'Back Office — Admin Panel')}</h1>
+          <h1 className="text-2xl font-bold text-navy-900">{t('Back Office - Panneau Admin', 'Back Office - Admin Panel')}</h1>
           <p className="text-gray-500 text-sm mt-1 flex items-center gap-2">
             <button onClick={() => { fetchCases(); fetchAuditLogs(); }} className="flex items-center gap-1 text-gray-400 hover:text-navy-700 transition-colors">
               <RefreshCw size={11} />
@@ -526,7 +529,7 @@ export default function BackOfficeDashboard() {
         </div>
       </div>
 
-      {/* KPI cards — real data from case_files */}
+      {/* KPI cards - real data from case_files */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6 gap-4 mb-8">
         {kpiCards.map((card) => (
           <div key={card.id} className={`border rounded-2xl p-5 shadow-card ${card.color}`}>
@@ -547,7 +550,7 @@ export default function BackOfficeDashboard() {
         {(['dossiers', 'audit', 'partners', 'notifications'] as const).map((tab) => (
           <button key={`bo-tab-${tab}`} onClick={() => { setActiveMainTab(tab); if (tab === 'notifications') setNotifCount(0); }}
             className={`px-5 py-2 text-sm font-medium rounded-lg capitalize transition-all duration-200 relative ${activeMainTab === tab ? 'bg-white text-navy-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-            {tab === 'dossiers' ? t('File dossiers', 'Case files') : tab === 'audit' ? t('Journal audit', 'Audit log') : tab === 'partners' ? t('Partenaires', 'Partners') : (
+            {tab === 'dossiers' ? t('Dossiers', 'Case files') : tab === 'audit' ? t('Journal audit', 'Audit log') : tab === 'partners' ? t('Partenaires', 'Partners') : (
               <span className="flex items-center gap-1.5">
                 <Bell size={13} />
                 {t('Notifications', 'Notifications')}
@@ -612,9 +615,14 @@ export default function BackOfficeDashboard() {
                       <tr key={c.id} className={`hover:bg-gray-50 transition-colors cursor-pointer ${selectedCase?.id === c.id ? 'bg-gold-50 border-l-2 border-l-gold-500' : ''}`}
                         onClick={() => handleSelectCase(selectedCase?.id === c.id ? null : c)}>
                         <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-xs font-semibold text-navy-700">{c.ref}</span>
-                            {c.unreadMessages > 0 && <span className="w-4 h-4 rounded-full bg-blue-500 text-white text-[9px] font-bold flex items-center justify-center">{c.unreadMessages}</span>}
+                          <div className="flex flex-col gap-0.5 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-xs font-semibold text-navy-700">{c.ref}</span>
+                              {c.unreadMessages > 0 && <span className="w-4 h-4 rounded-full bg-blue-500 text-white text-[9px] font-bold flex items-center justify-center">{c.unreadMessages}</span>}
+                            </div>
+                            {c.projectName && c.projectName !== c.ref && (
+                              <span className="text-[10px] text-gray-500 truncate" title={c.projectName}>{c.projectName}</span>
+                            )}
                           </div>
                         </td>
                         <td className="px-4 py-3"><p className="text-navy-900 font-medium text-xs">{c.org}</p><p className="text-gray-400 text-[10px]">{c.country}</p></td>
@@ -687,6 +695,7 @@ export default function BackOfficeDashboard() {
               <div className="px-5 py-4 border-b border-gray-100 flex items-start justify-between bg-navy-900">
                 <div>
                   <span className="font-mono text-xs text-gold-400">{selectedCase.ref}</span>
+                  <p className="text-white/90 text-xs mt-0.5 leading-tight truncate" title={selectedCase.projectName}>{selectedCase.projectName}</p>
                   <p className="text-white font-semibold text-sm mt-0.5 leading-tight">{selectedCase.org}</p>
                   <div className="mt-2"><StatusBadge status={selectedCase.status} size="sm" /></div>
                 </div>
@@ -754,7 +763,7 @@ export default function BackOfficeDashboard() {
                 {detailTab === 'timeline' && (
                   <div className="p-5">
                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-1.5">
-                      <History size={12} />Historique des statuts — {selectedCase.ref}
+                      <History size={12} />Historique des statuts - {selectedCase.ref}
                     </p>
                     {statusHistory.length === 0 ? (
                       <div className="text-center py-8">
@@ -782,7 +791,7 @@ export default function BackOfficeDashboard() {
                                 </div>
                                 {entry.note && <p className="text-xs text-gray-600 mt-1 italic">{entry.note}</p>}
                                 <div className="flex items-center gap-2 mt-1.5 text-[10px] text-gray-400">
-                                  <span>{entry.changed_by_email || '—'}</span>
+                                  <span>{entry.changed_by_email || '-'}</span>
                                   <span>·</span>
                                   <span>{new Date(entry.created_at).toLocaleString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                                 </div>
@@ -823,8 +832,8 @@ export default function BackOfficeDashboard() {
                     </div>
                     {isComplianceOrAdmin && (
                       <div className="pt-2 space-y-2">
-                        <button onClick={() => handleStatusChange(selectedCase.id, 'ELIGIBLE')} className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-colors active:scale-95">Approuver KYC/AML — Marquer Éligible</button>
-                        <button onClick={() => handleStatusChange(selectedCase.id, 'REJETE')} className="w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold rounded-xl border border-red-200 transition-colors active:scale-95">Rejeter — Non conforme</button>
+                        <button onClick={() => handleStatusChange(selectedCase.id, 'ELIGIBLE')} className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-colors active:scale-95">Approuver KYC/AML - Marquer Éligible</button>
+                        <button onClick={() => handleStatusChange(selectedCase.id, 'REJETE')} className="w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold rounded-xl border border-red-200 transition-colors active:scale-95">Rejeter - Non conforme</button>
                       </div>
                     )}
                   </div>
@@ -884,7 +893,7 @@ export default function BackOfficeDashboard() {
                   <div className="p-5 space-y-4">
                     <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-2">
                       <Lock size={12} className="text-amber-600" />
-                      <p className="text-amber-700 text-[10px] font-medium">Notes internes — NON visibles par le client</p>
+                      <p className="text-amber-700 text-[10px] font-medium">Notes internes - NON visibles par le client</p>
                     </div>
                     <div className="space-y-3">
                       {auditLogs.filter((l) => l.target_ref === selectedCase.ref && l.action === 'NOTE_ADDED').slice(0, 5).map((log) => (
@@ -902,7 +911,7 @@ export default function BackOfficeDashboard() {
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-gray-700 mb-2">Ajouter une note interne</label>
-                      <textarea value={internalNote} onChange={(e) => setInternalNote(e.target.value)} rows={3} placeholder="Note interne — non visible par le client..." className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-navy-400 transition-colors resize-none" />
+                      <textarea value={internalNote} onChange={(e) => setInternalNote(e.target.value)} rows={3} placeholder="Note interne - non visible par le client..." className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-navy-400 transition-colors resize-none" />
                       <button onClick={handleAddNote} disabled={!internalNote.trim()} className="mt-2 w-full py-2.5 bg-navy-900 hover:bg-navy-700 disabled:opacity-40 text-white text-xs font-semibold rounded-xl transition-all duration-200 active:scale-95">Ajouter la note</button>
                     </div>
                   </div>
@@ -910,7 +919,7 @@ export default function BackOfficeDashboard() {
 
                 {detailTab === 'audit' && (
                   <div className="p-5">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Journal audit — {selectedCase.ref}</p>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Journal audit - {selectedCase.ref}</p>
                     <div className="space-y-2">
                       {auditLogs.filter((log) => log.target_ref === selectedCase.ref).map((log) => (
                         <div key={log.id} className={`p-3 rounded-xl border text-xs ${log.severity === 'critical' ? 'bg-red-50 border-red-200' : log.severity === 'sensitive' ? 'bg-amber-50 border-amber-200' : 'bg-gray-50 border-gray-200'}`}>
@@ -989,7 +998,7 @@ export default function BackOfficeDashboard() {
           <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-3">
             <Lock size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-amber-800 font-semibold text-sm mb-1">{t('Confidentialité Partenaires — NCNDA Actif', 'Partner Confidentiality — Active NCNDA')}</p>
+              <p className="text-amber-800 font-semibold text-sm mb-1">{t('Confidentialité Partenaires - NCNDA Actif', 'Partner Confidentiality - Active NCNDA')}</p>
               <p className="text-amber-700 text-xs leading-relaxed">{t('Toutes les informations partenaires sont protégées par des accords NCNDA. Les noms, contacts et critères ne sont JAMAIS divulgués aux clients.', 'All partner information is protected by NCNDA agreements. Names, contacts and criteria are NEVER disclosed to clients.')}</p>
             </div>
           </div>

@@ -6,6 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import AdminLayout from '../components/AdminLayout';
 import { Building2, Search, Loader2, X, ChevronDown, Globe, RefreshCw, BookOpen, Send, Clock, FileText, Filter, CheckCircle2, XCircle, AlertTriangle, MapPin, Users, ArrowRight, Eye,  } from 'lucide-react';
 import { toast } from 'sonner';
+import { caseFileLabel } from '@/lib/caseFileLabel';
 
 interface Partner {
   id: string;
@@ -22,7 +23,7 @@ interface Partner {
 interface CaseFile {
   id: string;
   ref: string;
-  title: string | null;
+  project_name: string | null;
   type: string;
   status: string;
   country: string;
@@ -185,10 +186,26 @@ export default function PartnerAssignmentsPage() {
     try {
       const { data, error } = await supabase
         .from('case_files')
-        .select('id, ref, title, type, status, country, sector, amount, client_name, client_email, created_at')
+        .select('id, ref, project_name, type, status, project_country, sector, amount, contact_name, contact_email, created_at')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      setCases(data || []);
+      const rows = (data || []).map((row: Record<string, unknown>) => {
+        const projectCountry = row.project_country as string | null | undefined;
+        return {
+          id: row.id as string,
+          ref: row.ref as string,
+          project_name: (row.project_name as string | null) ?? null,
+          type: row.type as string,
+          status: row.status as string,
+          country: (typeof projectCountry === 'string' ? projectCountry : '') || '',
+          sector: row.sector as string,
+          amount: row.amount as string,
+          client_name: (row.contact_name as string | null) ?? null,
+          client_email: (row.contact_email as string | null) ?? null,
+          created_at: row.created_at as string,
+        } satisfies CaseFile;
+      });
+      setCases(rows);
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -212,7 +229,7 @@ export default function PartnerAssignmentsPage() {
           ...s,
           partner_name: partner?.name || s.partner_id?.slice(0, 8) + '…',
           case_ref: caseFile?.ref || s.case_id?.slice(0, 8) + '…',
-          case_title: caseFile?.title || '—',
+          case_title: caseFile ? caseFileLabel(caseFile) : '-',
         };
       });
       setSubmissions(enriched);
@@ -245,7 +262,7 @@ export default function PartnerAssignmentsPage() {
       return;
     }
     if (validation && !validation.valid) {
-      toast.error(t('Validation échouée — corrigez les erreurs avant de soumettre', 'Validation failed — fix errors before submitting'));
+      toast.error(t('Validation échouée - corrigez les erreurs avant de soumettre', 'Validation failed - fix errors before submitting'));
       return;
     }
     setAssigning(true);
@@ -261,14 +278,17 @@ export default function PartnerAssignmentsPage() {
       if (error) throw error;
 
       // Log to audit
-      await supabase.from('compliance_logs').insert({
+      const { error: logError } = await supabase.from('compliance_logs').insert({
         actor_id: user?.id,
         actor_email: user?.email,
         action: 'PARTNER_ASSIGNMENT',
         target_ref: selectedCase.ref,
-        detail: `Case ${selectedCase.ref} assigned to partner "${selectedPartner.name}" (${selectedPartner.type}) — status: ${assignStatus}`,
+        detail: `Case ${selectedCase.ref} assigned to partner "${selectedPartner.name}" (${selectedPartner.type}) - status: ${assignStatus}`,
         severity: 'info',
-      }).catch(() => {});
+      });
+      if (logError) {
+        console.warn('Failed to write compliance log:', logError.message);
+      }
 
       toast.success(t('Affectation enregistrée dans le journal', 'Assignment recorded in journal'));
       setSelectedPartner(null);
@@ -325,7 +345,7 @@ export default function PartnerAssignmentsPage() {
     if (caseSearch) {
       const q = caseSearch.toLowerCase();
       return (
-        (c.title || '').toLowerCase().includes(q) ||
+        caseFileLabel(c).toLowerCase().includes(q) ||
         c.ref.toLowerCase().includes(q) ||
         (c.client_name || '').toLowerCase().includes(q) ||
         c.country.toLowerCase().includes(q)
@@ -555,7 +575,7 @@ export default function PartnerAssignmentsPage() {
                       <span className="font-mono text-xs text-gold font-semibold">{c.ref}</span>
                       <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">{c.status}</span>
                     </div>
-                    <p className="font-semibold text-navy text-sm truncate">{c.title || c.type}</p>
+                    <p className="font-semibold text-navy text-sm truncate">{caseFileLabel(c) || c.type}</p>
                     <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
                       {c.country && <span className="flex items-center gap-0.5"><MapPin size={9} />{c.country}</span>}
                       {c.sector && <span>· {c.sector}</span>}
@@ -597,7 +617,7 @@ export default function PartnerAssignmentsPage() {
                     {selectedCase ? (
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-bold text-navy text-sm">{selectedCase.title || selectedCase.type}</p>
+                          <p className="font-bold text-navy text-sm">{caseFileLabel(selectedCase) || selectedCase.type}</p>
                           <p className="text-xs text-slate-500 font-mono">{selectedCase.ref} · {selectedCase.status}</p>
                         </div>
                         <button onClick={() => setSelectedCase(null)} className="text-slate-400 hover:text-red-500 p-1"><X size={14} /></button>
@@ -638,7 +658,7 @@ export default function PartnerAssignmentsPage() {
                     {validation.valid && validation.warnings.length === 0 && (
                       <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 flex items-center gap-2">
                         <CheckCircle2 size={14} className="text-emerald-600" />
-                        <p className="text-xs font-semibold text-emerald-700">{t('Validation réussie — affectation autorisée', 'Validation passed — assignment authorized')}</p>
+                        <p className="text-xs font-semibold text-emerald-700">{t('Validation réussie - affectation autorisée', 'Validation passed - assignment authorized')}</p>
                       </div>
                     )}
                   </div>
@@ -778,8 +798,8 @@ export default function PartnerAssignmentsPage() {
                               {lang === 'fr' ? statusCfg.labelFr : statusCfg.labelEn}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-xs text-slate-600">{s.submitted_by_email || '—'}</td>
-                          <td className="px-4 py-3 text-xs text-slate-500 max-w-[140px] truncate">{s.note || '—'}</td>
+                          <td className="px-4 py-3 text-xs text-slate-600">{s.submitted_by_email || '-'}</td>
+                          <td className="px-4 py-3 text-xs text-slate-500 max-w-[140px] truncate">{s.note || '-'}</td>
                           <td className="px-4 py-3 text-xs text-slate-400 whitespace-nowrap">
                             <div className="flex items-center gap-1"><Clock size={10} />{formatDate(s.created_at)}</div>
                           </td>

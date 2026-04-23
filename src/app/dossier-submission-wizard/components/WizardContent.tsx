@@ -84,7 +84,7 @@ const getRequiredDocTypes = (t: (fr: string, en: string) => string) => [
   { id: 'doctype-exec', label: t('Résumé exécutif', 'Executive Summary'), required: true, desc: t('PDF, 2–5 pages max', 'PDF, 2–5 pages max') },
   { id: 'doctype-bp', label: t('Business Plan / Étude de faisabilité', 'Business Plan / Feasibility Study'), required: true, desc: t('PDF ou DOCX', 'PDF or DOCX') },
   { id: 'doctype-fin', label: t('Modèle financier', 'Financial Model'), required: true, desc: t('Excel (.xlsx)', 'Excel (.xlsx)') },
-  { id: 'doctype-kyc', label: t('Dossier KYC entreprise', 'Corporate KYC Package'), required: true, desc: t('PDF — registre, statuts, UBO', 'PDF — registry, articles, UBO') },
+  { id: 'doctype-kyc', label: t('Dossier KYC entreprise', 'Corporate KYC Package'), required: true, desc: t('PDF - registre, statuts, UBO', 'PDF - registry, articles, UBO') },
   { id: 'doctype-sof', label: t('Justificatif d\'origine des fonds', 'Source of Funds Proof'), required: false, desc: t('Relevés bancaires ou rapports d\'audit', 'Bank statements or audit reports') },
   { id: 'doctype-contracts', label: t('Contrats clés (Off-take / EPC)', 'Key Contracts (Off-take / EPC)'), required: false, desc: t('Si disponible', 'If available') },
 ];
@@ -218,16 +218,16 @@ export default function WizardContent() {
           actor_email: user.email,
           action: 'DOCUMENT_UPLOAD',
           target_ref: `USER-${user.id.slice(0, 8)}`,
-          detail: `File uploaded: ${file.name} (${selectedDocType}) — SHA256: ${sha256Hash.slice(0, 16)}… — scan passed`,
+          detail: `File uploaded: ${file.name} (${selectedDocType}) - SHA256: ${sha256Hash.slice(0, 16)}… - scan passed`,
           severity: 'info',
         });
 
-        toast.success(t(`${file.name} — téléchargé et scan antivirus réussi`, `${file.name} — uploaded & antivirus scan passed`));
+        toast.success(t(`${file.name} - téléchargé et scan antivirus réussi`, `${file.name} - uploaded & antivirus scan passed`));
       } catch (err: any) {
         setUploadedFiles((prev) =>
           prev.map((f) => f.id === fileId ? { ...f, status: 'error' } : f)
         );
-        toast.error(t(`${file.name} : Échec du téléchargement — ${err.message}`, `${file.name}: Upload failed — ${err.message}`));
+        toast.error(t(`${file.name} : Échec du téléchargement - ${err.message}`, `${file.name}: Upload failed - ${err.message}`));
       }
     }
   };
@@ -372,7 +372,7 @@ export default function WizardContent() {
         actor_email: user.email,
         action: 'STATUS_CHANGE',
         target_ref: ref,
-        detail: `Dossier submitted by client — compliance: ${complianceStatus} — documents: ${cleanFiles.length}`,
+        detail: `Dossier submitted by client - compliance: ${complianceStatus} - documents: ${cleanFiles.length}`,
         severity: 'info',
       });
 
@@ -389,7 +389,7 @@ export default function WizardContent() {
 
       setIsSubmitting(false);
       setSubmitted(true);
-      toast.success(t(`Dossier soumis — Référence : ${ref}`, `Dossier submitted — Reference: ${ref}`));
+      toast.success(t(`Dossier soumis - Référence : ${ref}`, `Dossier submitted - Reference: ${ref}`));
     } catch (err: any) {
       setIsSubmitting(false);
       toast.error(err.message || t('Échec de la soumission. Veuillez réessayer.', 'Submission failed. Please try again.'));
@@ -753,7 +753,7 @@ export default function WizardContent() {
                 </label>
                 <input
                   {...projectForm.register('projectName', { required: t('Nom du projet requis', 'Project name is required') })}
-                  placeholder="Solar Infrastructure SPV — Phase 1"
+                  placeholder="Solar Infrastructure SPV - Phase 1"
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors"
                 />
                 {projectForm.formState.errors.projectName && (
@@ -817,12 +817,12 @@ export default function WizardContent() {
                   {...projectForm.register('currency')}
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors bg-white"
                 >
-                  <option value="EUR">EUR — Euro</option>
-                  <option value="USD">USD — US Dollar</option>
-                  <option value="GBP">GBP — British Pound</option>
-                  <option value="XOF">XOF — Franc CFA UEMOA</option>
-                  <option value="MAD">MAD — Dirham marocain</option>
-                  <option value="NGN">NGN — Naira nigérian</option>
+                  <option value="EUR">EUR - Euro</option>
+                  <option value="USD">USD - US Dollar</option>
+                  <option value="GBP">GBP - British Pound</option>
+                  <option value="XOF">XOF - Franc CFA UEMOA</option>
+                  <option value="MAD">MAD - Dirham marocain</option>
+                  <option value="NGN">NGN - Naira nigérian</option>
                 </select>
               </div>
 
@@ -983,7 +983,7 @@ export default function WizardContent() {
 
               <div className="lg:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('Type d\'institution préféré', 'Preferred Institution Type')}</label>
-                <p className="text-xs text-gray-400 mb-2">{t('Indiquez votre préférence — GL Capital évaluera la faisabilité et orientera en conséquence', 'Indicate preference — GL Capital will assess feasibility and route accordingly')}</p>
+                <p className="text-xs text-gray-400 mb-2">{t('Indiquez votre préférence - GL Capital évaluera la faisabilité et orientera en conséquence', 'Indicate preference - GL Capital will assess feasibility and route accordingly')}</p>
                 <input
                   {...financingForm.register('targetInstitution')}
                   placeholder={t('ex. Institution de financement du développement (IFD), banque commerciale, fonds spécialisé', 'e.g. Development Finance Institution (DFI), commercial bank, specialized fund')}
@@ -1213,7 +1213,7 @@ export default function WizardContent() {
                   ].map((item) => (
                     <div key={`review-id-${item.label}`}>
                       <dt className="text-[10px] text-gray-400 uppercase tracking-wider">{item.label}</dt>
-                      <dd className="text-xs font-semibold text-navy mt-0.5">{item.value || '—'}</dd>
+                      <dd className="text-xs font-semibold text-navy mt-0.5">{item.value || '-'}</dd>
                     </div>
                   ))}
                 </dl>
@@ -1234,7 +1234,7 @@ export default function WizardContent() {
                   ].map((item) => (
                     <div key={`review-proj-${item.label}`}>
                       <dt className="text-[10px] text-gray-400 uppercase tracking-wider">{item.label}</dt>
-                      <dd className="text-xs font-semibold text-navy mt-0.5">{item.value || '—'}</dd>
+                      <dd className="text-xs font-semibold text-navy mt-0.5">{item.value || '-'}</dd>
                     </div>
                   ))}
                 </dl>
@@ -1255,7 +1255,7 @@ export default function WizardContent() {
                   ].map((item) => (
                     <div key={`review-fin-${item.label}`}>
                       <dt className="text-[10px] text-gray-400 uppercase tracking-wider">{item.label}</dt>
-                      <dd className="text-xs font-semibold text-navy mt-0.5">{item.value || '—'}</dd>
+                      <dd className="text-xs font-semibold text-navy mt-0.5">{item.value || '-'}</dd>
                     </div>
                   ))}
                 </dl>

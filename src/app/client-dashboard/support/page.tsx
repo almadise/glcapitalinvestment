@@ -105,15 +105,15 @@ const FAQ_ITEMS = [
 
 // ─── GLOSSARY DATA ────────────────────────────────────────────────────────────
 const GLOSSARY_TERMS = [
-  { term: 'AML', def: { fr: 'Anti-Money Laundering — Lutte contre le blanchiment d\'argent. Ensemble des procédures et contrôles visant à détecter et prévenir le blanchiment de capitaux.', en: 'Anti-Money Laundering — Set of procedures and controls aimed at detecting and preventing money laundering.' } },
-  { term: 'BG', def: { fr: 'Bank Guarantee — Garantie bancaire émise par une institution financière pour sécuriser une transaction ou un engagement contractuel.', en: 'Bank Guarantee — A guarantee issued by a financial institution to secure a transaction or contractual commitment.' } },
+  { term: 'AML', def: { fr: 'Anti-Money Laundering - Lutte contre le blanchiment d\'argent. Ensemble des procédures et contrôles visant à détecter et prévenir le blanchiment de capitaux.', en: 'Anti-Money Laundering - Set of procedures and controls aimed at detecting and preventing money laundering.' } },
+  { term: 'BG', def: { fr: 'Bank Guarantee - Garantie bancaire émise par une institution financière pour sécuriser une transaction ou un engagement contractuel.', en: 'Bank Guarantee - A guarantee issued by a financial institution to secure a transaction or contractual commitment.' } },
   { term: 'Due Diligence', def: { fr: 'Processus d\'investigation approfondie réalisé avant une transaction financière pour évaluer les risques, la conformité et la viabilité d\'un projet.', en: 'In-depth investigation process conducted before a financial transaction to assess risks, compliance, and project viability.' } },
-  { term: 'KYC', def: { fr: 'Know Your Customer — Procédure d\'identification et de vérification de l\'identité des clients, obligatoire dans le cadre réglementaire financier.', en: 'Know Your Customer — Client identification and verification procedure, mandatory under financial regulatory frameworks.' } },
-  { term: 'LOI', def: { fr: 'Letter of Intent — Lettre d\'intention formalisant l\'intérêt d\'une partie pour une transaction ou un partenariat, avant la signature d\'un contrat définitif.', en: 'Letter of Intent — Document formalizing a party\'s interest in a transaction or partnership, before signing a definitive contract.' } },
-  { term: 'NCNDA', def: { fr: 'Non-Circumvention, Non-Disclosure Agreement — Accord de non-contournement et de confidentialité protégeant les parties impliquées dans une transaction financière.', en: 'Non-Circumvention, Non-Disclosure Agreement — Agreement protecting parties involved in a financial transaction from circumvention and disclosure.' } },
-  { term: 'OFAC', def: { fr: 'Office of Foreign Assets Control — Bureau américain de contrôle des avoirs étrangers, qui administre et applique les sanctions économiques et commerciales.', en: 'Office of Foreign Assets Control — U.S. bureau that administers and enforces economic and trade sanctions.' } },
-  { term: 'PEP', def: { fr: 'Politically Exposed Person — Personne politiquement exposée, présentant un risque accru de corruption en raison de ses fonctions publiques.', en: 'Politically Exposed Person — Individual presenting heightened corruption risk due to their public functions.' } },
-  { term: 'SBLC', def: { fr: 'Standby Letter of Credit — Lettre de crédit standby, instrument financier utilisé comme garantie de paiement de dernier recours.', en: 'Standby Letter of Credit — Financial instrument used as a last-resort payment guarantee.' } },
+  { term: 'KYC', def: { fr: 'Know Your Customer - Procédure d\'identification et de vérification de l\'identité des clients, obligatoire dans le cadre réglementaire financier.', en: 'Know Your Customer - Client identification and verification procedure, mandatory under financial regulatory frameworks.' } },
+  { term: 'LOI', def: { fr: 'Letter of Intent - Lettre d\'intention formalisant l\'intérêt d\'une partie pour une transaction ou un partenariat, avant la signature d\'un contrat définitif.', en: 'Letter of Intent - Document formalizing a party\'s interest in a transaction or partnership, before signing a definitive contract.' } },
+  { term: 'NCNDA', def: { fr: 'Non-Circumvention, Non-Disclosure Agreement - Accord de non-contournement et de confidentialité protégeant les parties impliquées dans une transaction financière.', en: 'Non-Circumvention, Non-Disclosure Agreement - Agreement protecting parties involved in a financial transaction from circumvention and disclosure.' } },
+  { term: 'OFAC', def: { fr: 'Office of Foreign Assets Control - Bureau américain de contrôle des avoirs étrangers, qui administre et applique les sanctions économiques et commerciales.', en: 'Office of Foreign Assets Control - U.S. bureau that administers and enforces economic and trade sanctions.' } },
+  { term: 'PEP', def: { fr: 'Politically Exposed Person - Personne politiquement exposée, présentant un risque accru de corruption en raison de ses fonctions publiques.', en: 'Politically Exposed Person - Individual presenting heightened corruption risk due to their public functions.' } },
+  { term: 'SBLC', def: { fr: 'Standby Letter of Credit - Lettre de crédit standby, instrument financier utilisé comme garantie de paiement de dernier recours.', en: 'Standby Letter of Credit - Financial instrument used as a last-resort payment guarantee.' } },
   { term: 'Structuration', def: { fr: 'Processus d\'organisation et d\'optimisation d\'une opération financière (montage, garanties, flux) pour maximiser son éligibilité auprès des institutions partenaires.', en: 'Process of organizing and optimizing a financial operation (structure, guarantees, flows) to maximize eligibility with partner institutions.' } },
 ];
 
@@ -397,8 +397,8 @@ export default function ClientSupportPage() {
                   </div>
                   <div>
                     <p className="text-xs text-slate-400 mb-0.5">{lang === 'fr' ? 'Email' : 'Email'}</p>
-                    <a href="mailto:contact@glcapital.com" className="text-sm text-white hover:text-gold transition-colors">
-                      contact@glcapital.com
+                    <a href="mailto:glcontact@glcapitalinvestment.com" className="text-sm text-white hover:text-gold transition-colors">
+                      glcontact@glcapitalinvestment.com
                     </a>
                   </div>
                 </div>

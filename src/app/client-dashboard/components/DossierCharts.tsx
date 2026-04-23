@@ -159,7 +159,7 @@ export default function DossierCharts() {
     const channel = supabase
       .channel('charts_dossiers')
       .on('postgres_changes', {
-        event: '*', schema: 'public', table: 'dossiers',
+        event: '*', schema: 'public', table: 'case_files',
         filter: `user_id=eq.${user.id}`,
       }, fetchChartData)
       .subscribe();
@@ -180,7 +180,7 @@ export default function DossierCharts() {
               {lang === 'fr' ? 'Activité des dossiers' : 'File activity'}
             </h3>
             <p className="text-slate-500 text-xs mt-0.5">
-              {lang === 'fr' ? 'Soumissions, analyses et clôtures — 12 semaines' : 'Submissions, analyses and closures — 12 weeks'}
+              {lang === 'fr' ? 'Soumissions, analyses et clôtures - 12 semaines' : 'Submissions, analyses and closures - 12 weeks'}
             </p>
           </div>
           <div className="flex items-center gap-4 text-xs">

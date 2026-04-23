@@ -133,7 +133,7 @@ export default function MetricsPage() {
         supabase.from('user_profiles').select('id', { count: 'exact', head: true }).eq('is_active', true),
         supabase.from('case_files').select('id', { count: 'exact', head: true }),
         supabase.from('case_files').select('id', { count: 'exact', head: true }).gte('created_at', weekAgo),
-        supabase.from('dossiers').select('status'),
+        supabase.from('case_files').select('status'),
         supabase.from('error_logs').select('id', { count: 'exact', head: true }),
         supabase.from('error_logs').select('id', { count: 'exact', head: true }).gte('created_at', dayAgo),
         supabase.from('notifications').select('id', { count: 'exact', head: true }).eq('is_read', true),
@@ -149,7 +149,7 @@ export default function MetricsPage() {
         roleBreakdown[r] = (roleBreakdown[r] || 0) + 1;
       });
 
-      // Case files by status (from dossiers table which has full status enum)
+      // Case files by status
       const caseFilesByStatus: Record<string, number> = {};
       (dossierStatusRes.data || []).forEach((d: { status: string }) => {
         const s = d.status || 'RECU';
@@ -226,7 +226,7 @@ export default function MetricsPage() {
               {lang === 'fr' ? 'Métriques système' : 'System Metrics'}
             </h1>
             <p className="text-slate-500 text-sm mt-1">
-              {lang === 'fr' ?'KPIs en temps réel — utilisateurs actifs, dossiers, erreurs, emails et répartition des rôles.' :'Real-time KPIs — active users, case files, errors, emails, and role breakdown.'}
+              {lang === 'fr' ?'KPIs en temps réel - utilisateurs actifs, dossiers, erreurs, emails et répartition des rôles.' :'Real-time KPIs - active users, case files, errors, emails, and role breakdown.'}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -268,12 +268,12 @@ export default function MetricsPage() {
           </div>
         )}
 
-        {/* KPI Grid — top row */}
+        {/* KPI Grid - top row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <KPICard
             icon={Users}
             label={lang === 'fr' ? 'Utilisateurs actifs' : 'Active users'}
-            value={loading ? '—' : metrics?.activeUsers ?? 0}
+            value={loading ? '-' : metrics?.activeUsers ?? 0}
             sub={loading ? undefined : `${metrics?.totalUsers ?? 0} ${lang === 'fr' ? 'comptes au total' : 'total accounts'}`}
             trend="neutral"
             trendLabel={loading ? undefined : `${metrics?.totalUsers ? Math.round(((metrics.activeUsers) / metrics.totalUsers) * 100) : 0}% actifs`}
@@ -283,7 +283,7 @@ export default function MetricsPage() {
           <KPICard
             icon={FolderOpen}
             label={lang === 'fr' ? 'Dossiers soumis' : 'Case file submissions'}
-            value={loading ? '—' : metrics?.caseFilesTotal ?? 0}
+            value={loading ? '-' : metrics?.caseFilesTotal ?? 0}
             sub={loading ? undefined : `+${metrics?.caseFilesThisWeek ?? 0} ${lang === 'fr' ? 'cette semaine' : 'this week'}`}
             trend={metrics && metrics.caseFilesThisWeek > 0 ? 'up' : 'neutral'}
             trendLabel={loading ? undefined : `+${metrics?.caseFilesThisWeek ?? 0} / 7j`}
@@ -293,7 +293,7 @@ export default function MetricsPage() {
           <KPICard
             icon={AlertTriangle}
             label={lang === 'fr' ? 'Taux d\'erreur' : 'Error rate'}
-            value={loading ? '—' : `${metrics?.errorRate ?? 0}%`}
+            value={loading ? '-' : `${metrics?.errorRate ?? 0}%`}
             sub={loading ? undefined : `${metrics?.errorCount24h ?? 0} ${lang === 'fr' ? 'erreurs (24h)' : 'errors (24h)'} · ${metrics?.errorCountTotal ?? 0} total`}
             trend={metrics && metrics.errorCount24h > 5 ? 'down' : 'neutral'}
             trendLabel={loading ? undefined : `${metrics?.errorCount24h ?? 0} / 24h`}
@@ -303,7 +303,7 @@ export default function MetricsPage() {
           <KPICard
             icon={Mail}
             label={lang === 'fr' ? 'Livraison email' : 'Email delivery'}
-            value={loading ? '—' : `${emailDeliveryRate}%`}
+            value={loading ? '-' : `${emailDeliveryRate}%`}
             sub={loading ? undefined : `${metrics?.emailDelivered ?? 0} lus · ${metrics?.emailFailed ?? 0} archivés · ${metrics?.emailPending ?? 0} non lus`}
             trend={emailDeliveryRate >= 90 ? 'up' : emailDeliveryRate < 70 ? 'down' : 'neutral'}
             trendLabel={loading ? undefined : `${emailDeliveryRate}% taux`}
@@ -312,7 +312,7 @@ export default function MetricsPage() {
           />
         </div>
 
-        {/* Bottom row — Case status breakdown + Role breakdown */}
+        {/* Bottom row - Case status breakdown + Role breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
           {/* Case files by status */}

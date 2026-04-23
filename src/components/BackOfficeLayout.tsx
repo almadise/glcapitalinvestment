@@ -5,12 +5,12 @@ import { usePathname } from 'next/navigation';
 import AppLogo from '@/components/ui/AppLogo';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
-  LayoutDashboard, FolderOpen, Users, Shield, Settings, LogOut, ChevronLeft, ChevronRight, Bell, AlertTriangle, BookOpen, Network, ClipboardList, Home, MessageSquare, BarChart3
+  LayoutDashboard, FolderOpen, Users, Shield, Settings, LogOut, ChevronLeft, ChevronRight, Bell, AlertTriangle, BookOpen, Network, ClipboardList, Home, MessageSquare, BarChart3, Mail,
 } from 'lucide-react';
 
 const adminNavItems = [
   { href: '/back-office-admin-panel', icon: LayoutDashboard, labelFr: 'Tableau de bord', labelEn: 'Dashboard', badge: null, roles: ['admin', 'analyst', 'compliance', 'gestionnaire_contenu'] },
-  { href: '/back-office-admin-panel#dossiers', icon: FolderOpen, labelFr: 'Dossiers', labelEn: 'Dossiers', badge: '14', roles: ['admin', 'analyst', 'compliance'] },
+  { href: '/back-office-admin-panel#dossiers', icon: FolderOpen, labelFr: 'Dossiers', labelEn: 'Files', badge: '14', roles: ['admin', 'analyst', 'compliance'] },
   { href: '/back-office-admin-panel#compliance', icon: Shield, labelFr: 'Conformité', labelEn: 'Compliance', badge: '5', roles: ['admin', 'compliance'] },
   { href: '/back-office-admin-panel#partners', icon: Network, labelFr: 'Partenaires', labelEn: 'Partners', badge: null, roles: ['admin', 'compliance'] },
   { href: '/back-office-admin-panel/users', icon: Users, labelFr: 'Utilisateurs', labelEn: 'Users', badge: null, roles: ['admin'] },
@@ -18,6 +18,7 @@ const adminNavItems = [
   { href: '/back-office-admin-panel#notes', icon: MessageSquare, labelFr: 'Notes internes', labelEn: 'Internal Notes', badge: null, roles: ['admin', 'analyst', 'compliance'] },
   { href: '/back-office-admin-panel/audit-logs', icon: ClipboardList, labelFr: 'Journal d\'audit', labelEn: 'Audit Log', badge: null, roles: ['admin', 'compliance'] },
   { href: '/back-office-admin-panel/metrics', icon: BarChart3, labelFr: 'Métriques', labelEn: 'Metrics', badge: null, roles: ['admin'] },
+  { href: '/back-office-admin-panel/email-preview', icon: Mail, labelFr: 'Aperçu emails & Supabase', labelEn: 'Email preview & Supabase', badge: null, roles: ['admin'] },
   { href: '/notifications', icon: Bell, labelFr: 'Notifications', labelEn: 'Notifications', badge: null, roles: ['admin', 'analyst', 'compliance', 'gestionnaire_contenu'] },
   { href: '/back-office-admin-panel#settings', icon: Settings, labelFr: 'Paramètres', labelEn: 'Settings', badge: null, roles: ['admin'] },
 ];
@@ -85,7 +86,9 @@ export default function BackOfficeLayout({
 
         <nav className="flex-1 py-4 px-2 space-y-1 overflow-y-auto">
           {filteredNav.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive =
+              pathname === item.href ||
+              (item.href !== '/back-office-admin-panel' && pathname.startsWith(`${item.href}/`));
             const label = lang === 'fr' ? item.labelFr : item.labelEn;
             return (
               <Link

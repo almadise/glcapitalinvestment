@@ -6,8 +6,11 @@ import { useLanguage } from '@/contexts/LanguageContext';
 export default function PublicNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileToggleRef = useRef<HTMLButtonElement>(null);
+  const servicesDropdownRef = useRef<HTMLDivElement>(null);
   const { lang, toggleLang, t } = useLanguage();
 
   useEffect(() => {
@@ -28,10 +31,29 @@ export default function PublicNavbar() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
+  useEffect(() => {
+    const onPointerDown = (event: MouseEvent) => {
+      if (
+        servicesDropdownRef.current &&
+        !servicesDropdownRef.current.contains(event.target as Node)
+      ) {
+        setServicesOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    return () => document.removeEventListener('mousedown', onPointerDown);
+  }, []);
+
+  const serviceLinks = [
+    { href: '/services/financement-projet', labelFr: 'Financement de Projet', labelEn: 'Project Financing' },
+    { href: '/services/instruments-bancaires', labelFr: 'Instruments Bancaires', labelEn: 'Banking Instruments' },
+    { href: '/services-page#advisory', labelFr: 'Conseil & Structuration', labelEn: 'Advisory & Structuring' },
+  ];
+
   const navLinks = [
     { href: '/home-page', labelFr: 'Accueil', labelEn: 'Home' },
     { href: '/qui-sommes-nous', labelFr: 'Qui sommes-nous', labelEn: 'About Us' },
-    { href: '/services', labelFr: 'Services', labelEn: 'Services' },
+    { href: '/services-page', labelFr: 'Services', labelEn: 'Services', hasDropdown: true },
     { href: '/contact', labelFr: 'Contact', labelEn: 'Contact' },
     { href: '/faq', labelFr: 'FAQ', labelEn: 'FAQ' },
   ];
@@ -57,7 +79,7 @@ export default function PublicNavbar() {
           <Link href="/home-page" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-navy-900 rounded-lg">
             <div className="inline-flex items-center justify-center flex-shrink-0" style={{ width: 36, height: 46 }}>
               <img
-                alt="GL Capital Investment SA — Logo"
+                alt="GL Capital Investment SA - Logo"
                 width={36}
                 height={46}
                 className="object-contain w-full h-full"
@@ -72,16 +94,68 @@ export default function PublicNavbar() {
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-1" role="list">
-            {navLinks.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                role="listitem"
-                className="px-4 py-2 text-sm font-medium text-white hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1 focus-visible:ring-offset-navy-900"
-              >
-                {lang === 'fr' ? item.labelFr : item.labelEn}
-              </Link>
-            ))}
+            {navLinks.map((item) =>
+              item.hasDropdown ? (
+                <div key={item.href} className="relative" ref={servicesDropdownRef}>
+                  <button
+                    type="button"
+                    onClick={() => setServicesOpen((prev) => !prev)}
+                    className="inline-flex items-center gap-1 px-4 py-2 text-sm font-medium text-white hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1 focus-visible:ring-offset-navy-900"
+                    aria-expanded={servicesOpen}
+                    aria-haspopup="menu"
+                  >
+                    {lang === 'fr' ? item.labelFr : item.labelEn}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className={`transition-transform duration-200 ${servicesOpen ? 'rotate-180' : ''}`}
+                      aria-hidden="true"
+                    >
+                      <path d="m6 9 6 6 6-6"></path>
+                    </svg>
+                  </button>
+
+                  {servicesOpen && (
+                    <div className="absolute top-full left-0 mt-2 w-72 rounded-xl border border-white/15 bg-navy-900/95 backdrop-blur-md shadow-xl p-2 z-50">
+                      <Link
+                        href={item.href}
+                        onClick={() => setServicesOpen(false)}
+                        className="block px-3 py-2 rounded-lg text-sm font-semibold text-gold hover:bg-white/10 transition-colors"
+                      >
+                        {t('Tous les services', 'All services')}
+                      </Link>
+                      <div className="my-1 h-px bg-white/10" />
+                      {serviceLinks.map((service) => (
+                        <Link
+                          key={service.href}
+                          href={service.href}
+                          onClick={() => setServicesOpen(false)}
+                          className="block px-3 py-2 rounded-lg text-sm text-white hover:bg-white/10 transition-colors"
+                        >
+                          {lang === 'fr' ? service.labelFr : service.labelEn}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  role="listitem"
+                  className="px-4 py-2 text-sm font-medium text-white hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1 focus-visible:ring-offset-navy-900"
+                >
+                  {lang === 'fr' ? item.labelFr : item.labelEn}
+                </Link>
+              )
+            )}
           </div>
 
           {/* Right actions */}
@@ -133,16 +207,71 @@ export default function PublicNavbar() {
           className={`lg:hidden bg-navy-900 border-t border-white/10 px-6 py-4 space-y-1 ${mobileOpen ? 'block' : 'hidden'}`}
           aria-hidden={!mobileOpen}
         >
-          {navLinks.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 text-sm font-medium text-white hover:text-white hover:bg-white/10 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-            >
-              {lang === 'fr' ? item.labelFr : item.labelEn}
-            </Link>
-          ))}
+          {navLinks.map((item) =>
+            item.hasDropdown ? (
+              <div key={item.href} className="space-y-1">
+                <button
+                  type="button"
+                  onClick={() => setMobileServicesOpen((prev) => !prev)}
+                  className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-white hover:text-white hover:bg-white/10 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                  aria-expanded={mobileServicesOpen}
+                >
+                  <span>{lang === 'fr' ? item.labelFr : item.labelEn}</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className={`transition-transform duration-200 ${mobileServicesOpen ? 'rotate-180' : ''}`}
+                    aria-hidden="true"
+                  >
+                    <path d="m6 9 6 6 6-6"></path>
+                  </svg>
+                </button>
+                {mobileServicesOpen && (
+                  <div className="pl-3 space-y-1">
+                    <Link
+                      href={item.href}
+                      onClick={() => {
+                        setMobileOpen(false);
+                        setMobileServicesOpen(false);
+                      }}
+                      className="block px-3 py-2 text-sm font-semibold text-gold hover:bg-white/10 rounded-lg transition-colors"
+                    >
+                      {t('Tous les services', 'All services')}
+                    </Link>
+                    {serviceLinks.map((service) => (
+                      <Link
+                        key={service.href}
+                        href={service.href}
+                        onClick={() => {
+                          setMobileOpen(false);
+                          setMobileServicesOpen(false);
+                        }}
+                        className="block px-3 py-2 text-sm text-white hover:bg-white/10 rounded-lg transition-colors"
+                      >
+                        {lang === 'fr' ? service.labelFr : service.labelEn}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
+                className="block px-3 py-2.5 text-sm font-medium text-white hover:text-white hover:bg-white/10 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+              >
+                {lang === 'fr' ? item.labelFr : item.labelEn}
+              </Link>
+            )
+          )}
           <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
             {/* Mobile language toggle */}
             <button

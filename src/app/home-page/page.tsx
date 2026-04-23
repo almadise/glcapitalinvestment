@@ -12,22 +12,22 @@ import PublicFooter from './components/PublicFooter';
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital8049.builtwithrocket.new';
 
 export const metadata: Metadata = {
-  title: 'GL Capital Investment SA — Conseil en Financement Institutionnel',
+  title: 'GL Capital Investment SA - Conseil en Financement Institutionnel',
   description:
     'GL Capital fournit des services de structuration et de documentation pour accompagner les demandes de financement institutionnel. Plateforme sécurisée pour entreprises et porteurs de projets.',
   keywords: 'financement institutionnel, structuration dossier, instruments bancaires, SBLC, BG, KYC, AML, conseil financier, financement projet',
   alternates: { canonical: `${baseUrl}/home-page` },
   openGraph: {
-    title: 'GL Capital Investment SA — Financement Institutionnel',
+    title: 'GL Capital Investment SA - Financement Institutionnel',
     description: 'Plateforme institutionnelle sécurisée pour la structuration et le suivi de dossiers de financement.',
     url: `${baseUrl}/home-page`,
     locale: 'fr_FR',
     type: 'website',
-    images: [{ url: '/assets/images/gl-capital-financial-district.png', width: 1200, height: 630, alt: 'GL Capital Investment SA — Siège social' }],
+    images: [{ url: '/assets/images/gl-capital-financial-district.png', width: 1200, height: 630, alt: 'GL Capital Investment SA - Siège social' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'GL Capital Investment SA — Financement Institutionnel',
+    title: 'GL Capital Investment SA - Financement Institutionnel',
     description: 'Structuration et présentation de dossiers de financement institutionnel.',
     images: ['/assets/images/gl-capital-financial-district.png'],
   },

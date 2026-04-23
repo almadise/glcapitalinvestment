@@ -204,7 +204,7 @@ export default function NewCaseFileWizard() {
       });
 
       setSubmittedRef(ref);
-      toast.success(t(`Dossier créé — Référence : ${ref}`, `Case file created — Reference: ${ref}`));
+      toast.success(t(`Dossier créé - Référence : ${ref}`, `Case file created - Reference: ${ref}`));
     } catch (err: any) {
       toast.error(err.message || t('Échec de la création. Veuillez réessayer.', 'Creation failed. Please try again.'));
     } finally {
@@ -548,7 +548,7 @@ export default function NewCaseFileWizard() {
                 </label>
                 <input
                   {...projectForm.register('projectName', { required: t('Champ requis', 'Required') })}
-                  placeholder={t('Centrale solaire 50 MW — Thiès', 'Solar Plant 50 MW — Thiès')}
+                  placeholder={t('Centrale solaire 50 MW - Thiès', 'Solar Plant 50 MW - Thiès')}
                   className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors"
                 />
                 <FieldError message={projectForm.formState.errors.projectName?.message} />
@@ -829,8 +829,8 @@ export default function NewCaseFileWizard() {
                   </button>
                 </div>
                 <div className="p-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-                  <ReviewRow label={t('Dette', 'Debt')} value={financingVals.debtAmount || '—'} />
-                  <ReviewRow label={t('Fonds propres', 'Equity')} value={financingVals.equityAmount || '—'} />
+                  <ReviewRow label={t('Dette', 'Debt')} value={financingVals.debtAmount || '-'} />
+                  <ReviewRow label={t('Fonds propres', 'Equity')} value={financingVals.equityAmount || '-'} />
                   <ReviewRow label={t('Garantie', 'Guarantee')} value={financingVals.guaranteeType} />
                   <ReviewRow label={t('Origine fonds', 'Fund Source')} value={financingVals.fundSource} />
                 </div>
@@ -898,7 +898,7 @@ function ReviewRow({ label, value }: { label: string; value?: string }) {
   return (
     <div className="flex flex-col gap-0.5">
       <span className="text-xs text-slate-400">{label}</span>
-      <span className="text-sm font-medium text-slate-800 truncate">{value || '—'}</span>
+      <span className="text-sm font-medium text-slate-800 truncate">{value || '-'}</span>
     </div>
   );
 }

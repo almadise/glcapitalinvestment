@@ -9,6 +9,7 @@ import { ArrowLeft, FileText, Loader2, AlertCircle, MessageSquare, History, Pape
 import Link from 'next/link';
 import DocumentViewerModal from '@/components/DocumentViewerModal';
 import Icon from '@/components/ui/AppIcon';
+import { caseFileDescription, caseFileLabel } from '@/lib/caseFileLabel';
 
 
 type CaseStatus = 'RECU' | 'A_COMPLETER' | 'EN_ANALYSE' | 'EN_REVUE_COMPLIANCE' | 'ELIGIBLE' | 'SOUMIS_PARTENAIRE' | 'RETOUR_PARTENAIRE' | 'EN_NEGOCIATION' | 'CLOTURE' | 'REJETE';
@@ -18,8 +19,10 @@ interface CaseFile {
   user_id: string;
   type: string;
   status: CaseStatus;
-  title: string;
+  ref?: string | null;
+  project_name?: string | null;
   description: string | null;
+  project_description?: string | null;
   created_at: string;
   updated_at: string | null;
   client_email?: string;
@@ -222,9 +225,9 @@ export default function CaseDetailPage() {
                 <StatusBadge status={caseFile.status} />
                 <span className="text-xs text-slate-400 font-mono">{caseFile.id}</span>
               </div>
-              <h1 className="font-display text-2xl font-bold text-navy mb-1">{caseFile.title}</h1>
-              {caseFile.description && (
-                <p className="text-slate-500 text-sm leading-relaxed">{caseFile.description}</p>
+              <h1 className="font-display text-2xl font-bold text-navy mb-1">{caseFileLabel(caseFile)}</h1>
+              {caseFileDescription(caseFile) && (
+                <p className="text-slate-500 text-sm leading-relaxed">{caseFileDescription(caseFile)}</p>
               )}
             </div>
           </div>
@@ -236,7 +239,7 @@ export default function CaseDetailPage() {
             </div>
             <div>
               <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">Client</p>
-              <p className="text-sm text-slate-700">{caseFile.client_email || '—'}</p>
+              <p className="text-sm text-slate-700">{caseFile.client_email || '-'}</p>
             </div>
             <div>
               <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">Créé le</p>
@@ -244,7 +247,7 @@ export default function CaseDetailPage() {
             </div>
             <div>
               <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">Mis à jour</p>
-              <p className="text-sm text-slate-700">{caseFile.updated_at ? formatDate(caseFile.updated_at) : '—'}</p>
+              <p className="text-sm text-slate-700">{caseFile.updated_at ? formatDate(caseFile.updated_at) : '-'}</p>
             </div>
           </div>
 

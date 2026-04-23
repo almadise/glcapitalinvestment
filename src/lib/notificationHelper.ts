@@ -89,7 +89,7 @@ export async function notifyStatusChange(params: {
     message = `Votre dossier "${params.caseTitle}" nécessite des informations complémentaires. Veuillez le compléter.`;
   } else if (params.newStatus === 'ELIGIBLE') {
     type = 'COMPLIANCE_DECISION';
-    title = 'Dossier éligible — Décision favorable';
+    title = 'Dossier éligible - Décision favorable';
     message = `Votre dossier "${params.caseTitle}" a été validé et déclaré éligible.`;
   } else if (params.newStatus === 'REJETE') {
     type = 'COMPLIANCE_DECISION';

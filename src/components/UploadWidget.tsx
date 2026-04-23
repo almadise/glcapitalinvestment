@@ -220,7 +220,7 @@ export default function UploadWidget({ caseId, onUploadComplete, compact = false
             <p className="text-sm font-medium text-slate-700">
               {dragging ? 'Déposez les fichiers ici' : 'Glissez-déposez ou cliquez pour sélectionner'}
             </p>
-            <p className="text-xs text-slate-400 mt-0.5">PDF, DOCX, XLSX, DOC, XLS, JPG, PNG — max 10 MB par fichier</p>
+            <p className="text-xs text-slate-400 mt-0.5">PDF, DOCX, XLSX, DOC, XLS, JPG, PNG - max 10 MB par fichier</p>
           </div>
         </div>
       </div>

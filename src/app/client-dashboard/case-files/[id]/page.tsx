@@ -18,6 +18,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import Link from 'next/link';
+import { caseFileDescription, caseFileLabel } from '@/lib/caseFileLabel';
 
 type CaseStatus =
   | 'RECU' |'A_COMPLETER' |'EN_ANALYSE' |'EN_REVUE_COMPLIANCE' |'ELIGIBLE' |'SOUMIS_PARTENAIRE' |'RETOUR_PARTENAIRE' |'EN_NEGOCIATION' |'CLOTURE' |'REJETE';
@@ -27,8 +28,10 @@ interface CaseFile {
   user_id: string;
   type: string;
   status: CaseStatus;
-  title: string;
+  ref?: string | null;
+  project_name?: string | null;
   description: string | null;
+  project_description?: string | null;
   created_at: string;
   updated_at: string | null;
 }
@@ -304,7 +307,7 @@ function ClientCaseDetailContent() {
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-orange-800 text-base mb-1">
-                {t('⚠️ Action requise — Documents manquants', '⚠️ Action required — Missing documents')}
+                {t('⚠️ Action requise - Documents manquants', '⚠️ Action required - Missing documents')}
               </h3>
               <p className="text-orange-700 text-sm leading-relaxed">
                 {t(
@@ -331,9 +334,9 @@ function ClientCaseDetailContent() {
                 <StatusBadge status={caseFile.status} lang={lang} />
                 <span className="text-xs text-slate-400 font-mono">{caseFile.id.slice(0, 8)}…</span>
               </div>
-              <h1 className="font-display text-xl sm:text-2xl font-bold text-navy mb-1">{caseFile.title}</h1>
-              {caseFile.description && (
-                <p className="text-slate-500 text-sm leading-relaxed">{caseFile.description}</p>
+              <h1 className="font-display text-xl sm:text-2xl font-bold text-navy mb-1">{caseFileLabel(caseFile)}</h1>
+              {caseFileDescription(caseFile) && (
+                <p className="text-slate-500 text-sm leading-relaxed">{caseFileDescription(caseFile)}</p>
               )}
             </div>
           </div>
@@ -348,7 +351,7 @@ function ClientCaseDetailContent() {
             </div>
             <div>
               <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">{t('Mis à jour', 'Updated')}</p>
-              <p className="text-sm text-slate-700">{caseFile.updated_at ? formatDate(caseFile.updated_at, lang) : '—'}</p>
+              <p className="text-sm text-slate-700">{caseFile.updated_at ? formatDate(caseFile.updated_at, lang) : '-'}</p>
             </div>
           </div>
         </div>
@@ -382,12 +385,12 @@ function ClientCaseDetailContent() {
             <div className="space-y-4">
               <div>
                 <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">{t('Titre', 'Title')}</p>
-                <p className="text-sm text-slate-700">{caseFile.title}</p>
+                <p className="text-sm text-slate-700">{caseFileLabel(caseFile)}</p>
               </div>
-              {caseFile.description && (
+              {caseFileDescription(caseFile) && (
                 <div>
                   <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">{t('Description', 'Description')}</p>
-                  <p className="text-sm text-slate-700 leading-relaxed">{caseFile.description}</p>
+                  <p className="text-sm text-slate-700 leading-relaxed">{caseFileDescription(caseFile)}</p>
                 </div>
               )}
               <div>

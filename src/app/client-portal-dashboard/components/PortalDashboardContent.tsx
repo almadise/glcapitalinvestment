@@ -5,13 +5,20 @@ import { Toaster, toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { createClient } from '@/lib/supabase/client';
+import { caseFileLabel } from '@/lib/caseFileLabel';
 import StatusBadge, { DossierStatus } from '@/components/ui/StatusBadge';
 import { FolderOpen, FileText, MessageSquare, Plus, Clock, Eye, RefreshCw, Shield, Download, File, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface Dossier {
-  id: string; ref: string; type: string; project_name: string;
-  amount: string; status: DossierStatus; completeness: number;
-  last_update: string; unread_messages: number;
+  id: string;
+  ref: string;
+  type: string;
+  project_name: string | null;
+  amount: string;
+  status: DossierStatus;
+  completeness: number;
+  updated_at: string;
+  unread_messages: number;
 }
 
 interface DossierDocument {
@@ -77,23 +84,23 @@ export default function PortalDashboardContent() {
             const newLabel = statusLabels[d.status] || d.status;
             if (['ELIGIBLE', 'SOUMIS_PARTENAIRE', 'EN_NEGOCIATION'].includes(d.status)) {
               toast.success(t(
-                `Dossier ${d.ref} — Statut mis à jour : ${newLabel}`,
-                `Dossier ${d.ref} — Status updated: ${newLabel}`
+                `Dossier ${d.ref} - Statut mis à jour : ${newLabel}`,
+                `Dossier ${d.ref} - Status updated: ${newLabel}`
               ), { duration: 6000 });
             } else if (d.status === 'REJETE') {
               toast.error(t(
-                `Dossier ${d.ref} — Dossier rejeté. Contactez votre conseiller.`,
-                `Dossier ${d.ref} — Dossier rejected. Please contact your advisor.`
+                `Dossier ${d.ref} - Dossier rejeté. Contactez votre conseiller.`,
+                `Dossier ${d.ref} - Dossier rejected. Please contact your advisor.`
               ), { duration: 8000 });
             } else if (d.status === 'A_COMPLETER') {
               toast.warning(t(
-                `Dossier ${d.ref} — Documents supplémentaires requis.`,
-                `Dossier ${d.ref} — Additional documents required.`
+                `Dossier ${d.ref} - Documents supplémentaires requis.`,
+                `Dossier ${d.ref} - Additional documents required.`
               ), { duration: 7000 });
             } else {
               toast.info(t(
-                `Dossier ${d.ref} — Nouveau statut : ${newLabel}`,
-                `Dossier ${d.ref} — New status: ${newLabel}`
+                `Dossier ${d.ref} - Nouveau statut : ${newLabel}`,
+                `Dossier ${d.ref} - New status: ${newLabel}`
               ), { duration: 5000 });
             }
           }
@@ -186,7 +193,7 @@ export default function PortalDashboardContent() {
     const channel = supabase
       .channel('portal_dossiers')
       .on('postgres_changes', {
-        event: '*', schema: 'public', table: 'dossiers',
+        event: '*', schema: 'public', table: 'case_files',
         filter: `user_id=eq.${user.id}`,
       }, () => { fetchDossiers(); })
       .on('postgres_changes', {
@@ -233,7 +240,7 @@ export default function PortalDashboardContent() {
             <div className="w-9 h-9 rounded-lg bg-navy-900/8 flex items-center justify-center"><FolderOpen size={18} className="text-navy-700" /></div>
             <span className="text-xs text-gray-400 font-mono">{t('Actifs', 'Active')}</span>
           </div>
-          <div className="text-3xl font-bold text-navy-900 tabular-nums mb-1">{loading ? '—' : openDossiers.length}</div>
+          <div className="text-3xl font-bold text-navy-900 tabular-nums mb-1">{loading ? '-' : openDossiers.length}</div>
           <p className="text-sm font-medium text-gray-600">{t('Dossiers ouverts', 'Open Dossiers')}</p>
           <p className="text-xs text-gray-400 mt-1">{loading ? t('Chargement...', 'Loading...') : t(`${dossiers.length} soumis au total`, `${dossiers.length} total submitted`)}</p>
         </div>
@@ -243,7 +250,7 @@ export default function PortalDashboardContent() {
             <div className="w-9 h-9 rounded-lg bg-amber-500/15 flex items-center justify-center"><FileText size={18} className="text-amber-600" /></div>
             <span className="text-xs text-amber-500 font-mono">{pendingDocs > 0 ? t('Action requise', 'Action needed') : t('À jour', 'Up to date')}</span>
           </div>
-          <div className="text-3xl font-bold text-amber-700 tabular-nums mb-1">{loading ? '—' : pendingDocs}</div>
+          <div className="text-3xl font-bold text-amber-700 tabular-nums mb-1">{loading ? '-' : pendingDocs}</div>
           <p className="text-sm font-medium text-amber-700">{t('Dossiers à compléter', 'Dossiers to Complete')}</p>
           <p className="text-xs text-amber-500 mt-1">{t('Documents supplémentaires requis', 'Awaiting additional documents')}</p>
         </div>
@@ -253,7 +260,7 @@ export default function PortalDashboardContent() {
             <div className="w-9 h-9 rounded-lg bg-blue-500/15 flex items-center justify-center"><MessageSquare size={18} className="text-blue-600" /></div>
             <span className="text-xs text-blue-500 font-mono">{t('Non lus', 'Unread')}</span>
           </div>
-          <div className="text-3xl font-bold text-blue-700 tabular-nums mb-1">{loading ? '—' : totalUnread}</div>
+          <div className="text-3xl font-bold text-blue-700 tabular-nums mb-1">{loading ? '-' : totalUnread}</div>
           <p className="text-sm font-medium text-blue-700">{t('Nouveaux messages', 'New Messages')}</p>
           <p className="text-xs text-blue-500 mt-1">{t('De l\'analyste et de l\'équipe compliance', 'From analyst + compliance team')}</p>
         </div>
@@ -305,7 +312,7 @@ export default function PortalDashboardContent() {
                       <span className="text-xs text-gray-300">·</span>
                       <span className="text-xs text-gray-500">{d.type}</span>
                     </div>
-                    <h3 className="text-navy-900 font-semibold text-sm">{d.project_name || t('Projet sans nom', 'Unnamed Project')}</h3>
+                    <h3 className="text-navy-900 font-semibold text-sm">{caseFileLabel(d)}</h3>
                   </div>
                   <div className="flex items-center gap-2">
                     <StatusBadge status={d.status} />
@@ -315,11 +322,11 @@ export default function PortalDashboardContent() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4 mb-3">
-                  <span className="text-navy-900 font-bold text-sm tabular-nums">{d.amount || '—'}</span>
+                  <span className="text-navy-900 font-bold text-sm tabular-nums">{d.amount || '-'}</span>
                   <span className="text-gray-300">·</span>
                   <span className="text-xs text-gray-400 flex items-center gap-1">
                     <Clock size={10} />
-                    {d.last_update ? new Date(d.last_update).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
+                    {d.updated_at ? new Date(d.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
@@ -367,7 +374,7 @@ export default function PortalDashboardContent() {
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="font-mono text-xs text-gray-400 block mb-1">{d.ref}</span>
-                    <h3 className="text-navy-900 font-semibold text-sm">{d.project_name || t('Projet sans nom', 'Unnamed Project')}</h3>
+                    <h3 className="text-navy-900 font-semibold text-sm">{caseFileLabel(d)}</h3>
                     <p className="text-xs text-gray-500 mt-1">{d.type} · {d.amount}</p>
                   </div>
                   <StatusBadge status={d.status} />

@@ -253,10 +253,10 @@ export default function AdminUserManagementPage() {
                               {(u.full_name || u.email || '?')[0].toUpperCase()}
                             </span>
                           </div>
-                          <span className="text-navy font-medium whitespace-nowrap">{u.full_name || '—'}</span>
+                          <span className="text-navy font-medium whitespace-nowrap">{u.full_name || '-'}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{u.email || '—'}</td>
+                      <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{u.email || '-'}</td>
                       <td className="px-4 py-3">
                         <RoleBadge role={u.role} lang={lang} />
                       </td>
@@ -292,7 +292,7 @@ export default function AdminUserManagementPage() {
             <div className="px-6 py-5 space-y-4">
               <div>
                 <p className="text-slate-400 text-xs uppercase tracking-wider mb-1">{t.colName}</p>
-                <p className="text-navy font-medium">{selectedUser.full_name || selectedUser.email || '—'}</p>
+                <p className="text-navy font-medium">{selectedUser.full_name || selectedUser.email || '-'}</p>
               </div>
               <div>
                 <p className="text-slate-400 text-xs uppercase tracking-wider mb-2">{t.colRole}</p>

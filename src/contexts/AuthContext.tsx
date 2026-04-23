@@ -1,4 +1,3 @@
-
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -23,11 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUserRole = async (userId: string) => {
     try {
-      const { data } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', userId)
-        .single();
+      const { data } = await supabase.from('profiles').select('role').eq('id', userId).single();
       if (!data) {
         // Try user_profiles table as fallback
         const { data: profileData } = await supabase
@@ -35,29 +30,58 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           .select('role')
           .eq('id', userId)
           .single();
-        setUserRole(profileData?.role ?? null);
+        setUserRole(profileData?.role ?? 'client');
       } else {
-        setUserRole(data?.role ?? null);
+        setUserRole(data?.role ?? 'client');
       }
     } catch {
-      setUserRole(null);
+      // Keep client area usable when role table access fails.
+      setUserRole('client');
     }
   };
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchUserRole(session.user.id);
+    const clearStaleAuth = async (err: unknown) => {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (
+        msg.includes('Refresh Token') ||
+        msg.includes('refresh_token') ||
+        msg.includes('Invalid Refresh Token')
+      ) {
+        await supabase.auth.signOut({ scope: 'local' });
       }
-      setLoading(false);
-    });
+    };
+
+    // Get initial session
+    supabase.auth
+      .getSession()
+      .then(({ data: { session }, error }) => {
+        if (error) {
+          void clearStaleAuth(error);
+          setSession(null);
+          setUser(null);
+          setUserRole(null);
+          setLoading(false);
+          return;
+        }
+        setSession(session);
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          fetchUserRole(session.user.id);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        void clearStaleAuth(err);
+        setSession(null);
+        setUser(null);
+        setUserRole(null);
+        setLoading(false);
+      });
 
     // Listen for auth changes
     const {
-      data: { subscription }
+      data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -74,52 +98,75 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Email/Password Sign Up
   const signUp = async (email: string, password: string, metadata = {}) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: (metadata as any)?.fullName || '',
-          avatar_url: (metadata as any)?.avatarUrl || '',
-          notif_dossier_updates: (metadata as any)?.notif_dossier_updates ?? true,
-          notif_pipeline_alerts: (metadata as any)?.notif_pipeline_alerts ?? true,
-          notif_documents_pending: (metadata as any)?.notif_documents_pending ?? true,
-        },
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new'}/auth/callback`
-      }
+    const res = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        password,
+        metadata,
+        lang: 'fr',
+      }),
     });
-    if (error) throw error;
 
-    // Send branded confirmation email via Resend (non-blocking)
-    if (data?.user) {
-      const confirmationUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new'}/auth/callback`;
-      fetch('/api/send-signup-confirmation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          fullName: (metadata as any)?.fullName || '',
-          confirmationUrl,
-          lang: 'fr',
-        }),
-      }).catch(() => {});
+    const payload = await res.json().catch(() => ({}));
+    if (!res.ok || !payload?.success) {
+      throw new Error(payload?.error || "Échec de l'inscription");
     }
 
-    return data;
+    return payload;
   };
 
-  // Email/Password Sign In
+  // Email/Password Sign In (returns needsMfa when TOTP/phone MFA must be completed - see Supabase AAL)
   const signIn = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password
+      password,
     });
     if (error) throw error;
-    // Fetch role immediately after sign in
     if (data.user) {
       await fetchUserRole(data.user.id);
     }
-    return data;
+
+    const { data: aal, error: aalError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aalError) throw aalError;
+
+    const needsMfa = aal.currentLevel === 'aal1' && aal.nextLevel === 'aal2';
+
+    return { ...data, needsMfa };
+  };
+
+  /** Complete MFA after password sign-in (TOTP or phone factor verified in Supabase). */
+  const verifyMfa = async (code: string) => {
+    const { data: factors, error: listError } = await supabase.auth.mfa.listFactors();
+    if (listError) throw listError;
+
+    const verifiedTotp = factors.totp.find((f) => f.status === 'verified');
+    const verifiedPhone = factors.phone.find((f) => f.status === 'verified');
+    const factorId = verifiedTotp?.id ?? verifiedPhone?.id;
+
+    if (!factorId) {
+      throw new Error(
+        'Aucun facteur MFA actif trouvé. Configurez le 2FA dans les paramètres de sécurité de votre compte.'
+      );
+    }
+
+    const { data: challenge, error: chError } = await supabase.auth.mfa.challenge({ factorId });
+    if (chError) throw chError;
+    const challengeId = challenge.id;
+    const { error: verifyError } = await supabase.auth.mfa.verify({
+      factorId,
+      challengeId,
+      code: code.replace(/\s/g, ''),
+    });
+    if (verifyError) throw verifyError;
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (session?.user) {
+      await fetchUserRole(session.user.id);
+    }
   };
 
   // Sign Out
@@ -138,23 +185,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   // Resend verification email via API route
-  const resendVerificationEmail = async (email: string, fullName?: string) => {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
-    const confirmationUrl = `${siteUrl}/auth/callback`;
-    const res = await fetch('/api/send-signup-confirmation', {
+  const resendVerificationEmail = async (email: string, _fullName?: string) => {
+    const res = await fetch('/api/auth/resend-signup-confirmation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, fullName: fullName || '', confirmationUrl, lang: 'fr' }),
+      body: JSON.stringify({
+        email,
+        fullName: _fullName || '',
+        lang: 'fr',
+      }),
     });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data?.error || 'Échec du renvoi de l\'email de vérification');
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data?.success) {
+      throw new Error(data?.error || "Échec du renvoi de l'email de vérification");
     }
   };
 
   // Get Current User
   const getCurrentUser = async () => {
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
     if (error) throw error;
     return user;
   };
@@ -183,6 +235,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     userRole,
     signUp,
     signIn,
+    verifyMfa,
     signOut,
     getCurrentUser,
     isEmailVerified,

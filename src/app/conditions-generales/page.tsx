@@ -5,10 +5,10 @@ import HomeFooter from '@/app/home-page/components/HomeFooter';
 import { FileText, AlertCircle, Shield, DollarSign } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Conditions Générales — GL Capital Investment SA',
+  title: 'Conditions Générales - GL Capital Investment SA',
   description: 'Conditions générales GL Capital : services, responsabilités, limitations, propriété intellectuelle, résolution des litiges.',
   openGraph: {
-    title: 'Conditions Générales — GL Capital',
+    title: 'Conditions Générales - GL Capital',
     description: "Conditions générales d'utilisation des services GL Capital. Responsabilités, limitations et dispositions légales.",
     type: 'website',
     url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital8049.builtwithrocket.new'}/conditions-generales`,
@@ -30,7 +30,7 @@ export default function ConditionsGeneralesPage() {
             <span className="text-gold-400 text-xs font-mono tracking-widest uppercase">Légal / Legal</span>
           </div>
           <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">Conditions Générales <span className="text-white/40 text-2xl font-normal">/ Terms of Service</span></h1>
-          <p className="text-white/40 text-sm">Dernière mise à jour : avril 2026 — Last updated: April 2026</p>
+          <p className="text-white/40 text-sm">Dernière mise à jour : avril 2026 - Last updated: April 2026</p>
         </div>
       </section>
       <section className="py-16 px-6 lg:px-10">
@@ -125,8 +125,8 @@ export default function ConditionsGeneralesPage() {
           </div>
 
           <div className="bg-navy-900/60 border border-navy-700 rounded-2xl p-7 text-center">
-            <p className="text-white/40 text-xs">GL Capital Investment SA — General Luxury SA</p>
-            <p className="text-white/40 text-xs">9 Rue Bonnet, 95400 ARNOUVILLE, France — almadise84@yahoo.fr — +33 984 046951</p>
+            <p className="text-white/40 text-xs">GL Capital Investment SA - General Luxury SA</p>
+            <p className="text-white/40 text-xs">9 Rue Bonnet, 95400 ARNOUVILLE, France - glcontact@glcapitalinvestment.com - +33 984 046951</p>
           </div>
         </div>
       </section>

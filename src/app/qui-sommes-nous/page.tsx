@@ -187,7 +187,7 @@ export default function QuiSommesNousPage() {
                     <Mail size={16} style={{ color: '#B8912A' }} className="flex-shrink-0" />
                     <div>
                       <p className="font-semibold mb-0.5" style={{ color: '#1E2D4A' }}>Email</p>
-                      <a href="mailto:almadise84@yahoo.fr" className="transition-colors" style={{ color: '#4A5C7A' }}>almadise84@yahoo.fr</a>
+                      <a href="mailto:glcontact@glcapitalinvestment.com" className="transition-colors" style={{ color: '#4A5C7A' }}>glcontact@glcapitalinvestment.com</a>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">

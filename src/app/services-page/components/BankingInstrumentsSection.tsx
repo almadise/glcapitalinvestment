@@ -11,14 +11,14 @@ export default function BankingInstrumentsSection() {
     { id: 'bi-do-1', itemFr: 'Conseil sur le type d\'instrument (SBLC vs BG vs LC)', itemEn: 'Advisory on instrument type selection (SBLC vs BG vs LC)', descFr: 'Basé sur les exigences de la transaction sous-jacente', descEn: 'Based on underlying transaction requirements' },
     { id: 'bi-do-2', itemFr: 'Cadre documentaire pour les demandes d\'instruments', itemEn: 'Documentation framework for instrument requests', descFr: 'Contrat sous-jacent, objet, coordonnées du bénéficiaire', descEn: 'Underlying contract, purpose, beneficiary details' },
     { id: 'bi-do-3', itemFr: 'Structuration KYC entreprise pour soumission à la banque émettrice', itemEn: 'Corporate KYC structuring for issuing bank submission', descFr: 'Conforme aux exigences GAFI et des banques correspondantes', descEn: 'Compliant with FATF and correspondent bank requirements' },
-    { id: 'bi-do-4', itemFr: 'Coordination avec les institutions émettrices agréées', itemEn: 'Coordination with licensed issuing institutions', descFr: 'Les noms des partenaires ne sont jamais divulgués au client', descEn: 'Client is never disclosed partner names' },
+    { id: 'bi-do-4', itemFr: 'Coordination avec les institutions émettrices agréées', itemEn: 'Coordination with licensed issuing institutions', descFr: 'Les noms des partenaires ne sont jamais divulgués au client', descEn: 'Partner names are never disclosed to the client' },
     { id: 'bi-do-5', itemFr: 'Pré-screening de conformité de la transaction sous-jacente', itemEn: 'Compliance pre-screening of underlying transaction', descFr: 'Sanctions, PPE, revue de conformité commerciale', descEn: 'Sanctions, PEP, trade compliance review' },
   ];
 
   const whatWeDontDo = [
     { id: 'bi-no-1', itemFr: 'Émettre, vendre ou louer des instruments bancaires', itemEn: 'Issue, sell, or lease banking instruments', descFr: 'Seules les banques agréées peuvent émettre des SBLC/BG', descEn: 'Only licensed banks can issue SBLC/BG' },
     { id: 'bi-no-2', itemFr: 'Monétiser ou "encaisser" des instruments', itemEn: 'Monetize or "cash" instruments', descFr: 'Illégal dans la plupart des juridictions sans licence bancaire', descEn: 'This is illegal in most jurisdictions without a banking license' },
-    { id: 'bi-no-3', itemFr: 'Collecter des codes PIN bancaires, codes SWIFT ou identifiants privés', itemEn: 'Collect banking PINs, SWIFT codes, or private credentials', descFr: 'Jamais requis — signal d\'alerte si demandé', descEn: 'Never required — a red flag if requested' },
+    { id: 'bi-no-3', itemFr: 'Collecter des codes PIN bancaires, codes SWIFT ou identifiants privés', itemEn: 'Collect banking PINs, SWIFT codes, or private credentials', descFr: 'Jamais requis - signal d\'alerte si demandé', descEn: 'Never required - a red flag if requested' },
     { id: 'bi-no-4', itemFr: 'Garantir l\'émission ou l\'approbation d\'instruments', itemEn: 'Guarantee instrument issuance or approval', descFr: 'Décision prise exclusivement par l\'institution émettrice', descEn: 'Decision made exclusively by issuing institution' },
     { id: 'bi-no-5', itemFr: 'Participer à des programmes de trading PPP', itemEn: 'Participate in PPP trading programs', descFr: 'Les programmes à haut rendement de ce type sont frauduleux', descEn: 'High-yield programs of this nature are fraudulent' },
   ];
@@ -28,7 +28,7 @@ export default function BankingInstrumentsSection() {
     { id: 'bi-req-2', labelFr: 'Montant, devise, durée', labelEn: 'Amount, currency, duration', descFr: 'Spécifications exactes du contrat sous-jacent', descEn: 'Exact specifications from underlying contract' },
     { id: 'bi-req-3', labelFr: 'Forme demandée', labelEn: 'Requested form', descFr: 'Swift MT760, ICPO ou autre forme standard', descEn: 'Swift MT760, ICPO, or other standard form' },
     { id: 'bi-req-4', labelFr: 'Contrat commercial sous-jacent', labelEn: 'Underlying commercial contract', descFr: 'Le contrat que l\'instrument garantit', descEn: 'The contract the instrument is securing' },
-    { id: 'bi-req-5', labelFr: 'KYC entreprise (demandeur)', labelEn: 'Corporate KYC (applicant)', descFr: 'Société + UBO — dossier KYC complet', descEn: 'Company + UBO — full KYC package' },
+    { id: 'bi-req-5', labelFr: 'KYC entreprise (demandeur)', labelEn: 'Corporate KYC (applicant)', descFr: 'Société + UBO - dossier KYC complet', descEn: 'Company + UBO - full KYC package' },
     { id: 'bi-req-6', labelFr: 'Preuve de capacité financière', labelEn: 'Financial capacity proof', descFr: 'Selon les exigences de l\'institution exécutante', descEn: 'As required by the executing institution' },
   ];
 
@@ -47,8 +47,8 @@ export default function BankingInstrumentsSection() {
             </div>
             <p className="text-lg max-w-2xl" style={{ color: '#4A5C7A' }}>
               {t(
-                'Conseil et cadre documentaire pour les lettres de crédit stand-by (SBLC) et garanties bancaires (BG). Structuré pour les garanties de performance, de paiement et de soumission — avec des limites de conformité claires.',
-                'Advisory and documentation framework for Standby Letters of Credit (SBLC) and Bank Guarantees (BG). Structured for performance, payment, and bid guarantees — with clear compliance boundaries.'
+                'Conseil et cadre documentaire pour les lettres de crédit stand-by (SBLC) et garanties bancaires (BG). Adapté aux garanties de performance, de paiement et de soumission, avec des limites de conformité explicites.',
+                'Advisory and documentation framework for Standby Letters of Credit (SBLC) and Bank Guarantees (BG). Designed for performance, payment, and bid guarantees, with clear compliance boundaries.'
               )}
             </p>
           </div>
@@ -61,8 +61,8 @@ export default function BankingInstrumentsSection() {
             <p className="font-semibold text-sm mb-2" style={{ color: '#8A6B1E' }}>{t('Avis de conformité important', 'Important Compliance Notice')}</p>
             <p className="text-sm leading-relaxed" style={{ color: '#4A5C7A' }}>
               {t(
-                'GL Capital fournit uniquement des services de conseil et de documentation. Nous N\'émettons PAS, ne monétisons PAS, ne louons PAS et ne négocions PAS d\'instruments bancaires. Nous ne collectons PAS de codes PIN bancaires, de codes SWIFT, d\'identifiants d\'opérateurs SWIFT ou d\'informations confidentielles d\'agents bancaires. Toute demande de telles informations est un signal de fraude — veuillez le signaler immédiatement.',
-                'GL Capital provides advisory and documentation services only. We do NOT issue, monetize, lease, or trade banking instruments. We do NOT collect banking PINs, private codes, SWIFT operator credentials, or confidential banking officer information. Any request for such information is a fraud signal — please report it immediately.'
+                'GL Capital fournit uniquement des services de conseil et de documentation. Nous n\'émettons pas, ne monétisons pas, ne louons pas et ne négocions pas d\'instruments bancaires. Nous ne collectons pas de codes PIN bancaires, de codes SWIFT, d\'identifiants d\'opérateurs SWIFT ni d\'informations confidentielles d\'agents bancaires. Toute demande de ce type est un signal de fraude et doit être signalée immédiatement.',
+                'GL Capital provides advisory and documentation services only. We do not issue, monetize, lease, or trade banking instruments. We do not collect banking PINs, private codes, SWIFT operator credentials, or confidential banking officer information. Any such request is a fraud signal and should be reported immediately.'
               )}
             </p>
           </div>

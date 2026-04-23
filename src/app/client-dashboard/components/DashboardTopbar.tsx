@@ -64,7 +64,7 @@ export default function DashboardTopbar({ onOpenMobileSidebar }: Props) {
           Client
         </span>
 
-        {/* Notifications — functional link */}
+        {/* Notifications - functional link */}
         <Link
           href="/client-dashboard/notifications"
           className="relative p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-600"

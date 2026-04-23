@@ -17,13 +17,15 @@ import {
   Info,
 } from 'lucide-react';
 import Icon from '@/components/ui/AppIcon';
+import { caseFileLabel } from '@/lib/caseFileLabel';
 
 
 type DossierStatus = 'RECU' | 'A_COMPLETER' | 'EN_ANALYSE' | 'EN_REVUE_COMPLIANCE' | 'ELIGIBLE' | 'SOUMIS_PARTENAIRE' | 'RETOUR_PARTENAIRE' | 'EN_NEGOCIATION' | 'CLOTURE' | 'REJETE';
 
 interface CaseFile {
   id: string;
-  title: string;
+  ref: string | null;
+  project_name: string | null;
   status: DossierStatus;
   type: string;
   created_at: string;
@@ -105,16 +107,16 @@ const REQUIRED_DOCS_BY_STATUS: Record<string, { fr: string[]; en: string[] }> = 
     ],
   },
   RECU: {
-    fr: ['Aucune action requise — votre dossier est en cours d\'examen initial.'],
-    en: ['No action required — your file is under initial review.'],
+    fr: ['Aucune action requise - votre dossier est en cours d\'examen initial.'],
+    en: ['No action required - your file is under initial review.'],
   },
   ELIGIBLE: {
-    fr: ['Aucune action requise — votre dossier est éligible.'],
-    en: ['No action required — your file is eligible.'],
+    fr: ['Aucune action requise - votre dossier est éligible.'],
+    en: ['No action required - your file is eligible.'],
   },
   CLOTURE: {
-    fr: ['Dossier clôturé — aucune action requise.'],
-    en: ['File closed — no action required.'],
+    fr: ['Dossier clôturé - aucune action requise.'],
+    en: ['File closed - no action required.'],
   },
 };
 
@@ -151,12 +153,22 @@ export default function DossierTimelinePage() {
     const supabase = createClient();
     const { data } = await supabase
       .from('case_files')
-      .select('id, title, status, type, created_at, updated_at, description')
+      .select('id, ref, project_name, status, type, created_at, updated_at, project_description')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
-    setCases((data as CaseFile[]) || []);
-    if (data && data.length > 0 && !selectedCase) {
-      setSelectedCase(data[0] as CaseFile);
+    const mapped: CaseFile[] = (data || []).map((row: any) => ({
+      id: row.id,
+      ref: row.ref ?? null,
+      project_name: row.project_name ?? null,
+      status: row.status as DossierStatus,
+      type: row.type,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+      description: row.project_description ?? null,
+    }));
+    setCases(mapped);
+    if (mapped.length > 0 && !selectedCase) {
+      setSelectedCase(mapped[0]);
     }
     setLoading(false);
   }, [user, selectedCase]);
@@ -235,7 +247,7 @@ export default function DossierTimelinePage() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-navy truncate">{c.title}</p>
+                      <p className="text-sm font-semibold text-navy truncate">{caseFileLabel(c)}</p>
                       <p className="text-xs text-slate-400 mt-0.5">{c.type}</p>
                     </div>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 ${step?.color} ${step?.bg} ${step?.border}`}>

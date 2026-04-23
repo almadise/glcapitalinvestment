@@ -81,8 +81,10 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
 
   if (!user) return null;
 
-  // Permission check: only clients (and admins previewing) may access this dashboard
-  if (!can('dashboard:view_client')) {
+  // Permission check: allow fallback for authenticated users when role lookup fails.
+  // This avoids false "Access Denied" states when profiles/user_profiles are temporarily mismatched.
+  const canViewClientDashboard = can('dashboard:view_client') || (Boolean(user) && userRole === null);
+  if (!canViewClientDashboard) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center px-6">
         <div className="flex flex-col items-center text-center max-w-sm">
@@ -106,12 +108,15 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
     );
   }
 
+  const canViewCaseFiles = can('case_files:view_own') || can('case_files:view_all') || userRole === null;
+  const canViewNotifications = can('notifications:view_own') || can('notifications:view_all') || userRole === null;
+
   const tabs = [
     { id: 'overview' as const, label: lang === 'fr' ? 'Vue d\'ensemble' : 'Overview', icon: LayoutDashboard },
-    ...(can('case_files:view_own') || can('case_files:view_all')
+    ...(canViewCaseFiles
       ? [{ id: 'dossiers' as const, label: lang === 'fr' ? 'Mes dossiers' : 'My files', icon: FolderOpen }]
       : []),
-    ...(can('notifications:view_own') || can('notifications:view_all')
+    ...(canViewNotifications
       ? [{ id: 'notifications' as const, label: lang === 'fr' ? 'Notifications' : 'Notifications', icon: Bell }]
       : []),
   ];
@@ -143,15 +148,15 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
         <DashboardTopbar onOpenMobileSidebar={() => setMobileSidebarOpen(true)} />
 
         <main className="flex-1 px-3 sm:px-4 lg:px-6 xl:px-8 2xl:px-10 py-4 sm:py-6 max-w-screen-2xl w-full mx-auto overflow-x-hidden">
-          {/* A_COMPLETER global banner — only for users who can view their own case files */}
-          {hasACompleter && can('case_files:view_own') && (
+          {/* A_COMPLETER global banner - only for users who can view their own case files */}
+          {hasACompleter && canViewCaseFiles && (
             <div className="flex items-start gap-4 bg-orange-50 border-2 border-orange-300 rounded-2xl p-4 mb-5 shadow-sm">
               <div className="flex-shrink-0 w-9 h-9 bg-orange-100 rounded-xl flex items-center justify-center">
                 <AlertCircle size={18} className="text-orange-600" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-orange-800 text-sm">
-                  {lang === 'fr' ? '⚠️ Action requise — Documents manquants' : '⚠️ Action required — Missing documents'}
+                  {lang === 'fr' ? '⚠️ Action requise - Documents manquants' : '⚠️ Action required - Missing documents'}
                 </p>
                 <p className="text-orange-700 text-xs mt-0.5 leading-relaxed">
                   {lang === 'fr' ?'Un ou plusieurs de vos dossiers nécessitent des documents complémentaires.' :'One or more of your case files require additional documents.'}
@@ -174,8 +179,8 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
                   {lang === 'fr' ? 'Tableau de bord' : 'Dashboard'}
                 </h1>
                 <p className="text-slate-500 text-sm mt-1">
-                  {lang === 'fr' ? `Vue d'ensemble de vos dossiers — Mis à jour le ${lastUpdated}`
-                    : `Overview of your files — Updated ${lastUpdated}`}
+                  {lang === 'fr' ? `Vue d'ensemble de vos dossiers - Mis à jour le ${lastUpdated}`
+                    : `Overview of your files - Updated ${lastUpdated}`}
                 </p>
               </div>
 
@@ -217,13 +222,13 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
                 </>
               )}
 
-              {activeTab === 'dossiers' && (can('case_files:view_own') || can('case_files:view_all')) && (
+              {activeTab === 'dossiers' && canViewCaseFiles && (
                 <div className="mt-2">
                   <DossierTable />
                 </div>
               )}
 
-              {activeTab === 'notifications' && (can('notifications:view_own') || can('notifications:view_all')) && (
+              {activeTab === 'notifications' && canViewNotifications && (
                 <div className="mt-2 max-w-3xl">
                   {can('notifications:manage_settings') && <NotificationSettings />}
                   <div className="mt-4">

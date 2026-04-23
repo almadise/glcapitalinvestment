@@ -1,5 +1,5 @@
 /**
- * GL Capital — Compliance Rule Engine
+ * GL Capital - Compliance Rule Engine
  * Auto-validates country restrictions, entity types, and ownership thresholds
  * before dossier data is persisted to Supabase.
  */
@@ -73,12 +73,12 @@ const HIGH_RISK_ENTITY_TYPES = new Set([
 ]);
 
 // ─── Ownership Thresholds ─────────────────────────────────────────────────────
-const UBO_DISCLOSURE_THRESHOLD = 25; // % — EU 4AMLD standard
-const UBO_HIGH_RISK_THRESHOLD = 10;  // % — enhanced due-diligence threshold
+const UBO_DISCLOSURE_THRESHOLD = 25; // % - EU 4AMLD standard
+const UBO_HIGH_RISK_THRESHOLD = 10;  // % - enhanced due-diligence threshold
 
 // ─── Amount Thresholds (EUR) ──────────────────────────────────────────────────
-const MIN_FINANCING_AMOUNT = 500_000;   // EUR — minimum ticket size
-const MAX_UNVERIFIED_AMOUNT = 50_000_000; // EUR — above this requires enhanced review
+const MIN_FINANCING_AMOUNT = 500_000;   // EUR - minimum ticket size
+const MAX_UNVERIFIED_AMOUNT = 50_000_000; // EUR - above this requires enhanced review
 
 // ─── Rule Definitions ─────────────────────────────────────────────────────────
 
@@ -145,7 +145,7 @@ function checkBlockedUBONationality(data: DossierPayload): ComplianceViolation |
   return null;
 }
 
-// Rule 4: High-risk country — flag for enhanced due diligence
+// Rule 4: High-risk country - flag for enhanced due diligence
 function checkHighRiskCountry(data: DossierPayload): ComplianceViolation | null {
   const country = data.orgCountry || data.projectCountry;
   if (country && HIGH_RISK_COUNTRIES.has(country.toUpperCase())) {
@@ -172,7 +172,7 @@ function checkBlockedEntityType(data: DossierPayload): ComplianceViolation | nul
   return null;
 }
 
-// Rule 6: High-risk entity type — flag
+// Rule 6: High-risk entity type - flag
 function checkHighRiskEntityType(data: DossierPayload): ComplianceViolation | null {
   if (data.orgType && HIGH_RISK_ENTITY_TYPES.has(data.orgType.toLowerCase())) {
     return {
@@ -185,7 +185,7 @@ function checkHighRiskEntityType(data: DossierPayload): ComplianceViolation | nu
   return null;
 }
 
-// Rule 7: UBO ownership threshold — disclosure required above 25%
+// Rule 7: UBO ownership threshold - disclosure required above 25%
 function checkUBOOwnershipThreshold(data: DossierPayload): ComplianceViolation | null {
   const ownership = parseOwnership(data.uboOwnership);
   if (ownership > 0 && ownership < UBO_DISCLOSURE_THRESHOLD) {
@@ -251,7 +251,7 @@ function checkLargeTransaction(data: DossierPayload): ComplianceViolation | null
   return null;
 }
 
-// Rule 11: Fund source — cash/undisclosed flagged
+// Rule 11: Fund source - cash/undisclosed flagged
 function checkFundSource(data: DossierPayload): ComplianceViolation | null {
   const risky = ['cash', 'undisclosed', 'unknown', 'crypto', 'cryptocurrency'];
   if (data.fundSource && risky.some((r) => data.fundSource!.toLowerCase().includes(r))) {

@@ -122,7 +122,7 @@ export default function AuditLogsPage() {
               {lang === 'fr' ? 'Journal d\'audit' : 'Audit Logs'}
             </h1>
             <p className="text-slate-500 text-sm mt-1">
-              {lang === 'fr' ?'Tous les événements système — filtrez par utilisateur, action et plage de dates.' :'All system events — filter by user, action, and date range.'}
+              {lang === 'fr' ?'Tous les événements système - filtrez par utilisateur, action et plage de dates.' :'All system events - filter by user, action, and date range.'}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -291,13 +291,13 @@ export default function AuditLogsPage() {
                             )}
                           </td>
                           <td className="px-4 py-3">
-                            <span className="text-slate-700">{log.actor_email || log.actor_name || '—'}</span>
+                            <span className="text-slate-700">{log.actor_email || log.actor_name || '-'}</span>
                             {log.actor_name && log.actor_email && (
                               <p className="text-slate-400 text-[10px] mt-0.5">{log.actor_name}</p>
                             )}
                           </td>
                           <td className="px-4 py-3 max-w-[200px]">
-                            <span className="text-slate-500 truncate block">{log.reason || '—'}</span>
+                            <span className="text-slate-500 truncate block">{log.reason || '-'}</span>
                           </td>
                           <td className="px-4 py-3 text-slate-400 whitespace-nowrap">{formatDate(log.created_at)}</td>
                           <td className="px-4 py-3">

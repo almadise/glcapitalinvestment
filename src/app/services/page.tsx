@@ -61,14 +61,14 @@ const services = [
       'Immobilier commercial et industriel',
       "Agro-industrie et projets de développement",
       'Ticket minimum : €5M',
-      'Couverture mondiale — 47 pays',
+      'Couverture mondiale - 47 pays',
     ],
     bulletsEn: [
       'Infrastructure and energy projects',
       'Commercial and industrial real estate',
       'Agro-industry and development projects',
       'Minimum ticket: €5M',
-      'Global coverage — 47 countries',
+      'Global coverage - 47 countries',
     ],
   },
   {
@@ -82,14 +82,14 @@ const services = [
       'Bank Guarantees (BG)',
       'Medium-Term Notes (MTN)',
       'Lettres de crédit documentaires (DLC)',
-      'Conseil documentaire uniquement — aucun instrument émis par GL Capital',
+      'Conseil documentaire uniquement - aucun instrument émis par GL Capital',
     ],
     bulletsEn: [
       'Standby Letters of Credit (SBLC)',
       'Bank Guarantees (BG)',
       'Medium-Term Notes (MTN)',
       'Documentary Letters of Credit (DLC)',
-      'Documentary advisory only — no instrument issued by GL Capital',
+      'Documentary advisory only - no instrument issued by GL Capital',
     ],
   },
   {
@@ -285,8 +285,8 @@ export default function ServicesPage() {
         <div className="rounded-xl border border-amber-500/40 bg-amber-500/5 p-6 lg:p-8">
           <p className="text-amber-300/90 text-sm leading-relaxed">
             {t(
-              '⚠️ Avis important : GL Capital Investment SA n\'est pas une banque et ne détient aucune licence bancaire ou d\'investissement. GL Capital n\'exécute aucune transaction financière, n\'émet aucun instrument bancaire, et n\'accepte aucun dépôt de la part d\'investisseurs. Toute transaction financière, le cas échéant, est exécutée exclusivement par des institutions financières dûment agréées. Les services proposés constituent exclusivement un accompagnement en structuration, documentation et mise en relation. General Luxury SA — 9 Rue Bonnet, 95400 ARNOUVILLE, France.',
-              '⚠️ Important notice: GL Capital Investment SA is not a bank and holds no banking or investment license. GL Capital does not execute financial transactions, does not issue bank instruments, and does not accept investor deposits. Any financial transaction, where applicable, is executed exclusively by duly licensed financial institutions. The services offered constitute exclusively structuring, documentation and introduction advisory. General Luxury SA — 9 Rue Bonnet, 95400 ARNOUVILLE, France.'
+              '⚠️ Avis important : GL Capital Investment SA n\'est pas une banque et ne détient aucune licence bancaire ou d\'investissement. GL Capital n\'exécute aucune transaction financière, n\'émet aucun instrument bancaire, et n\'accepte aucun dépôt de la part d\'investisseurs. Toute transaction financière, le cas échéant, est exécutée exclusivement par des institutions financières dûment agréées. Les services proposés constituent exclusivement un accompagnement en structuration, documentation et mise en relation. General Luxury SA - 9 Rue Bonnet, 95400 ARNOUVILLE, France.',
+              '⚠️ Important notice: GL Capital Investment SA is not a bank and holds no banking or investment license. GL Capital does not execute financial transactions, does not issue bank instruments, and does not accept investor deposits. Any financial transaction, where applicable, is executed exclusively by duly licensed financial institutions. The services offered constitute exclusively structuring, documentation and introduction advisory. General Luxury SA - 9 Rue Bonnet, 95400 ARNOUVILLE, France.'
             )}
           </p>
         </div>

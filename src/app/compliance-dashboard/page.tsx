@@ -75,9 +75,13 @@ export default function ComplianceDashboardPage() {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-1">
           <ShieldCheck size={20} className="text-emerald-600" />
-          <h1 className="font-display text-2xl font-bold text-navy">{t.welcome}</h1>
+          <h1 className="font-display text-2xl font-bold text-navy">
+            {t('Bienvenue, Conformité', 'Welcome, Compliance')}
+          </h1>
         </div>
-        <p className="text-slate-500 text-sm">{t.subtitle}</p>
+        <p className="text-slate-500 text-sm">
+          {t('Suivi des soumissions et conformité des dossiers.', 'Track submissions and case compliance.')}
+        </p>
       </div>
 
       {loading ? (
@@ -112,7 +116,9 @@ export default function ComplianceDashboardPage() {
       </div>
 
       <div className="mb-4">
-        <h2 className="font-semibold text-navy text-base mb-3">{t.quickActions}</h2>
+        <h2 className="font-semibold text-navy text-base mb-3">
+          {t('Actions rapides', 'Quick actions')}
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {quickLinks.map((link) => (
             <Link key={link.label} href={link.href} className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3 sm:gap-4 hover:border-emerald-200 hover:shadow-md transition-all group">

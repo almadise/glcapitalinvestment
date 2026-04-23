@@ -30,17 +30,10 @@ interface RegisterForm {
   acceptNcnda: boolean;
 }
 
-const demoCredentials = [
-  { id: 'cred-client', role: 'Client', email: 'amadou.diallo@weaenergyholdings.com', password: 'Client@GLC2026' },
-  { id: 'cred-admin', role: 'Admin', email: 'sophie.mercier@glcapital.com', password: 'Admin@GLC2026!' },
-  { id: 'cred-analyst', role: 'Analyst', email: 'marco.rossi@glcapital.com', password: 'Analyst@GLC2026' },
-  { id: 'cred-compliance', role: 'Compliance', email: 'fatima.benali@glcapital.com', password: 'Comply@GLC2026' },
-];
-
 export default function AuthScreen() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signIn, signUp, getRoleRedirect, resendVerificationEmail } = useAuth();
+  const { signIn, signUp, verifyMfa, signOut, getRoleRedirect, resendVerificationEmail } = useAuth();
   const { t } = useLanguage();
   const [mode, setMode] = useState<AuthMode>('login');
   const [showPassword, setShowPassword] = useState(false);
@@ -48,8 +41,6 @@ export default function AuthScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [mfaStep, setMfaStep] = useState(false);
   const [mfaCode, setMfaCode] = useState('');
-  const [pendingEmail, setPendingEmail] = useState('');
-  const [pendingName, setPendingName] = useState('');
   // Email verification states
   const [verificationSent, setVerificationSent] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
@@ -69,10 +60,16 @@ export default function AuthScreen() {
   const handleLogin = loginForm.handleSubmit(async (data) => {
     setIsLoading(true);
     try {
-      await signIn(data.email, data.password);
-      setPendingEmail(data.email);
+      const result = await signIn(data.email, data.password);
       setIsLoading(false);
-      setMfaStep(true);
+      if (result.needsMfa) {
+        setMfaStep(true);
+      } else {
+        toast.success(t('Connexion réussie', 'Signed in successfully'));
+        const redirect = getRoleRedirect();
+        router.push(redirect);
+        router.refresh();
+      }
     } catch (error: any) {
       setIsLoading(false);
       loginForm.setError('email', { message: error.message || t('Identifiants invalides', 'Invalid credentials') });
@@ -81,13 +78,23 @@ export default function AuthScreen() {
 
   const handleMfaSubmit = async () => {
     setIsLoading(true);
-    // MFA code accepted (demo: any 6-digit code works; production: verify TOTP)
-    await new Promise((r) => setTimeout(r, 600));
-    setIsLoading(false);
-    toast.success(t('Connexion réussie', 'Signed in successfully'));
-    const redirect = getRoleRedirect();
-    router.push(redirect);
-    router.refresh();
+    try {
+      await verifyMfa(mfaCode);
+      setIsLoading(false);
+      toast.success(t('Connexion réussie', 'Signed in successfully'));
+      const redirect = getRoleRedirect();
+      router.push(redirect);
+      router.refresh();
+    } catch (error: any) {
+      setIsLoading(false);
+      toast.error(error.message || t('Code invalide ou expiré', 'Invalid or expired code'));
+    }
+  };
+
+  const handleMfaBack = async () => {
+    setMfaStep(false);
+    setMfaCode('');
+    await signOut();
   };
 
   const handleRegister = registerForm.handleSubmit(async (data) => {
@@ -108,7 +115,7 @@ export default function AuthScreen() {
       setRegisteredName(fullName);
       setVerificationSent(true);
       setResendCooldown(60);
-      toast.success(t('Compte créé — veuillez vérifier votre email', 'Account created — please verify your email'));
+      toast.success(t('Compte créé - veuillez vérifier votre email', 'Account created - please verify your email'));
     } catch (error: any) {
       setIsLoading(false);
       toast.error(error.message || t('Échec de l\'inscription', 'Registration failed'));
@@ -121,18 +128,12 @@ export default function AuthScreen() {
     try {
       await resendVerificationEmail(registeredEmail, registeredName);
       setResendCooldown(60);
-      toast.success(t('Email de vérification renvoyé — vérifiez votre boîte de réception', 'Verification email resent — check your inbox'));
+      toast.success(t('Email de vérification renvoyé - vérifiez votre boîte de réception', 'Verification email resent - check your inbox'));
     } catch (error: any) {
       toast.error(error.message || t('Échec du renvoi de l\'email de vérification', 'Failed to resend verification email'));
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const autofillCredentials = (cred: typeof demoCredentials[0]) => {
-    loginForm.setValue('email', cred.email);
-    loginForm.setValue('password', cred.password);
-    toast.info(t(`Identifiants remplis pour ${cred.role}`, `Credentials filled for ${cred.role}`));
   };
 
   return (
@@ -300,11 +301,9 @@ export default function AuthScreen() {
                     <h2 className="text-white text-2xl font-bold mb-2">{t('Authentification à deux facteurs', 'Two-Factor Authentication')}</h2>
                     <p className="text-white/50 text-sm">
                       {t(
-                        'Entrez le code à 6 chiffres de votre application d\'authentification ou utilisez le code ',
-                        'Enter the 6-digit code from your authenticator app or use code '
+                        'Entrez le code à 6 chiffres affiché par votre application d\'authentification (Google Authenticator, Authy, etc.).',
+                        'Enter the 6-digit code from your authenticator app (Google Authenticator, Authy, etc.).'
                       )}
-                      <span className="font-mono text-gold-400">123456</span>
-                      {t(' pour la démo', ' for demo')}
                     </p>
                   </div>
                   <div className="space-y-4">
@@ -327,7 +326,7 @@ export default function AuthScreen() {
                         <>{t('Vérifier & Se connecter', 'Verify & Sign In')} <ArrowRight size={16} /></>
                       )}
                     </button>
-                    <button onClick={() => setMfaStep(false)} className="w-full text-white/40 text-sm hover:text-white/60 transition-colors py-2">
+                    <button type="button" onClick={handleMfaBack} className="w-full text-white/40 text-sm hover:text-white/60 transition-colors py-2">
                       {t('← Retour à la connexion', '← Back to login')}
                     </button>
                   </div>
@@ -418,29 +417,6 @@ export default function AuthScreen() {
                       <>{t('Se connecter au portail', 'Sign In to Portal')} <ArrowRight size={16} /></>
                     )}
                   </button>
-
-                  {/* Demo credentials */}
-                  <div className="border border-navy-700 rounded-xl overflow-hidden">
-                    <div className="bg-navy-800/50 px-4 py-2.5 border-b border-navy-700 flex items-center gap-2">
-                      <Shield size={12} className="text-gold-400" />
-                      <span className="text-white/60 text-xs font-medium">{t('Identifiants de démo (Supabase)', 'Demo Credentials (Supabase)')}</span>
-                    </div>
-                    <div className="divide-y divide-navy-700/50">
-                      {demoCredentials.map((cred) => (
-                        <div key={cred.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-navy-800/30 transition-colors">
-                          <span className="text-[10px] font-bold text-white/40 w-20 flex-shrink-0 font-mono uppercase">{cred.role}</span>
-                          <span className="text-white/50 text-xs font-mono truncate flex-1">{cred.email}</span>
-                          <button
-                            type="button"
-                            onClick={() => autofillCredentials(cred)}
-                            className="px-2 py-0.5 text-[10px] font-semibold text-gold-400 border border-gold-500/30 rounded hover:bg-gold-500/10 transition-colors flex-shrink-0"
-                          >
-                            {t('Utiliser', 'Use')}
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
                 </form>
               ) : (
                 /* Register Form */
@@ -573,7 +549,7 @@ export default function AuthScreen() {
                       <span className="text-white/60 text-xs leading-relaxed">
                         {t('Je reconnais le cadre ', 'I acknowledge the ')}
                         <span className="text-gold-400 underline cursor-pointer">NCNDA</span>
-                        {t(' — la non-divulgation des partenaires est obligatoire et contraignante', ' framework — partner non-disclosure is mandatory and binding')}
+                        {t(' - la non-divulgation des partenaires est obligatoire et contraignante', ' framework - partner non-disclosure is mandatory and binding')}
                       </span>
                     </label>
                   </div>
