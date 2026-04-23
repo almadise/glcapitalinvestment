@@ -4,7 +4,8 @@ import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import DashboardLayout from '../components/DashboardLayout';
-import { Bell, BellOff, Check, CheckCheck, Trash2, RefreshCw, Loader2, AlertCircle, Info, AlertTriangle, ShieldCheck, FileText, X, ChevronDown } from 'lucide-react';
+import Link from 'next/link';
+import { Bell, BellOff, Check, CheckCheck, Trash2, RefreshCw, Loader2, AlertCircle, Info, AlertTriangle, ShieldCheck, FileText, X, ChevronDown, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { usePermissions } from '@/hooks/usePermissions';
@@ -23,6 +24,8 @@ interface Notification {
   metadata: Record<string, any>;
   created_at: string;
 }
+
+type NotificationPriority = 'URGENT' | 'NORMAL' | 'INFO';
 
 const TYPE_CONFIG: Record<NotificationType, { labelFr: string; labelEn: string; icon: React.ElementType; color: string; bg: string; border: string }> = {
   STATUS_UPDATE: { labelFr: 'Mise à jour statut', labelEn: 'Status Update', icon: Info, color: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-200' },
@@ -67,6 +70,49 @@ function isInDateRange(dateStr: string, filter: string): boolean {
     return now.getTime() - date.getTime() <= 30 * 86400000;
   }
   return true;
+}
+
+function getNotificationPriority(notif: Notification): NotificationPriority {
+  if (notif.type === 'ACTION_REQUIRED' || notif.type === 'DOCUMENT_REQUEST') return 'URGENT';
+  if (notif.type === 'COMPLIANCE_DECISION') return 'NORMAL';
+  return 'INFO';
+}
+
+function getNotificationAction(notif: Notification, lang: 'fr' | 'en') {
+  if (notif.metadata?.action_url && typeof notif.metadata.action_url === 'string') {
+    return {
+      href: notif.metadata.action_url as string,
+      label: lang === 'fr' ? "Ouvrir l'action" : 'Open action',
+    };
+  }
+
+  if (notif.type === 'ACTION_REQUIRED' || notif.type === 'DOCUMENT_REQUEST') {
+    return {
+      href: notif.case_id
+        ? `/client-dashboard/documents?case_id=${encodeURIComponent(notif.case_id)}`
+        : '/client-dashboard/documents',
+      label: lang === 'fr' ? 'Traiter maintenant' : 'Handle now',
+    };
+  }
+
+  if ((notif.type === 'STATUS_UPDATE' || notif.type === 'COMPLIANCE_DECISION') && notif.case_id) {
+    return {
+      href: `/client-dashboard/case-files/${notif.case_id}`,
+      label: lang === 'fr' ? 'Voir le dossier' : 'View dossier',
+    };
+  }
+
+  if (notif.type === 'GENERAL') {
+    return {
+      href: '/client-dashboard/messages',
+      label: lang === 'fr' ? 'Voir les messages' : 'View messages',
+    };
+  }
+
+  return {
+    href: '/client-dashboard',
+    label: lang === 'fr' ? 'Ouvrir le portail' : 'Open portal',
+  };
 }
 
 export default function NotificationsPage() {
@@ -190,8 +236,25 @@ export default function NotificationsPage() {
     if (!isInDateRange(n.created_at, dateFilter)) return false;
     return true;
   });
+  const sortedFiltered = [...filtered].sort((a, b) => {
+    const score = (notif: Notification) => {
+      const priority = getNotificationPriority(notif);
+      const priorityScore = priority === 'URGENT' ? 3 : priority === 'NORMAL' ? 2 : 1;
+      const unreadScore = notif.is_read ? 0 : 1;
+      return priorityScore * 10 + unreadScore;
+    };
+    const diff = score(b) - score(a);
+    if (diff !== 0) return diff;
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
 
   const unreadCount = notifications.filter((n) => !n.is_read).length;
+  const urgentUnreadCount = notifications.filter(
+    (n) => !n.is_read && getNotificationPriority(n) === 'URGENT'
+  ).length;
+  const pendingActionCount = notifications.filter(
+    (n) => !n.is_read && (n.type === 'ACTION_REQUIRED' || n.type === 'DOCUMENT_REQUEST')
+  ).length;
 
   return (
     <DashboardLayout>
@@ -212,11 +275,19 @@ export default function NotificationsPage() {
                   ? `${notifications.length} notification${notifications.length !== 1 ? 's' : ''} - ${unreadCount} non lue${unreadCount !== 1 ? 's' : ''}`
                   : `${notifications.length} notification${notifications.length !== 1 ? 's' : ''} - ${unreadCount} unread`}
               </p>
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full border bg-red-50 text-red-700 border-red-200">
+                  {urgentUnreadCount} {lang === 'fr' ? 'urgente(s)' : 'urgent'}
+                </span>
+                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full border bg-amber-50 text-amber-700 border-amber-200">
+                  {pendingActionCount} {lang === 'fr' ? 'action(s) a traiter' : 'actions to handle'}
+                </span>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={fetchNotifications}
-                className="p-2 text-slate-500 hover:text-navy hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-2.5 text-slate-500 hover:text-navy hover:bg-slate-100 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30"
                 title={lang === 'fr' ? 'Actualiser' : 'Refresh'}
               >
                 <RefreshCw size={16} />
@@ -226,7 +297,7 @@ export default function NotificationsPage() {
                 <button
                   onClick={markAllAsRead}
                   disabled={markingAll}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-navy bg-navy/10 hover:bg-navy/20 rounded-lg transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-navy bg-navy/10 hover:bg-navy/20 rounded-lg transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30"
                 >
                   {markingAll ? <Loader2 size={13} className="animate-spin" /> : <CheckCheck size={13} />}
                   {lang === 'fr' ? 'Tout marquer lu' : 'Mark all read'}
@@ -236,7 +307,7 @@ export default function NotificationsPage() {
                 <button
                   onClick={deleteAllRead}
                   disabled={deletingAll}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200"
                 >
                   {deletingAll ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
                   {lang === 'fr' ? 'Supprimer lues' : 'Delete read'}
@@ -246,14 +317,14 @@ export default function NotificationsPage() {
           </div>
 
           {/* Filters */}
-          <div className="bg-white rounded-xl border border-slate-200 p-4 mb-4 flex flex-wrap gap-3">
+          <div className="bg-white rounded-xl border border-slate-200 p-4 mb-4 flex flex-wrap gap-2 sm:gap-3">
             {/* Read/Unread filter */}
             <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
               {(['all', 'unread', 'read'] as const).map((v) => (
                 <button
                   key={v}
                   onClick={() => setReadFilter(v)}
-                  className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${readFilter === v ? 'bg-white text-navy shadow-sm' : 'text-slate-500 hover:text-navy'}`}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30 ${readFilter === v ? 'bg-white text-navy shadow-sm' : 'text-slate-500 hover:text-navy'}`}
                 >
                   {v === 'all' ? (lang === 'fr' ? 'Toutes' : 'All') : v === 'unread' ? (lang === 'fr' ? 'Non lues' : 'Unread') : (lang === 'fr' ? 'Lues' : 'Read')}
                 </button>
@@ -265,7 +336,7 @@ export default function NotificationsPage() {
               <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value as NotificationType | 'ALL')}
-                className="appearance-none pl-3 pr-8 py-1.5 text-xs font-medium border border-slate-200 rounded-lg bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-navy/20 cursor-pointer"
+                className="appearance-none pl-3 pr-8 py-1.5 text-xs font-medium border border-slate-200 rounded-lg bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-navy/20 cursor-pointer min-w-[150px]"
               >
                 <option value="ALL">{lang === 'fr' ? 'Tous les types' : 'All types'}</option>
                 {(Object.keys(TYPE_CONFIG) as NotificationType[]).map((t) => (
@@ -280,7 +351,7 @@ export default function NotificationsPage() {
               <select
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
-                className="appearance-none pl-3 pr-8 py-1.5 text-xs font-medium border border-slate-200 rounded-lg bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-navy/20 cursor-pointer"
+                className="appearance-none pl-3 pr-8 py-1.5 text-xs font-medium border border-slate-200 rounded-lg bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-navy/20 cursor-pointer min-w-[150px]"
               >
                 {DATE_FILTERS.map((d) => (
                   <option key={d.value} value={d.value}>{lang === 'fr' ? d.labelFr : d.labelEn}</option>
@@ -300,7 +371,7 @@ export default function NotificationsPage() {
               <AlertCircle size={18} />
               <span className="text-sm">{error}</span>
             </div>
-          ) : filtered.length === 0 ? (
+          ) : sortedFiltered.length === 0 ? (
             <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
               <BellOff size={36} className="text-slate-300 mx-auto mb-3" />
               <p className="text-slate-500 font-medium">
@@ -312,9 +383,11 @@ export default function NotificationsPage() {
             </div>
           ) : (
             <div className="space-y-2">
-              {filtered.map((notif) => {
+              {sortedFiltered.map((notif) => {
                 const cfg = TYPE_CONFIG[notif.type];
                 const NotifIcon = cfg.icon;
+                const priority = getNotificationPriority(notif);
+                const action = getNotificationAction(notif, lang as 'fr' | 'en');
                 return (
                   <div
                     key={notif.id}
@@ -337,6 +410,26 @@ export default function NotificationsPage() {
                               <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${cfg.bg} ${cfg.color} ${cfg.border}`}>
                                 {lang === 'fr' ? cfg.labelFr : cfg.labelEn}
                               </span>
+                              <span
+                                className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
+                                  priority === 'URGENT'
+                                    ? 'bg-red-50 text-red-700 border-red-200'
+                                    : priority === 'NORMAL'
+                                      ? 'bg-blue-50 text-blue-700 border-blue-200'
+                                      : 'bg-slate-50 text-slate-600 border-slate-200'
+                                }`}
+                              >
+                                {priority === 'URGENT'
+                                  ? (lang === 'fr' ? 'Urgent' : 'Urgent')
+                                  : priority === 'NORMAL'
+                                    ? (lang === 'fr' ? 'Important' : 'Important')
+                                    : (lang === 'fr' ? 'Information' : 'Info')}
+                              </span>
+                              {notif.is_read && (
+                                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-200">
+                                  {lang === 'fr' ? 'Traitee' : 'Handled'}
+                                </span>
+                              )}
                             </div>
                             <p className="text-sm text-slate-500 mt-1 leading-relaxed">{notif.message}</p>
                             {notif.metadata?.case_title && (
@@ -345,9 +438,26 @@ export default function NotificationsPage() {
                               </p>
                             )}
                           </div>
-                          <div className="flex items-center gap-1 flex-shrink-0">
+                          <div className="hidden sm:flex items-center gap-1 flex-shrink-0">
                             <span className="text-xs text-slate-400 whitespace-nowrap">{formatDate(notif.created_at, lang as 'fr' | 'en')}</span>
                           </div>
+                        </div>
+                        <div className="sm:hidden mt-1">
+                          <span className="text-[11px] text-slate-400">{formatDate(notif.created_at, lang as 'fr' | 'en')}</span>
+                        </div>
+                        <div className="mt-3">
+                          <Link
+                            href={action.href}
+                            onClick={() => {
+                              if (!notif.is_read && can('notifications:manage_own')) {
+                                void markAsRead(notif.id);
+                              }
+                            }}
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-200 text-navy hover:bg-slate-50 hover:border-slate-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30"
+                          >
+                            {action.label}
+                            <ArrowRight size={12} />
+                          </Link>
                         </div>
                       </div>
                       {/* Per-notification actions - only for users with manage_own permission */}
@@ -356,7 +466,7 @@ export default function NotificationsPage() {
                           {notif.is_read ? (
                             <button
                               onClick={() => markAsUnread(notif.id)}
-                              className="p-1.5 text-slate-400 hover:text-navy hover:bg-slate-100 rounded-lg transition-colors"
+                              className="p-2 text-slate-400 hover:text-navy hover:bg-slate-100 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30"
                               title={lang === 'fr' ? 'Marquer non lue' : 'Mark unread'}
                             >
                               <BellOff size={14} />
@@ -364,7 +474,7 @@ export default function NotificationsPage() {
                           ) : (
                             <button
                               onClick={() => markAsRead(notif.id)}
-                              className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                              className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
                               title={lang === 'fr' ? 'Marquer comme lue' : 'Mark as read'}
                             >
                               <Check size={14} />
@@ -372,7 +482,7 @@ export default function NotificationsPage() {
                           )}
                           <button
                             onClick={() => deleteNotification(notif.id)}
-                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200"
                             title={lang === 'fr' ? 'Supprimer' : 'Delete'}
                           >
                             <X size={14} />

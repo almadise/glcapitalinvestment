@@ -3,29 +3,33 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardLayout from '../components/DashboardLayout';
+import Link from 'next/link';
 import {
   CheckCircle2,
   Circle,
   Clock,
-  AlertCircle,
+  AlertTriangle,
   FileText,
   Upload,
   ChevronRight,
   Loader2,
   RefreshCw,
   CalendarDays,
-  Info,
+  Flag,
 } from 'lucide-react';
-import Icon from '@/components/ui/AppIcon';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { caseFileLabel } from '@/lib/caseFileLabel';
+import {
+  getCaseStatusLabel,
+  type CaseStatus,
+} from '@/lib/caseStatus';
 
 
-type DossierStatus = 'RECU' | 'A_COMPLETER' | 'EN_ANALYSE' | 'EN_REVUE_COMPLIANCE' | 'ELIGIBLE' | 'SOUMIS_PARTENAIRE' | 'RETOUR_PARTENAIRE' | 'EN_NEGOCIATION' | 'CLOTURE' | 'REJETE';
+type DossierStatus = CaseStatus;
 
 interface CaseFile {
   id: string;
   ref: string | null;
-  project_name: string | null;
   status: DossierStatus;
   type: string;
   created_at: string;
@@ -42,46 +46,85 @@ interface StatusHistoryEntry {
   created_at: string;
 }
 
-const CLIENT_VISIBLE_STATUSES: { key: DossierStatus; labelFr: string; labelEn: string; descFr: string; descEn: string; icon: React.ElementType; color: string; bg: string; border: string }[] = [
+const PHASES: Array<{
+  key: 'SOUMIS' | 'PRE_ANALYSE' | 'CONFORMITE' | 'STRUCTURATION' | 'PRESENTATION' | 'DECISION';
+  statuses: DossierStatus[];
+  labelFr: string;
+  labelEn: string;
+  descFr: string;
+  descEn: string;
+  icon: React.ElementType;
+  color: string;
+  bg: string;
+  border: string;
+}> = [
   {
-    key: 'RECU',
-    labelFr: 'Dossier reçu',
-    labelEn: 'File received',
-    descFr: 'Votre dossier a été reçu et enregistré dans notre système.',
-    descEn: 'Your file has been received and registered in our system.',
+    key: 'SOUMIS',
+    statuses: ['RECU'],
+    labelFr: 'Soumis',
+    labelEn: 'Submitted',
+    descFr: 'Votre dossier a ete recu et enregistre dans notre systeme.',
+    descEn: 'Your dossier has been received and registered in our system.',
     icon: CheckCircle2,
     color: 'text-slate-600',
     bg: 'bg-slate-50',
     border: 'border-slate-200',
   },
   {
-    key: 'A_COMPLETER',
-    labelFr: 'À compléter',
-    labelEn: 'To complete',
-    descFr: 'Des documents ou informations complémentaires sont requis pour poursuivre l\'analyse.',
-    descEn: 'Additional documents or information are required to proceed with the analysis.',
-    icon: AlertCircle,
+    key: 'PRE_ANALYSE',
+    statuses: ['A_COMPLETER'],
+    labelFr: 'Pre-analyse',
+    labelEn: 'Pre-analysis',
+    descFr: 'Verification des pieces et informations essentielles avant instruction complete.',
+    descEn: 'Checking essential documents and information before full review.',
+    icon: AlertTriangle,
     color: 'text-orange-600',
     bg: 'bg-orange-50',
     border: 'border-orange-200',
   },
   {
-    key: 'ELIGIBLE',
-    labelFr: 'Éligible',
-    labelEn: 'Eligible',
-    descFr: 'Votre dossier a été validé et déclaré éligible au financement.',
-    descEn: 'Your file has been validated and declared eligible for financing.',
-    icon: CheckCircle2,
+    key: 'CONFORMITE',
+    statuses: ['EN_ANALYSE', 'EN_REVUE_COMPLIANCE'],
+    labelFr: 'Conformite',
+    labelEn: 'Compliance',
+    descFr: 'Analyse risque et conformite KYC/AML en cours.',
+    descEn: 'Risk and KYC/AML compliance analysis is in progress.',
+    icon: Clock,
+    color: 'text-blue-600',
+    bg: 'bg-blue-50',
+    border: 'border-blue-200',
+  },
+  {
+    key: 'STRUCTURATION',
+    statuses: ['ELIGIBLE'],
+    labelFr: 'Structuration',
+    labelEn: 'Structuring',
+    descFr: 'Le dossier est qualifie et prepare pour presentation institutionnelle.',
+    descEn: 'The dossier is qualified and prepared for institutional presentation.',
+    icon: Flag,
     color: 'text-emerald-600',
     bg: 'bg-emerald-50',
     border: 'border-emerald-200',
   },
   {
-    key: 'CLOTURE',
-    labelFr: 'Clôturé',
-    labelEn: 'Closed',
-    descFr: 'Le traitement de votre dossier est terminé.',
-    descEn: 'The processing of your file is complete.',
+    key: 'PRESENTATION',
+    statuses: ['SOUMIS_PARTENAIRE', 'RETOUR_PARTENAIRE'],
+    labelFr: 'Presentation',
+    labelEn: 'Presentation',
+    descFr: 'Dossier presente aux partenaires et retours en cours de traitement.',
+    descEn: 'Dossier submitted to partners, feedback is being processed.',
+    icon: FileText,
+    color: 'text-violet-600',
+    bg: 'bg-violet-50',
+    border: 'border-violet-200',
+  },
+  {
+    key: 'DECISION',
+    statuses: ['EN_NEGOCIATION', 'CLOTURE', 'REJETE'],
+    labelFr: 'Decision',
+    labelEn: 'Decision',
+    descFr: 'Negociation finale puis cloture ou reorientation du dossier.',
+    descEn: 'Final negotiation then closure or dossier reorientation.',
     icon: CheckCircle2,
     color: 'text-teal-600',
     bg: 'bg-teal-50',
@@ -120,11 +163,93 @@ const REQUIRED_DOCS_BY_STATUS: Record<string, { fr: string[]; en: string[] }> = 
   },
 };
 
-const INTERNAL_STATUSES: DossierStatus[] = ['EN_ANALYSE', 'EN_REVUE_COMPLIANCE', 'SOUMIS_PARTENAIRE', 'RETOUR_PARTENAIRE', 'EN_NEGOCIATION'];
+const VALID_STATUSES: DossierStatus[] = [
+  'RECU',
+  'A_COMPLETER',
+  'EN_ANALYSE',
+  'EN_REVUE_COMPLIANCE',
+  'ELIGIBLE',
+  'SOUMIS_PARTENAIRE',
+  'RETOUR_PARTENAIRE',
+  'EN_NEGOCIATION',
+  'CLOTURE',
+  'REJETE',
+];
 
-function getClientStatus(status: DossierStatus): DossierStatus {
-  if (INTERNAL_STATUSES.includes(status)) return 'ELIGIBLE';
-  return status;
+function isCaseStatus(value: string): value is DossierStatus {
+  return VALID_STATUSES.includes(value as DossierStatus);
+}
+
+function getPhaseIndex(status: DossierStatus): number {
+  return PHASES.findIndex((phase) => phase.statuses.includes(status));
+}
+
+function getNextStepAction(
+  status: DossierStatus,
+  lang: 'fr' | 'en'
+): { title: string; description: string; cta: string; href: string; severity: 'urgent' | 'neutral' } {
+  if (status === 'A_COMPLETER') {
+    return {
+      title: lang === 'fr' ? 'Action prioritaire : completer vos documents' : 'Priority action: complete your documents',
+      description:
+        lang === 'fr'
+          ? 'Des pieces sont manquantes. Leur depot permet de relancer immediatement le traitement.'
+          : 'Some documents are missing. Uploading them immediately resumes processing.',
+      cta: lang === 'fr' ? 'Deposer mes documents' : 'Upload my documents',
+      href: '/client-dashboard/documents',
+      severity: 'urgent',
+    };
+  }
+
+  if (status === 'RECU') {
+    return {
+      title: lang === 'fr' ? 'Prochaine etape : verification initiale' : 'Next step: initial verification',
+      description:
+        lang === 'fr'
+          ? 'Aucune action immediate requise. Vous serez notifie si des pieces sont necessaires.'
+          : 'No immediate action required. You will be notified if additional documents are needed.',
+      cta: lang === 'fr' ? 'Voir mes notifications' : 'View my notifications',
+      href: '/client-dashboard/notifications',
+      severity: 'neutral',
+    };
+  }
+
+  if (status === 'REJETE') {
+    return {
+      title: lang === 'fr' ? 'Dossier rejete : reorientation possible' : 'Dossier rejected: reorientation possible',
+      description:
+        lang === 'fr'
+          ? 'Vous pouvez soumettre un nouveau dossier avec les ajustements recommandes.'
+          : 'You can submit a new dossier with the recommended adjustments.',
+      cta: lang === 'fr' ? 'Creer un nouveau dossier' : 'Create a new dossier',
+      href: '/client-dashboard/new-case-file',
+      severity: 'neutral',
+    };
+  }
+
+  if (status === 'CLOTURE') {
+    return {
+      title: lang === 'fr' ? 'Dossier finalise' : 'Dossier completed',
+      description:
+        lang === 'fr'
+          ? 'Le traitement est termine. Consultez vos documents ou soumettez un nouveau dossier.'
+          : 'Processing is complete. Review your documents or submit a new dossier.',
+      cta: lang === 'fr' ? 'Voir mes dossiers' : 'View my dossiers',
+      href: '/client-dashboard/case-files',
+      severity: 'neutral',
+    };
+  }
+
+  return {
+    title: lang === 'fr' ? 'Prochaine etape : suivi en cours' : 'Next step: ongoing follow-up',
+    description:
+      lang === 'fr'
+        ? 'Votre dossier progresse. Consultez les messages pour les mises a jour de votre charge.'
+        : 'Your dossier is progressing. Check messages for updates from your manager.',
+    cta: lang === 'fr' ? 'Voir mes messages' : 'View my messages',
+    href: '/client-dashboard/messages',
+    severity: 'neutral',
+  };
 }
 
 function formatDate(dateStr: string, lang: string): string {
@@ -140,12 +265,12 @@ function formatDate(dateStr: string, lang: string): string {
 
 export default function DossierTimelinePage() {
   const { user } = useAuth();
+  const { lang } = useLanguage();
   const [cases, setCases] = useState<CaseFile[]>([]);
   const [selectedCase, setSelectedCase] = useState<CaseFile | null>(null);
   const [history, setHistory] = useState<StatusHistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(false);
-  const [lang] = useState<'fr' | 'en'>('fr');
 
   const fetchCases = useCallback(async () => {
     if (!user) return;
@@ -153,13 +278,12 @@ export default function DossierTimelinePage() {
     const supabase = createClient();
     const { data } = await supabase
       .from('case_files')
-      .select('id, ref, project_name, status, type, created_at, updated_at, project_description')
+      .select('id, ref, status, type, created_at, updated_at, project_description')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
     const mapped: CaseFile[] = (data || []).map((row: any) => ({
       id: row.id,
       ref: row.ref ?? null,
-      project_name: row.project_name ?? null,
       status: row.status as DossierStatus,
       type: row.type,
       created_at: row.created_at,
@@ -193,9 +317,10 @@ export default function DossierTimelinePage() {
     if (selectedCase) fetchHistory(selectedCase.id);
   }, [selectedCase, fetchHistory]);
 
-  const clientStatus = selectedCase ? getClientStatus(selectedCase.status as DossierStatus) : null;
-  const currentStepIndex = CLIENT_VISIBLE_STATUSES.findIndex((s) => s.key === clientStatus);
-  const requiredDocs = clientStatus ? (REQUIRED_DOCS_BY_STATUS[clientStatus] || REQUIRED_DOCS_BY_STATUS['RECU']) : null;
+  const currentStatus = selectedCase?.status ?? null;
+  const currentStepIndex = currentStatus ? getPhaseIndex(currentStatus) : -1;
+  const requiredDocs = currentStatus ? (REQUIRED_DOCS_BY_STATUS[currentStatus] || REQUIRED_DOCS_BY_STATUS['RECU']) : null;
+  const nextStepAction = currentStatus ? getNextStepAction(currentStatus, lang as 'fr' | 'en') : null;
 
   return (
     <DashboardLayout>
@@ -232,8 +357,7 @@ export default function DossierTimelinePage() {
               </button>
             </div>
             {cases.map((c) => {
-              const cs = getClientStatus(c.status as DossierStatus);
-              const step = CLIENT_VISIBLE_STATUSES.find((s) => s.key === cs);
+              const step = PHASES.find((phase) => phase.statuses.includes(c.status));
               const isSelected = selectedCase?.id === c.id;
               return (
                 <button
@@ -250,8 +374,8 @@ export default function DossierTimelinePage() {
                       <p className="text-sm font-semibold text-navy truncate">{caseFileLabel(c)}</p>
                       <p className="text-xs text-slate-400 mt-0.5">{c.type}</p>
                     </div>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 ${step?.color} ${step?.bg} ${step?.border}`}>
-                      {step ? (lang === 'fr' ? step.labelFr : step.labelEn) : cs}
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 ${step?.color ?? 'text-slate-600'} ${step?.bg ?? 'bg-slate-50'} ${step?.border ?? 'border-slate-200'}`}>
+                      {step ? (lang === 'fr' ? step.labelFr : step.labelEn) : getCaseStatusLabel(c.status, lang as 'fr' | 'en')}
                     </span>
                   </div>
                   <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
@@ -275,10 +399,9 @@ export default function DossierTimelinePage() {
                   {/* Connector line */}
                   <div className="absolute left-5 top-5 bottom-5 w-0.5 bg-slate-100" />
                   <div className="space-y-0">
-                    {CLIENT_VISIBLE_STATUSES.map((step, idx) => {
+                    {PHASES.map((step, idx) => {
                       const isCompleted = idx < currentStepIndex;
                       const isCurrent = idx === currentStepIndex;
-                      const isPending = idx > currentStepIndex;
                       const Icon = step.icon;
                       return (
                         <div key={step.key} className="relative flex gap-4 pb-6 last:pb-0">
@@ -336,19 +459,61 @@ export default function DossierTimelinePage() {
                 </div>
               </div>
 
+              {nextStepAction && (
+                <div
+                  className={`rounded-xl border p-5 ${
+                    nextStepAction.severity === 'urgent'
+                      ? 'bg-orange-50 border-orange-200'
+                      : 'bg-blue-50 border-blue-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Flag
+                      size={16}
+                      className={nextStepAction.severity === 'urgent' ? 'text-orange-600' : 'text-blue-600'}
+                    />
+                    <h3
+                      className={`text-sm font-semibold ${
+                        nextStepAction.severity === 'urgent' ? 'text-orange-700' : 'text-blue-700'
+                      }`}
+                    >
+                      {nextStepAction.title}
+                    </h3>
+                  </div>
+                  <p
+                    className={`text-sm ${
+                      nextStepAction.severity === 'urgent' ? 'text-orange-800' : 'text-blue-800'
+                    }`}
+                  >
+                    {nextStepAction.description}
+                  </p>
+                  <Link
+                    href={nextStepAction.href}
+                    className={`mt-4 inline-flex items-center gap-2 text-xs font-semibold text-white px-4 py-2 rounded-lg transition-colors ${
+                      nextStepAction.severity === 'urgent'
+                        ? 'bg-orange-500 hover:bg-orange-600'
+                        : 'bg-blue-600 hover:bg-blue-700'
+                    }`}
+                  >
+                    {nextStepAction.severity === 'urgent' ? <Upload size={13} /> : <ChevronRight size={13} />}
+                    {nextStepAction.cta}
+                  </Link>
+                </div>
+              )}
+
               {/* Required Actions / Documents */}
               {requiredDocs && (
                 <div className={`rounded-xl border p-5 ${
-                  clientStatus === 'A_COMPLETER' ?'bg-orange-50 border-orange-200' :'bg-slate-50 border-slate-200'
+                  currentStatus === 'A_COMPLETER' ?'bg-orange-50 border-orange-200' :'bg-slate-50 border-slate-200'
                 }`}>
                   <div className="flex items-center gap-2 mb-3">
-                    {clientStatus === 'A_COMPLETER' ? (
+                    {currentStatus === 'A_COMPLETER' ? (
                       <Upload size={16} className="text-orange-600" />
                     ) : (
-                      <Info size={16} className="text-slate-500" />
+                      <Flag size={16} className="text-slate-500" />
                     )}
-                    <h3 className={`text-sm font-semibold ${clientStatus === 'A_COMPLETER' ? 'text-orange-700' : 'text-slate-700'}`}>
-                      {clientStatus === 'A_COMPLETER'
+                    <h3 className={`text-sm font-semibold ${currentStatus === 'A_COMPLETER' ? 'text-orange-700' : 'text-slate-700'}`}>
+                      {currentStatus === 'A_COMPLETER'
                         ? (lang === 'fr' ? 'Documents requis' : 'Required documents')
                         : (lang === 'fr' ? 'Informations' : 'Information')}
                     </h3>
@@ -356,19 +521,19 @@ export default function DossierTimelinePage() {
                   <ul className="space-y-2">
                     {(lang === 'fr' ? requiredDocs.fr : requiredDocs.en).map((doc, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm">
-                        <ChevronRight size={14} className={`mt-0.5 flex-shrink-0 ${clientStatus === 'A_COMPLETER' ? 'text-orange-500' : 'text-slate-400'}`} />
-                        <span className={clientStatus === 'A_COMPLETER' ? 'text-orange-800' : 'text-slate-600'}>{doc}</span>
+                        <ChevronRight size={14} className={`mt-0.5 flex-shrink-0 ${currentStatus === 'A_COMPLETER' ? 'text-orange-500' : 'text-slate-400'}`} />
+                        <span className={currentStatus === 'A_COMPLETER' ? 'text-orange-800' : 'text-slate-600'}>{doc}</span>
                       </li>
                     ))}
                   </ul>
-                  {clientStatus === 'A_COMPLETER' && (
-                    <a
+                  {currentStatus === 'A_COMPLETER' && (
+                    <Link
                       href="/client-dashboard/documents"
                       className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-white bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-lg transition-colors"
                     >
                       <Upload size={13} />
                       {lang === 'fr' ? 'Déposer mes documents' : 'Upload my documents'}
-                    </a>
+                    </Link>
                   )}
                 </div>
               )}
@@ -389,9 +554,8 @@ export default function DossierTimelinePage() {
                 ) : (
                   <div className="space-y-3">
                     {history.map((entry) => {
-                      const newStep = CLIENT_VISIBLE_STATUSES.find((s) => s.key === entry.new_status);
-                      const label = newStep
-                        ? (lang === 'fr' ? newStep.labelFr : newStep.labelEn)
+                      const label = isCaseStatus(entry.new_status)
+                        ? getCaseStatusLabel(entry.new_status, lang as 'fr' | 'en')
                         : entry.new_status;
                       return (
                         <div key={entry.id} className="flex items-start gap-3 text-xs">

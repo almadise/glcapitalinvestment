@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardSidebar from './DashboardSidebar';
@@ -11,11 +11,37 @@ import DossierCharts from './DossierCharts';
 import NotificationSettings from './NotificationSettings';
 import { Toaster } from 'sonner';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Loader2, AlertCircle, LayoutDashboard, FolderOpen, Bell, ShieldOff } from 'lucide-react';
+import { Loader2, AlertCircle, LayoutDashboard, FolderOpen, Bell, ShieldOff, Flag, FileWarning } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import WalkthroughModal from './WalkthroughModal';
 import { usePermissions } from '@/hooks/usePermissions';
+import {
+  ACTIVE_CASE_STATUSES,
+  CASE_STATUS_ORDER,
+  getCaseProgressPercent,
+  getCaseStatusMeta,
+  getNextMilestoneLabel,
+  type CaseStatus,
+} from '@/lib/caseStatus';
+
+type OverviewSummary = {
+  totalCases: number;
+  activeCases: number;
+  aCompleterCases: number;
+  pendingDocuments: number;
+  currentStatus: CaseStatus | null;
+  lastActivityAt: string | null;
+};
+
+const EMPTY_OVERVIEW: OverviewSummary = {
+  totalCases: 0,
+  activeCases: 0,
+  aCompleterCases: 0,
+  pendingDocuments: 0,
+  currentStatus: null,
+  lastActivityAt: null,
+};
 
 export default function DashboardLayout({ children }: { children?: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -26,7 +52,7 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
   const { can } = usePermissions();
   const router = useRouter();
   const supabase = createClient();
-  const [hasACompleter, setHasACompleter] = useState(false);
+  const [overviewSummary, setOverviewSummary] = useState<OverviewSummary>(EMPTY_OVERVIEW);
   const [lastUpdated, setLastUpdated] = useState<string>('');
 
   useEffect(() => {
@@ -39,19 +65,69 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
     );
   }, [lang]);
 
-  useEffect(() => {
+  const fetchOverviewSummary = useCallback(async () => {
     if (!user) return;
-    const checkACompleter = async () => {
-      const { data } = await supabase
-        .from('case_files')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('status', 'A_COMPLETER')
-        .limit(1);
-      setHasACompleter((data?.length || 0) > 0);
-    };
-    checkACompleter();
+    try {
+      const [{ data: cases }, { count: pendingDocuments }] = await Promise.all([
+        supabase
+          .from('case_files')
+          .select('status, updated_at, created_at')
+          .eq('user_id', user.id),
+        supabase
+          .from('dossier_documents')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .eq('scan_passed', false),
+      ]);
+
+      const allCases = (cases ?? []) as Array<{ status: CaseStatus; updated_at: string | null; created_at: string | null }>;
+      const activeCases = allCases.filter((item) => ACTIVE_CASE_STATUSES.includes(item.status));
+      const aCompleterCases = allCases.filter((item) => item.status === 'A_COMPLETER');
+
+      const statusSet = new Set(activeCases.map((item) => item.status));
+      const currentStatus =
+        [...CASE_STATUS_ORDER].reverse().find((status) => statusSet.has(status)) ??
+        allCases
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.updated_at ?? b.created_at ?? 0).getTime() -
+              new Date(a.updated_at ?? a.created_at ?? 0).getTime()
+          )[0]?.status ??
+        null;
+
+      const lastActivityAt = allCases
+        .map((item) => item.updated_at ?? item.created_at)
+        .filter(Boolean)
+        .sort((a, b) => new Date(b as string).getTime() - new Date(a as string).getTime())[0] ?? null;
+
+      setOverviewSummary({
+        totalCases: allCases.length,
+        activeCases: activeCases.length,
+        aCompleterCases: aCompleterCases.length,
+        pendingDocuments: pendingDocuments || 0,
+        currentStatus,
+        lastActivityAt,
+      });
+    } catch {
+      setOverviewSummary(EMPTY_OVERVIEW);
+    }
   }, [user]);
+
+  useEffect(() => {
+    fetchOverviewSummary();
+    if (!user) return;
+
+    const channel = supabase
+      .channel('overview_summary_updates')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'case_files', filter: `user_id=eq.${user.id}` }, fetchOverviewSummary)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'dossier_documents', filter: `user_id=eq.${user.id}` }, fetchOverviewSummary)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, fetchOverviewSummary]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -110,6 +186,38 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
 
   const canViewCaseFiles = can('case_files:view_own') || can('case_files:view_all') || userRole === null;
   const canViewNotifications = can('notifications:view_own') || can('notifications:view_all') || userRole === null;
+  const statusMeta = overviewSummary.currentStatus ? getCaseStatusMeta(overviewSummary.currentStatus, lang) : null;
+  const progress = overviewSummary.currentStatus ? getCaseProgressPercent(overviewSummary.currentStatus) : 0;
+  const nextMilestone = overviewSummary.currentStatus ? getNextMilestoneLabel(overviewSummary.currentStatus, lang) : null;
+  const actionsRequired = [
+    overviewSummary.aCompleterCases > 0
+      ? {
+          key: 'missing-docs',
+          title: lang === 'fr' ? 'Documents manquants à compléter' : 'Missing documents to complete',
+          count: overviewSummary.aCompleterCases,
+          href: '/client-dashboard/case-files',
+          cta: lang === 'fr' ? 'Compléter maintenant' : 'Complete now',
+          urgency: lang === 'fr' ? 'Urgent' : 'Urgent',
+        }
+      : null,
+    overviewSummary.pendingDocuments > 0
+      ? {
+          key: 'pending-review',
+          title: lang === 'fr' ? 'Documents en attente de validation' : 'Documents pending validation',
+          count: overviewSummary.pendingDocuments,
+          href: '/client-dashboard/documents',
+          cta: lang === 'fr' ? 'Vérifier les documents' : 'Review documents',
+          urgency: lang === 'fr' ? 'Cette semaine' : 'This week',
+        }
+      : null,
+  ].filter(Boolean) as Array<{
+    key: string;
+    title: string;
+    count: number;
+    href: string;
+    cta: string;
+    urgency: string;
+  }>;
 
   const tabs = [
     { id: 'overview' as const, label: lang === 'fr' ? 'Vue d\'ensemble' : 'Overview', icon: LayoutDashboard },
@@ -149,7 +257,7 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
 
         <main className="flex-1 px-3 sm:px-4 lg:px-6 xl:px-8 2xl:px-10 py-4 sm:py-6 max-w-screen-2xl w-full mx-auto overflow-x-hidden">
           {/* A_COMPLETER global banner - only for users who can view their own case files */}
-          {hasACompleter && canViewCaseFiles && (
+          {overviewSummary.aCompleterCases > 0 && canViewCaseFiles && (
             <div className="flex items-start gap-4 bg-orange-50 border-2 border-orange-300 rounded-2xl p-4 mb-5 shadow-sm">
               <div className="flex-shrink-0 w-9 h-9 bg-orange-100 rounded-xl flex items-center justify-center">
                 <AlertCircle size={18} className="text-orange-600" />
@@ -205,6 +313,114 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
               {/* Tab content */}
               {activeTab === 'overview' && (
                 <>
+                  <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
+                    <div className="xl:col-span-2 card-surface p-5">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            {lang === 'fr' ? 'Statut global du dossier' : 'Global dossier status'}
+                          </p>
+                          <h3 className="font-display text-lg sm:text-xl font-bold text-navy mt-1">
+                            {statusMeta
+                              ? statusMeta.label
+                              : lang === 'fr'
+                                ? 'Aucun dossier actif'
+                                : 'No active dossier'}
+                          </h3>
+                          <p className="text-xs text-slate-500 mt-1.5">
+                            {nextMilestone
+                              ? (lang === 'fr' ? `Prochain jalon: ${nextMilestone}` : `Next milestone: ${nextMilestone}`)
+                              : (lang === 'fr' ? 'Soumettez un dossier pour démarrer votre parcours.' : 'Submit a dossier to start your journey.')}
+                          </p>
+                        </div>
+                        {statusMeta ? (
+                          <span className={`status-badge border whitespace-nowrap ${statusMeta.badgeClass}`}>
+                            <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
+                            {statusMeta.label}
+                          </span>
+                        ) : null}
+                      </div>
+                      <div className="mt-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs text-slate-500">
+                            {lang === 'fr' ? 'Progression estimée' : 'Estimated progress'}
+                          </span>
+                          <span className="text-xs font-semibold text-navy font-mono-data">{progress}%</span>
+                        </div>
+                        <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-[#0F2557] via-[#C9A84C] to-emerald-500 transition-all duration-500"
+                            style={{ width: `${progress}%` }}
+                          />
+                        </div>
+                      </div>
+                      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div className="rounded-xl border border-slate-200 px-3 py-2.5">
+                          <p className="text-[11px] text-slate-500">{lang === 'fr' ? 'Dossiers actifs' : 'Active dossiers'}</p>
+                          <p className="text-lg font-semibold text-navy font-mono-data">{overviewSummary.activeCases}</p>
+                        </div>
+                        <div className="rounded-xl border border-slate-200 px-3 py-2.5">
+                          <p className="text-[11px] text-slate-500">{lang === 'fr' ? 'Total dossiers' : 'Total dossiers'}</p>
+                          <p className="text-lg font-semibold text-navy font-mono-data">{overviewSummary.totalCases}</p>
+                        </div>
+                        <div className="rounded-xl border border-slate-200 px-3 py-2.5 col-span-2 sm:col-span-1">
+                          <p className="text-[11px] text-slate-500">{lang === 'fr' ? 'Dernière activité' : 'Last activity'}</p>
+                          <p className="text-xs font-semibold text-navy mt-1">
+                            {overviewSummary.lastActivityAt
+                              ? new Date(overviewSummary.lastActivityAt).toLocaleString(
+                                  lang === 'fr' ? 'fr-FR' : 'en-US',
+                                  { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }
+                                )
+                              : (lang === 'fr' ? 'Aucune activité' : 'No activity yet')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card-surface p-5">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Flag size={15} className="text-gold" />
+                        <h3 className="font-display text-base font-bold text-navy">
+                          {lang === 'fr' ? 'Actions requises' : 'Required actions'}
+                        </h3>
+                      </div>
+                      {actionsRequired.length === 0 ? (
+                        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-3">
+                          <p className="text-sm font-semibold text-emerald-700">
+                            {lang === 'fr' ? 'Aucune action urgente' : 'No urgent action'}
+                          </p>
+                          <p className="text-xs text-emerald-600 mt-1">
+                            {lang === 'fr' ? 'Votre dossier est à jour pour le moment.' : 'Your dossier is currently up to date.'}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="space-y-2.5">
+                          {actionsRequired.map((action) => (
+                            <Link
+                              key={action.key}
+                              href={action.href}
+                              className="block rounded-xl border border-amber-200 bg-amber-50/70 px-3.5 py-3 hover:bg-amber-50 transition-colors"
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="min-w-0">
+                                  <p className="text-xs font-semibold text-amber-900 leading-snug">{action.title}</p>
+                                  <p className="text-[11px] text-amber-700 mt-1">
+                                    {action.count} {lang === 'fr' ? 'dossier(s) concerné(s)' : 'dossier(s) impacted'}
+                                  </p>
+                                </div>
+                                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white text-amber-800 border border-amber-200 whitespace-nowrap">
+                                  {action.urgency}
+                                </span>
+                              </div>
+                              <div className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900">
+                                <FileWarning size={13} />
+                                {action.cta}
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   <KPIBentoGrid />
                   <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 mt-4 sm:mt-6">
                     <div className="xl:col-span-2">

@@ -81,14 +81,14 @@ function DownloadsContent() {
     try {
       const { data, error: fetchError } = await supabase
         .from('case_files')
-        .select('id, ref, project_name, type, status, created_at, updated_at, project_description')
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       if (fetchError) throw fetchError;
       const mapped: CaseFile[] = (data || []).map((row: any) => ({
         id: row.id,
         title: caseFileLabel(row),
-        type: row.type || 'Project Finance',
+        type: row.type || row.metadata?.type || 'Project Finance',
         status: row.status as CaseFileStatus,
         created_at: row.created_at,
         updated_at: row.updated_at,

@@ -18,9 +18,9 @@ import { toast } from 'sonner';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { createClient } from '@/lib/supabase/client';
+import { CASE_STATUS_ORDER, getCaseStatusMeta, type CaseStatus } from '@/lib/caseStatus';
 
-type DossierStatus =
-  | 'RECU' | 'A_COMPLETER' | 'EN_ANALYSE' | 'EN_REVUE_COMPLIANCE' | 'ELIGIBLE' |'SOUMIS_PARTENAIRE' | 'RETOUR_PARTENAIRE' | 'EN_NEGOCIATION' | 'CLOTURE' | 'REJETE';
+type DossierStatus = CaseStatus;
 
 type Dossier = {
   id: string;
@@ -34,19 +34,6 @@ type Dossier = {
   dateCreation: string;
   derniereMaj: string;
 };
-
-const getStatusConfig = (lang: 'fr' | 'en'): Record<DossierStatus, { label: string; classes: string }> => ({
-  RECU: { label: lang === 'fr' ? 'Reçu' : 'Received', classes: 'bg-slate-100 text-slate-600 border-slate-200' },
-  A_COMPLETER: { label: lang === 'fr' ? 'À compléter' : 'To complete', classes: 'bg-amber-100 text-amber-700 border-amber-200' },
-  EN_ANALYSE: { label: lang === 'fr' ? 'En analyse' : 'In analysis', classes: 'bg-blue-100 text-blue-700 border-blue-200' },
-  EN_REVUE_COMPLIANCE: { label: lang === 'fr' ? 'En revue' : 'In review', classes: 'bg-purple-100 text-purple-700 border-purple-200' },
-  ELIGIBLE: { label: lang === 'fr' ? 'Éligible' : 'Eligible', classes: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
-  SOUMIS_PARTENAIRE: { label: lang === 'fr' ? 'Soumis' : 'Submitted', classes: 'bg-gold/10 text-gold-dark border-gold/30' },
-  RETOUR_PARTENAIRE: { label: lang === 'fr' ? 'Retour partenaire' : 'Partner feedback', classes: 'bg-orange-100 text-orange-700 border-orange-200' },
-  EN_NEGOCIATION: { label: lang === 'fr' ? 'En négociation' : 'In negotiation', classes: 'bg-teal-100 text-teal-700 border-teal-200' },
-  CLOTURE: { label: lang === 'fr' ? 'Clôturé' : 'Closed', classes: 'bg-navy/10 text-navy border-navy/20' },
-  REJETE: { label: lang === 'fr' ? 'Rejeté' : 'Rejected', classes: 'bg-red-100 text-red-700 border-red-200' },
-});
 
 type SortKey = keyof Dossier;
 
@@ -64,7 +51,12 @@ export default function DossierTable() {
   const { user } = useAuth();
   const supabase = createClient();
 
-  const statusConfig = getStatusConfig(lang);
+  const statusConfig = Object.fromEntries(
+    CASE_STATUS_ORDER.map((status) => {
+      const meta = getCaseStatusMeta(status, lang);
+      return [status, { label: meta.label, classes: meta.badgeClass }];
+    })
+  ) as Record<DossierStatus, { label: string; classes: string }>;
 
   const fetchDossiers = useCallback(async () => {
     if (!user) return;
