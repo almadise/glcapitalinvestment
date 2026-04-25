@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createServiceRoleClient } from '@/lib/supabase/service';
+import { escapeHtml } from '@/lib/apiSecurity';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
 const EMAIL_FROM =
@@ -11,14 +12,22 @@ function isAuthorizedCron(req: NextRequest): boolean {
   const authHeader = req.headers.get('authorization') || '';
   const hasVercelCronHeader = req.headers.has('x-vercel-cron');
 
-  if (cronSecret) {
-    return authHeader === `Bearer ${cronSecret}`;
+  // In production, CRON_SECRET is mandatory to avoid header spoofing.
+  if (process.env.NODE_ENV === 'production' && !cronSecret) {
+    return false;
   }
-  return hasVercelCronHeader;
+
+  if (cronSecret && authHeader === `Bearer ${cronSecret}`) {
+    return true;
+  }
+  return process.env.NODE_ENV !== 'production' && hasVercelCronHeader;
 }
 
 function buildReminderHtml(clientName: string, caseTitle: string, caseRef: string): string {
   const docsLink = `${SITE_URL}/client-dashboard/documents`;
+  const safeClientName = escapeHtml(clientName);
+  const safeCaseTitle = escapeHtml(caseTitle);
+  const safeCaseRef = escapeHtml(caseRef);
   return `<!DOCTYPE html>
 <html lang="fr">
 <head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>Rappel documents</title></head>
@@ -32,9 +41,9 @@ function buildReminderHtml(clientName: string, caseTitle: string, caseRef: strin
         </td></tr>
         <tr><td style="background:#c9a84c;height:3px;"></td></tr>
         <tr><td style="background:#fff;padding:28px 34px;">
-          <p style="margin:0 0 10px;color:#1E2D4A;font-size:15px;">Bonjour ${clientName},</p>
+          <p style="margin:0 0 10px;color:#1E2D4A;font-size:15px;">Bonjour ${safeClientName},</p>
           <p style="margin:0 0 14px;color:#475569;font-size:14px;line-height:1.7;">
-            Votre dossier <strong>${caseTitle}</strong> (${caseRef}) est toujours en attente de pièces complémentaires.
+            Votre dossier <strong>${safeCaseTitle}</strong> (${safeCaseRef}) est toujours en attente de pièces complémentaires.
             Pour relancer son traitement, merci de déposer les documents requis.
           </p>
           <p style="margin:0 0 20px;color:#475569;font-size:14px;line-height:1.7;">
@@ -86,7 +95,9 @@ export async function GET(req: NextRequest) {
   for (const row of staleCases || []) {
     const caseId = String(row.id);
     const email = row.contact_email?.trim();
-    if (!email) {
+    const normalizedEmail = email?.toLowerCase() || '';
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail);
+    if (!isValidEmail) {
       skipped += 1;
       continue;
     }
@@ -109,7 +120,7 @@ export async function GET(req: NextRequest) {
     try {
       await resend.emails.send({
         from: EMAIL_FROM,
-        to: [email],
+        to: [normalizedEmail],
         subject: `Rappel – Documents en attente : ${caseTitle}`,
         html: buildReminderHtml(clientName, caseTitle, caseRef),
       });

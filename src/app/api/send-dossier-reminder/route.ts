@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { requireInternalApiAccess } from '@/lib/apiSecurity';
+import { escapeHtml, requireInternalApiAccess } from '@/lib/apiSecurity';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
 const EMAIL_FROM =
@@ -21,41 +21,45 @@ function buildReminderHtml(params: {
   const portalLink = `${SITE_URL}/client-dashboard/dossier-timeline`;
   const docsLink = `${SITE_URL}/client-dashboard/documents`;
 
+  const safeClientName = escapeHtml(clientName);
+  const safeCaseTitle = escapeHtml(caseTitle);
+  const safeCaseId = escapeHtml(caseId);
+
   const contentByType: Record<ReminderType, { subject: string; badge: string; headline: string; body: string; ctaLabel: string; ctaLink: string }> = {
     incomplete: {
-      subject: isFr ? `Action requise – Dossier incomplet : ${caseTitle}` : `Action required – Incomplete file: ${caseTitle}`,
+      subject: isFr ? `Action requise – Dossier incomplet : ${safeCaseTitle}` : `Action required – Incomplete file: ${safeCaseTitle}`,
       badge: isFr ? '⚠️ Dossier incomplet' : '⚠️ Incomplete file',
       headline: isFr ? 'Des documents sont manquants' : 'Documents are missing',
       body: isFr
-        ? `Votre dossier "${caseTitle}" nécessite des documents complémentaires pour être traité. Veuillez accéder à votre espace client pour déposer les pièces manquantes dès que possible.`
-        : `Your file "${caseTitle}" requires additional documents to be processed. Please access your client portal to upload the missing documents as soon as possible.`,
+        ? `Votre dossier "${safeCaseTitle}" nécessite des documents complémentaires pour être traité. Veuillez accéder à votre espace client pour déposer les pièces manquantes dès que possible.`
+        : `Your file "${safeCaseTitle}" requires additional documents to be processed. Please access your client portal to upload the missing documents as soon as possible.`,
       ctaLabel: isFr ? 'Déposer mes documents' : 'Upload my documents',
       ctaLink: docsLink,
     },
     pending_docs: {
-      subject: isFr ? `Rappel – Documents en attente : ${caseTitle}` : `Reminder – Pending documents: ${caseTitle}`,
+      subject: isFr ? `Rappel – Documents en attente : ${safeCaseTitle}` : `Reminder – Pending documents: ${safeCaseTitle}`,
       badge: isFr ? '📋 Documents requis' : '📋 Documents required',
       headline: isFr ? 'Votre dossier attend vos documents' : 'Your file is waiting for your documents',
       body: isFr
-        ? `Nous attendons toujours les documents requis pour votre dossier "${caseTitle}". Leur réception permettra de relancer immédiatement l'instruction de votre dossier.`
-        : `We are still waiting for the required documents for your file "${caseTitle}". Their receipt will immediately resume the processing of your file.`,
+        ? `Nous attendons toujours les documents requis pour votre dossier "${safeCaseTitle}". Leur réception permettra de relancer immédiatement l'instruction de votre dossier.`
+        : `We are still waiting for the required documents for your file "${safeCaseTitle}". Their receipt will immediately resume the processing of your file.`,
       ctaLabel: isFr ? 'Accéder à mon espace' : 'Access my portal',
       ctaLink: docsLink,
     },
     no_action: {
-      subject: isFr ? `Rappel de suivi – ${caseTitle}` : `Follow-up reminder – ${caseTitle}`,
+      subject: isFr ? `Rappel de suivi – ${safeCaseTitle}` : `Follow-up reminder – ${safeCaseTitle}`,
       badge: isFr ? '🔔 Mise à jour dossier' : '🔔 File update',
       headline: isFr ? 'Un point sur votre dossier' : 'An update on your file',
       body: isFr
-        ? `Nous souhaitons vous informer que votre dossier "${caseTitle}" est en cours de traitement. Consultez votre espace client pour suivre l'avancement en temps réel.`
-        : `We would like to inform you that your file "${caseTitle}" is currently being processed. Check your client portal to track progress in real time.`,
+        ? `Nous souhaitons vous informer que votre dossier "${safeCaseTitle}" est en cours de traitement. Consultez votre espace client pour suivre l'avancement en temps réel.`
+        : `We would like to inform you that your file "${safeCaseTitle}" is currently being processed. Check your client portal to track progress in real time.`,
       ctaLabel: isFr ? 'Suivre mon dossier' : 'Track my file',
       ctaLink: portalLink,
     },
   };
 
   const content = contentByType[reminderType];
-  const finalBody = customMessage || content.body;
+  const finalBody = customMessage ? escapeHtml(customMessage) : content.body;
 
   return `<!DOCTYPE html>
 <html lang="${lang}">
@@ -74,7 +78,7 @@ function buildReminderHtml(params: {
         </td></tr>
         <tr><td style="background:#c9a84c;height:3px;"></td></tr>
         <tr><td style="background:#ffffff;padding:36px 40px 0;">
-          <p style="margin:0 0 8px;color:#1E2D4A;font-size:16px;font-weight:600;">${isFr ? `Bonjour ${clientName},` : `Dear ${clientName},`}</p>
+          <p style="margin:0 0 8px;color:#1E2D4A;font-size:16px;font-weight:600;">${isFr ? `Bonjour ${safeClientName},` : `Dear ${safeClientName},`}</p>
           <h2 style="margin:0 0 16px;color:#1E2D4A;font-size:20px;font-weight:700;">${content.headline}</h2>
           <p style="margin:0 0 24px;color:#475569;font-size:14px;line-height:1.7;">${finalBody}</p>
         </td></tr>
@@ -82,8 +86,8 @@ function buildReminderHtml(params: {
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr><td style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px 20px;">
               <span style="color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">${isFr ? 'Référence dossier' : 'File reference'}</span>
-              <p style="margin:4px 0 0;color:#1E2D4A;font-size:13px;font-family:monospace;">${caseId}</p>
-              <p style="margin:4px 0 0;color:#1E2D4A;font-size:14px;font-weight:600;">${caseTitle}</p>
+              <p style="margin:4px 0 0;color:#1E2D4A;font-size:13px;font-family:monospace;">${safeCaseId}</p>
+              <p style="margin:4px 0 0;color:#1E2D4A;font-size:14px;font-weight:600;">${safeCaseTitle}</p>
             </td></tr>
           </table>
         </td></tr>
@@ -139,6 +143,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Missing required fields: clientEmail, clientName, caseTitle, caseId' }, { status: 400 });
   }
 
+  const normalizedEmail = clientEmail.trim().toLowerCase();
+  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail);
+  if (!isValidEmail) {
+    return NextResponse.json({ success: false, error: 'Invalid clientEmail format' }, { status: 400 });
+  }
+
+  if (!['incomplete', 'pending_docs', 'no_action'].includes(reminderType)) {
+    return NextResponse.json({ success: false, error: 'Invalid reminderType' }, { status: 400 });
+  }
+
   const html = buildReminderHtml({ clientName, caseTitle, caseId, reminderType, customMessage, lang });
 
   const subjectMap: Record<ReminderType, string> = {
@@ -152,7 +166,7 @@ export async function POST(req: NextRequest) {
   try {
     await resend.emails.send({
       from: EMAIL_FROM,
-      to: [clientEmail],
+      to: [normalizedEmail],
       subject: subjectMap[reminderType],
       html,
     });
