@@ -3,6 +3,9 @@ import Script from 'next/script';
 import React from 'react';
 import PublicNav from '@/components/PublicNav';
 import ServicesHero from './components/ServicesHero';
+import PackagesSection from './components/PackagesSection';
+import TrustProofSection from './components/TrustProofSection';
+import ServicesStickyCTA from './components/ServicesStickyCTA';
 import ProjectFinancingSection from './components/ProjectFinancingSection';
 import BankingInstrumentsSection from './components/BankingInstrumentsSection';
 import AdvisorySection from './components/AdvisorySection';
@@ -13,10 +16,10 @@ import HomeFooter from '../home-page/components/HomeFooter';
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital8049.builtwithrocket.new';
 
 export const metadata: Metadata = {
-  title: 'Services - Financement de Projets, Instruments Bancaires & Conseil',
+  title: 'Services de Structuration Financière – Financement International & Instruments Bancaires',
   description:
-    'Découvrez les services de GL Capital : structuration de dossiers de financement de projets, instruments bancaires (SBLC/BG) et conseil en structuration financière pour entreprises et investisseurs institutionnels.',
-  keywords: 'financement projet, instruments bancaires, SBLC, BG, conseil structuration, KYC, AML, financement institutionnel',
+    'GL Capital Investment SA : structuration de dossiers de financement international, instruments bancaires SBLC/BG et conseil en structuration financière. KYC/AML · NCNDA · Partenaires institutionnels agréés.',
+  keywords: 'financement international, structuration financière, instruments bancaires, SBLC, garantie bancaire, BG, conseil structuration, KYC, AML, financement projet, finance de projet, DFI',
   alternates: { canonical: `${baseUrl}/services-page` },
   openGraph: {
     title: 'Services GL Capital - Financement & Instruments Bancaires',
@@ -80,11 +83,14 @@ export default function ServicesPage() {
       />
       <PublicNav />
       <ServicesHero />
+      <PackagesSection />
+      <TrustProofSection />
       <ProjectFinancingSection />
       <BankingInstrumentsSection />
       <AdvisorySection />
       <ServicesComparisonTable />
       <ServicesFooterCTA />
+      <ServicesStickyCTA />
       <HomeFooter />
     </div>
   );

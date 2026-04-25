@@ -322,6 +322,10 @@ export default function DossierTimelinePage() {
   const requiredDocs = currentStatus ? (REQUIRED_DOCS_BY_STATUS[currentStatus] || REQUIRED_DOCS_BY_STATUS['RECU']) : null;
   const nextStepAction = currentStatus ? getNextStepAction(currentStatus, lang as 'fr' | 'en') : null;
 
+  /* Compute global status summary across all cases */
+  const urgentCases = cases.filter((c) => c.status === 'A_COMPLETER');
+  const activeCases = cases.filter((c) => !['CLOTURE', 'REJETE'].includes(c.status));
+
   return (
     <DashboardLayout>
       <div className="mb-6">
@@ -332,6 +336,45 @@ export default function DossierTimelinePage() {
           {lang === 'fr' ? 'Consultez l\'avancement et les actions requises pour votre dossier.' : 'Track progress and required actions for your file.'}
         </p>
       </div>
+
+      {/* Global status banner */}
+      {!loading && cases.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-navy/10 flex items-center justify-center flex-shrink-0">
+              <FileText size={16} className="text-navy" />
+            </div>
+            <div>
+              <p className="text-xl font-bold text-navy">{cases.length}</p>
+              <p className="text-xs text-slate-500">{lang === 'fr' ? 'Dossier(s) total' : 'Total file(s)'}</p>
+            </div>
+          </div>
+          <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+              <Clock size={16} className="text-blue-600" />
+            </div>
+            <div>
+              <p className="text-xl font-bold text-blue-800">{activeCases.length}</p>
+              <p className="text-xs text-blue-600">{lang === 'fr' ? 'En cours de traitement' : 'In progress'}</p>
+            </div>
+          </div>
+          <div className={`rounded-xl border p-4 flex items-center gap-3 ${urgentCases.length > 0 ? 'border-orange-200 bg-orange-50' : 'border-emerald-200 bg-emerald-50'}`}>
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${urgentCases.length > 0 ? 'bg-orange-100' : 'bg-emerald-100'}`}>
+              {urgentCases.length > 0
+                ? <AlertTriangle size={16} className="text-orange-600" />
+                : <CheckCircle2 size={16} className="text-emerald-600" />}
+            </div>
+            <div>
+              <p className={`text-xl font-bold ${urgentCases.length > 0 ? 'text-orange-800' : 'text-emerald-800'}`}>
+                {urgentCases.length}
+              </p>
+              <p className={`text-xs ${urgentCases.length > 0 ? 'text-orange-600' : 'text-emerald-600'}`}>
+                {lang === 'fr' ? 'Action(s) requise(s)' : 'Action(s) required'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex items-center justify-center h-48">

@@ -5,7 +5,9 @@ import { toast, Toaster } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { createClient } from '@/lib/supabase/client';
+import { insertCaseFileWithSchemaFallback } from '@/lib/supabase/caseFiles';
 import { runComplianceCheck, getComplianceStatus } from '@/lib/compliance/complianceEngine';
+import { trackDossierEvent, trackEvent } from '@/lib/analytics/trackEvent';
 import {
   Building2,
   FileText,
@@ -80,13 +82,20 @@ interface UploadedFile {
   dbId?: string;
 }
 
-const getRequiredDocTypes = (t: (fr: string, en: string) => string) => [
-  { id: 'doctype-exec', label: t('Résumé exécutif', 'Executive Summary'), required: true, desc: t('PDF, 2–5 pages max', 'PDF, 2–5 pages max') },
-  { id: 'doctype-bp', label: t('Business Plan / Étude de faisabilité', 'Business Plan / Feasibility Study'), required: true, desc: t('PDF ou DOCX', 'PDF or DOCX') },
-  { id: 'doctype-fin', label: t('Modèle financier', 'Financial Model'), required: true, desc: t('Excel (.xlsx)', 'Excel (.xlsx)') },
-  { id: 'doctype-kyc', label: t('Dossier KYC entreprise', 'Corporate KYC Package'), required: true, desc: t('PDF - registre, statuts, UBO', 'PDF - registry, articles, UBO') },
-  { id: 'doctype-sof', label: t('Justificatif d\'origine des fonds', 'Source of Funds Proof'), required: false, desc: t('Relevés bancaires ou rapports d\'audit', 'Bank statements or audit reports') },
-  { id: 'doctype-contracts', label: t('Contrats clés (Off-take / EPC)', 'Key Contracts (Off-take / EPC)'), required: false, desc: t('Si disponible', 'If available') },
+interface DocumentRequirement {
+  id: string;
+  label: string;
+  required: boolean;
+  desc: string;
+}
+
+const getDocumentRequirements = (t: (fr: string, en: string) => string): DocumentRequirement[] => [
+  { id: 'executive_summary', label: t('Executive summary', 'Executive summary'), required: true, desc: t('PDF, 2-5 pages max', 'PDF, 2-5 pages max') },
+  { id: 'business_plan', label: t('Business plan / Etude de faisabilite', 'Business plan / Feasibility study'), required: true, desc: t('PDF ou DOCX', 'PDF or DOCX') },
+  { id: 'kyc_corporate', label: t('KYC corporate', 'Corporate KYC'), required: true, desc: t('PDF: registre, statuts, UBO', 'PDF: registry, articles, UBO') },
+  { id: 'financial_model', label: t('Modele de financement du projet', 'Project financing model'), required: false, desc: t('Excel (.xlsx)', 'Excel (.xlsx)') },
+  { id: 'source_of_funds', label: t('Justificatif d\'origine des fonds', 'Source of funds proof'), required: false, desc: t('Releves bancaires ou rapports d\'audit', 'Bank statements or audit reports') },
+  { id: 'key_contracts', label: t('Contrats cles (Off-take / EPC)', 'Key contracts (Off-take / EPC)'), required: false, desc: t('Si disponible', 'If available') },
 ];
 
 export default function WizardContent() {
@@ -102,14 +111,19 @@ export default function WizardContent() {
   const [selectedDocType, setSelectedDocType] = useState('');
 
   const steps = getSteps(t);
-  const requiredDocTypes = getRequiredDocTypes(t);
+  const documentRequirements = getDocumentRequirements(t);
 
   // Set default selectedDocType once
   React.useEffect(() => {
-    if (!selectedDocType && requiredDocTypes.length > 0) {
-      setSelectedDocType(requiredDocTypes[0].label);
+    if (!selectedDocType && documentRequirements.length > 0) {
+      setSelectedDocType(documentRequirements[0].id);
     }
-  }, []);
+  }, [selectedDocType, documentRequirements]);
+
+  const getDocLabel = useCallback(
+    (docTypeId: string) => documentRequirements.find((doc) => doc.id === docTypeId)?.label || docTypeId,
+    [documentRequirements]
+  );
 
   const identityForm = useForm<IdentityForm>();
   const projectForm = useForm<ProjectForm>();
@@ -218,11 +232,15 @@ export default function WizardContent() {
           actor_email: user.email,
           action: 'DOCUMENT_UPLOAD',
           target_ref: `USER-${user.id.slice(0, 8)}`,
-          detail: `File uploaded: ${file.name} (${selectedDocType}) - SHA256: ${sha256Hash.slice(0, 16)}… - scan passed`,
+          detail: `File uploaded: ${file.name} (${getDocLabel(selectedDocType)}) - SHA256: ${sha256Hash.slice(0, 16)}... - scan passed`,
           severity: 'info',
         });
 
         toast.success(t(`${file.name} - téléchargé et scan antivirus réussi`, `${file.name} - uploaded & antivirus scan passed`));
+        trackEvent('document_uploaded', {
+          doc_type: selectedDocType,
+          channel: 'dossier-submission-wizard',
+        });
       } catch (err: any) {
         setUploadedFiles((prev) =>
           prev.map((f) => f.id === fileId ? { ...f, status: 'error' } : f)
@@ -254,6 +272,28 @@ export default function WizardContent() {
     const projectData = projectForm.getValues();
     const financingData = financingForm.getValues();
 
+    const cleanFiles = uploadedFiles.filter((f) => f.status === 'clean');
+    const requiredDocIds = documentRequirements.filter((doc) => doc.required).map((doc) => doc.id);
+    const uploadedRequiredDocIds = new Set(
+      cleanFiles.map((file) => file.docType).filter((docType) => requiredDocIds.includes(docType))
+    );
+    const missingRequiredDocs = documentRequirements.filter(
+      (doc) => doc.required && !uploadedRequiredDocIds.has(doc.id)
+    );
+
+    if (missingRequiredDocs.length > 0) {
+      setIsSubmitting(false);
+      toast.error(
+        t(
+          `Pieces obligatoires manquantes: ${missingRequiredDocs.map((d) => d.label).join(', ')}`,
+          `Missing required documents: ${missingRequiredDocs.map((d) => d.label).join(', ')}`
+        ),
+        { duration: 7000 }
+      );
+      setCurrentStep(4);
+      return;
+    }
+
     const complianceResult = runComplianceCheck({
       orgCountry: identityData.orgCountry,
       uboNationality: identityData.uboNationality,
@@ -267,6 +307,9 @@ export default function WizardContent() {
     });
 
     const complianceStatus = getComplianceStatus(complianceResult);
+    if (complianceStatus === 'FLAGGED') {
+      trackEvent('compliance_flag', { channel: 'dossier-submission-wizard' });
+    }
 
     await supabase.from('compliance_logs').insert({
       actor_id: user.id,
@@ -306,11 +349,21 @@ export default function WizardContent() {
     }
 
     try {
-      const cleanFiles = uploadedFiles.filter((f) => f.status === 'clean');
+      const optionalDocCount = cleanFiles.filter((file) => !requiredDocIds.includes(file.docType)).length;
+      const completeness = 20 + requiredDocIds.length * 15 + Math.min(optionalDocCount, 3) * 5;
+      const additionalNotes = financingData.additionalNotes?.trim();
+      const amountDisplay = `${projectData.currency || 'EUR'} ${projectData.totalBudget}`.trim();
+      const metadataPayload: Record<string, unknown> = {};
+      if (additionalNotes) metadataPayload.additional_notes = additionalNotes;
+      if (projectData.totalBudget?.trim()) metadataPayload.amount_display = amountDisplay;
+      metadataPayload.completeness_percent = completeness;
+      metadataPayload.required_docs_uploaded = uploadedRequiredDocIds.size;
+      metadataPayload.required_docs_total = requiredDocIds.length;
+      metadataPayload.optional_docs_uploaded = optionalDocCount;
 
-      const { data, error } = await supabase
-        .from('case_files')
-        .insert({
+      const { data, removedColumns } = await insertCaseFileWithSchemaFallback<{ ref?: string; id?: string }>({
+        supabase,
+        payload: {
           user_id: user.id,
           ref: '',
           org_name: identityData.orgName,
@@ -342,20 +395,24 @@ export default function WizardContent() {
           fund_source: financingData.fundSource,
           existing_financing: financingData.existingFinancing,
           target_institution: financingData.targetInstitution,
-          additional_notes: financingData.additionalNotes,
+          metadata: Object.keys(metadataPayload).length > 0 ? metadataPayload : null,
           status: 'RECU',
           type: projectData.requestType || 'Project Finance',
-          amount: `${projectData.currency || 'EUR'} ${projectData.totalBudget}`,
-          completeness: cleanFiles.length > 0 ? 40 : 20,
-        })
-        .select('ref, id')
-        .single();
-
-      if (error) throw error;
+        },
+        selectColumns: ['ref', 'id'],
+        single: true,
+      });
+      if (removedColumns.length > 0) {
+        console.warn('case_files insert fallback removed columns:', removedColumns);
+      }
 
       const ref = data?.ref || `GLC-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
       const dossierId = data?.id;
       setSubmissionRef(ref);
+      trackDossierEvent('dossier_created', ref, {
+        channel: 'dossier-submission-wizard',
+        request_type: projectData.requestType || 'project-finance',
+      });
 
       if (dossierId && cleanFiles.length > 0) {
         const dbIds = cleanFiles.filter((f) => f.dbId).map((f) => f.dbId);
@@ -372,7 +429,7 @@ export default function WizardContent() {
         actor_email: user.email,
         action: 'STATUS_CHANGE',
         target_ref: ref,
-        detail: `Dossier submitted by client - compliance: ${complianceStatus} - documents: ${cleanFiles.length}`,
+        detail: `Dossier submitted by client - compliance: ${complianceStatus} - documents: ${cleanFiles.length} - required_docs: ${uploadedRequiredDocIds.size}/${requiredDocIds.length} - optional_docs: ${optionalDocCount}`,
         severity: 'info',
       });
 
@@ -1037,8 +1094,8 @@ export default function WizardContent() {
                     onChange={(e) => setSelectedDocType(e.target.value)}
                     className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors bg-white"
                   >
-                    {requiredDocTypes.map((dt) => (
-                      <option key={dt.id} value={dt.label}>{dt.label}</option>
+                    {documentRequirements.map((dt) => (
+                      <option key={dt.id} value={dt.id}>{dt.label}</option>
                     ))}
                   </select>
                 </div>
@@ -1082,10 +1139,10 @@ export default function WizardContent() {
               </div>
 
               <div>
-                <h3 className="text-sm font-bold text-navy mb-3">{t('Documents requis', 'Required Documents')}</h3>
+                <h3 className="text-sm font-bold text-navy mb-3">{t('Documents requis', 'Required documents')}</h3>
                 <div className="space-y-2 mb-6">
-                  {requiredDocTypes.map((dt) => {
-                    const uploaded = uploadedFiles.filter((f) => f.docType === dt.label && f.status === 'clean');
+                  {documentRequirements.map((dt) => {
+                    const uploaded = uploadedFiles.filter((f) => f.docType === dt.id && f.status === 'clean');
                     return (
                       <div key={dt.id} className={`flex items-start gap-3 p-3 rounded-xl border transition-colors ${
                         uploaded.length > 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-gray-50 border-gray-200'
@@ -1137,7 +1194,7 @@ export default function WizardContent() {
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-[10px] text-gray-400">{formatFileSize(file.size)}</span>
                           <span className="text-gray-300">·</span>
-                          <span className="text-[10px] text-gray-500">{file.docType}</span>
+                          <span className="text-[10px] text-gray-500">{getDocLabel(file.docType)}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
@@ -1270,7 +1327,7 @@ export default function WizardContent() {
                 {uploadedFiles.filter((f) => f.status === 'clean').length === 0 ? (
                   <p className="text-xs text-amber-600 flex items-center gap-1.5">
                     <AlertCircle size={12} />
-                    {t('Aucun document téléchargé. Vous pouvez soumettre et télécharger ultérieurement.', 'No documents uploaded. You can still submit and upload later.')}
+                    {t('Aucun document telecharge.', 'No documents uploaded yet.')}
                   </p>
                 ) : (
                   <div className="space-y-1.5">
@@ -1278,11 +1335,17 @@ export default function WizardContent() {
                       <div key={`review-doc-${f.id}`} className="flex items-center gap-2">
                         <CheckCircle2 size={11} className="text-emerald-500 flex-shrink-0" />
                         <span className="text-xs text-gray-700 truncate">{f.name}</span>
-                        <span className="text-[10px] text-gray-400 flex-shrink-0">({f.docType})</span>
+                        <span className="text-[10px] text-gray-400 flex-shrink-0">({getDocLabel(f.docType)})</span>
                       </div>
                     ))}
                   </div>
                 )}
+                <p className="text-[11px] text-slate-500 mt-3">
+                  {t(
+                    'Soumission possible uniquement avec: Executive summary, Business plan, et KYC corporate.',
+                    'Submission is allowed only when Executive summary, Business plan, and Corporate KYC are uploaded.'
+                  )}
+                </p>
               </div>
 
               {/* Compliance notice */}

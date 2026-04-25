@@ -24,6 +24,10 @@ interface AnalyticsData {
   complianceFlagsByMonth: { month: string; flagged: number; clean: number }[];
   avgProcessingByStatus: { status: string; avgDays: number }[];
   pipelineTrend: { month: string; received: number; eligible: number; rejected: number }[];
+  /* Conversion funnel */
+  funnelData: { stage: string; count: number; rate: number }[];
+  /* Acquisition by source (utm_source from contact submissions) */
+  acquisitionBySource: { source: string; count: number }[];
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -172,6 +176,33 @@ export default function AdminAnalyticsDashboard() {
         avgDays: Math.round(days.reduce((a, b) => a + b, 0) / days.length),
       }));
 
+      /* Conversion funnel: submissions -> cases -> eligible -> closed */
+      const totalSub = submissionsRes.count || 0;
+      const totalCasesCount = casesRes.count || 0;
+      const eligibleCount = statusCounts['ELIGIBLE'] || 0;
+      const closedCount = statusCounts['CLOTURE'] || 0;
+      const funnelData = [
+        { stage: lang === 'fr' ? 'Soumissions contacts' : 'Contact submissions', count: totalSub, rate: 100 },
+        { stage: lang === 'fr' ? 'Dossiers créés' : 'Files created', count: totalCasesCount, rate: totalSub > 0 ? Math.round((totalCasesCount / totalSub) * 100) : 0 },
+        { stage: lang === 'fr' ? 'Éligibles' : 'Eligible', count: eligibleCount, rate: totalCasesCount > 0 ? Math.round((eligibleCount / totalCasesCount) * 100) : 0 },
+        { stage: lang === 'fr' ? 'Clôturés' : 'Closed', count: closedCount, rate: eligibleCount > 0 ? Math.round((closedCount / eligibleCount) * 100) : 0 },
+      ];
+
+      /* Acquisition by source: try metadata->utm_source on contact_submissions */
+      const { data: submissionsWithMeta } = await supabase
+        .from('contact_submissions')
+        .select('metadata')
+        .limit(500);
+      const sourceCounts: Record<string, number> = {};
+      (submissionsWithMeta || []).forEach((s: any) => {
+        const src = s.metadata?.utm_source || s.metadata?.source || 'direct';
+        sourceCounts[src] = (sourceCounts[src] || 0) + 1;
+      });
+      const acquisitionBySource = Object.entries(sourceCounts)
+        .map(([source, count]) => ({ source, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 8);
+
       setData({
         totalSubmissions: submissionsRes.count || 0,
         totalCases: casesRes.count || 0,
@@ -182,6 +213,8 @@ export default function AdminAnalyticsDashboard() {
         complianceFlagsByMonth,
         avgProcessingByStatus,
         pipelineTrend,
+        funnelData,
+        acquisitionBySource,
       });
     } catch (err: any) {
       setError(err?.message || 'Error loading analytics');
@@ -448,6 +481,64 @@ export default function AdminAnalyticsDashboard() {
                     <Bar dataKey="avgDays" fill="#6366f1" radius={[0, 4, 4, 0]} name={lang === 'fr' ? 'Jours' : 'Days'} />
                   </BarChart>
                 </ResponsiveContainer>
+              </div>
+            )}
+
+            {/* Conversion Funnel */}
+            {data.funnelData && data.funnelData.length > 0 && (
+              <div className="bg-white border border-slate-200 rounded-2xl p-5" role="region" aria-label={lang === 'fr' ? 'Entonnoir de conversion' : 'Conversion funnel'}>
+                <div className="flex items-center gap-2 mb-4">
+                  <TrendingUp size={16} className="text-emerald-500" aria-hidden="true" />
+                  <h2 className="text-navy font-semibold">{lang === 'fr' ? 'Entonnoir lead → closing' : 'Lead → closing funnel'}</h2>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {data.funnelData.map((stage, idx) => (
+                    <div key={stage.stage} className="flex-1 relative">
+                      <div className="rounded-xl border border-slate-200 p-4 text-center">
+                        <p className="text-2xl font-bold text-navy">{stage.count}</p>
+                        <p className="text-xs text-slate-500 mt-1">{stage.stage}</p>
+                        {idx > 0 && (
+                          <span className="inline-block mt-2 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            {stage.rate}%
+                          </span>
+                        )}
+                      </div>
+                      {idx < data.funnelData.length - 1 && (
+                        <div className="hidden sm:flex items-center justify-center absolute top-1/2 -right-2 -translate-y-1/2 z-10">
+                          <div className="w-4 h-0.5 bg-slate-300" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Acquisition by source */}
+            {data.acquisitionBySource && data.acquisitionBySource.length > 0 && (
+              <div className="bg-white border border-slate-200 rounded-2xl p-5" role="region" aria-label={lang === 'fr' ? 'Acquisition par canal' : 'Acquisition by channel'}>
+                <div className="flex items-center gap-2 mb-4">
+                  <Users size={16} className="text-blue-500" aria-hidden="true" />
+                  <h2 className="text-navy font-semibold">{lang === 'fr' ? 'Acquisition par canal (utm_source)' : 'Acquisition by channel (utm_source)'}</h2>
+                </div>
+                <div className="space-y-3">
+                  {data.acquisitionBySource.map((item, idx) => {
+                    const maxCount = data.acquisitionBySource[0]?.count || 1;
+                    const widthPct = Math.round((item.count / maxCount) * 100);
+                    return (
+                      <div key={item.source} className="flex items-center gap-3">
+                        <span className="text-xs text-slate-500 w-28 truncate flex-shrink-0 text-right capitalize">{item.source}</span>
+                        <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
+                          <div
+                            className="h-2 rounded-full"
+                            style={{ width: `${widthPct}%`, background: TYPE_COLORS[idx % TYPE_COLORS.length] }}
+                          />
+                        </div>
+                        <span className="text-xs font-bold text-navy w-8 text-right flex-shrink-0">{item.count}</span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
 

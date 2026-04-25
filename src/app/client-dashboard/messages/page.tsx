@@ -13,19 +13,29 @@ type CaseThread = {
   updated_at: string | null;
 };
 
+type ActionNotification = {
+  id: string;
+  type: 'ACTION_REQUIRED' | 'DOCUMENT_REQUEST' | 'STATUS_UPDATE' | 'GENERAL';
+  title: string;
+  message: string;
+  case_id: string | null;
+  created_at: string;
+};
+
 export default function ClientMessagesPage() {
   const { lang } = useLanguage();
   const { user } = useAuth();
   const supabase = useMemo(() => createClient(), []);
   const [caseThreads, setCaseThreads] = useState<CaseThread[]>([]);
   const [pendingActions, setPendingActions] = useState(0);
+  const [actionNotifications, setActionNotifications] = useState<ActionNotification[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
     if (!user) return;
     setLoading(true);
     try {
-      const [{ data: cases }, { count: pending }] = await Promise.all([
+      const [{ data: cases }, { count: pending }, { data: notifs }] = await Promise.all([
         supabase
           .from('case_files')
           .select('id, ref, updated_at')
@@ -38,10 +48,19 @@ export default function ClientMessagesPage() {
           .eq('user_id', user.id)
           .eq('is_read', false)
           .in('type', ['ACTION_REQUIRED', 'DOCUMENT_REQUEST']),
+        supabase
+          .from('notifications')
+          .select('id, type, title, message, case_id, created_at')
+          .eq('user_id', user.id)
+          .eq('is_read', false)
+          .in('type', ['ACTION_REQUIRED', 'DOCUMENT_REQUEST', 'STATUS_UPDATE', 'GENERAL'])
+          .order('created_at', { ascending: false })
+          .limit(5),
       ]);
 
       setCaseThreads((cases || []) as CaseThread[]);
       setPendingActions(pending || 0);
+      setActionNotifications((notifs || []) as ActionNotification[]);
     } finally {
       setLoading(false);
     }
@@ -141,6 +160,37 @@ export default function ClientMessagesPage() {
                   </Link>
                 </div>
               )}
+
+              <div className="text-left mb-6">
+                <p className="text-xs text-slate-500 mb-2">
+                  {lang === 'fr' ? 'Centre de messages unifié' : 'Unified message center'}
+                </p>
+                {actionNotifications.length > 0 ? (
+                  <div className="space-y-2">
+                    {actionNotifications.map((n) => (
+                      <Link
+                        key={n.id}
+                        href={n.case_id ? `/client-dashboard/case-files/${n.case_id}` : '/client-dashboard/notifications'}
+                        className="block rounded-xl border border-slate-200 p-3 hover:bg-slate-50 hover:border-slate-300 transition-colors"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-sm font-semibold text-navy truncate">{n.title}</p>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full border bg-amber-50 text-amber-700 border-amber-200">
+                            {n.type === 'ACTION_REQUIRED' || n.type === 'DOCUMENT_REQUEST'
+                              ? (lang === 'fr' ? 'Action' : 'Action')
+                              : (lang === 'fr' ? 'Info' : 'Info')}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-1 line-clamp-2">{n.message}</p>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500">
+                    {lang === 'fr' ? 'Aucune notification en attente.' : 'No pending notifications.'}
+                  </div>
+                )}
+              </div>
             </>
           )}
           <div className="flex flex-wrap justify-center items-center gap-2">

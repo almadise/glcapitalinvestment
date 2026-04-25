@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { createClient } from '@/lib/supabase/client';
+import { insertCaseFileWithSchemaFallback } from '@/lib/supabase/caseFiles';
 import {
   Building2,
   FileText,
@@ -20,6 +21,7 @@ import {
   Shield,
 } from 'lucide-react';
 import Link from 'next/link';
+import { trackDossierEvent } from '@/lib/analytics/trackEvent';
 
 interface IdentityForm {
   orgName: string;
@@ -159,8 +161,16 @@ export default function NewCaseFileWizard() {
       const fi = financingForm.getValues();
 
       const ref = `GLC-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
+      const additionalNotes = fi.additionalNotes?.trim();
+      const amountDisplay = `${pr.currency || 'EUR'} ${pr.totalBudget}`.trim();
+      const metadataPayload: Record<string, unknown> = {};
+      if (additionalNotes) metadataPayload.additional_notes = additionalNotes;
+      if (pr.totalBudget?.trim()) metadataPayload.amount_display = amountDisplay;
+      metadataPayload.completeness_percent = 20;
 
-      const { error } = await supabase.from('case_files').insert({
+      const { removedColumns } = await insertCaseFileWithSchemaFallback({
+        supabase,
+        payload: {
         user_id: user.id,
         ref,
         org_name: id.orgName,
@@ -185,14 +195,14 @@ export default function NewCaseFileWizard() {
         maturity: fi.maturity,
         guarantee_type: fi.guaranteeType,
         fund_source: fi.fundSource,
-        additional_notes: fi.additionalNotes,
+        metadata: Object.keys(metadataPayload).length > 0 ? metadataPayload : null,
         status: 'RECU',
         type: pr.requestType || 'Project Finance',
-        amount: `${pr.currency || 'EUR'} ${pr.totalBudget}`,
-        completeness: 20,
+        },
       });
-
-      if (error) throw error;
+      if (removedColumns.length > 0) {
+        console.warn('case_files insert fallback removed columns:', removedColumns);
+      }
 
       await supabase.from('compliance_logs').insert({
         actor_id: user.id,
@@ -204,6 +214,10 @@ export default function NewCaseFileWizard() {
       });
 
       setSubmittedRef(ref);
+      trackDossierEvent('dossier_created', ref, {
+        channel: 'client-dashboard',
+        request_type: pr.requestType || 'Project Finance',
+      });
       toast.success(t(`Dossier créé - Référence : ${ref}`, `Case file created - Reference: ${ref}`));
     } catch (err: any) {
       toast.error(err.message || t('Échec de la création. Veuillez réessayer.', 'Creation failed. Please try again.'));
