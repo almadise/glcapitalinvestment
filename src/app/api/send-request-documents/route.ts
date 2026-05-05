@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { requireInternalApiAccess } from '@/lib/apiSecurity';
+import { escapeHtml, requireInternalApiAccess } from '@/lib/apiSecurity';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
 const EMAIL_FROM =
@@ -54,7 +54,7 @@ function buildRequestDocumentsHtml(params: {
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr><td style="background:#fff7ed;border:1px solid #fed7aa;border-left:4px solid #f97316;border-radius:0 8px 8px 0;padding:20px;">
               <span style="color:#c2410c;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">${isFr ? 'Message de notre équipe' : 'Message from our team'}</span>
-              <p style="margin:8px 0 0;color:#7c2d12;font-size:14px;line-height:1.7;">${adminMessage.replace(/\n/g, '<br/>')}</p>
+              <p style="margin:8px 0 0;color:#7c2d12;font-size:14px;line-height:1.7;">${escapeHtml(adminMessage).replace(/\n/g, '<br/>')}</p>
             </td></tr>
           </table>
         </td></tr>
@@ -99,6 +99,10 @@ export async function POST(req: NextRequest) {
 
   if (!clientEmail || !clientName || !caseTitle || !caseId || !adminMessage) {
     return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
+  }
+
+  if (adminMessage.length > 2000) {
+    return NextResponse.json({ success: false, error: 'adminMessage exceeds maximum length of 2000 characters' }, { status: 400 });
   }
 
   const resend = new Resend(apiKey);

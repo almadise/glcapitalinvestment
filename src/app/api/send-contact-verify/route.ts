@@ -51,8 +51,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Generate a secure token
-  const token = crypto.randomUUID() + '-' + Date.now().toString(36);
+  // Generate a cryptographically secure token
+  const token = crypto.randomUUID();
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24h
 
   let supabase;

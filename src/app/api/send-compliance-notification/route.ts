@@ -205,8 +205,14 @@ export async function POST(req: NextRequest) {
         : `🚨 Menace détectée - ${documentName}`;
   }
 
+  // Validate internalRecipients to prevent sending to arbitrary addresses
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const validatedInternalRecipients = internalRecipients.filter(
+    (r) => typeof r === 'string' && EMAIL_REGEX.test(r)
+  );
+
   // Send to internal recipients
-  const allRecipients = [contactEmail, ...internalRecipients].filter(Boolean);
+  const allRecipients = [contactEmail, ...validatedInternalRecipients].filter(Boolean);
   for (const recipient of allRecipients) {
     try {
       const { error } = await resend.emails.send({

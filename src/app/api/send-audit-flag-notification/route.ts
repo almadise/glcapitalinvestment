@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { requireInternalApiAccess } from '@/lib/apiSecurity';
+import { escapeHtml, requireInternalApiAccess } from '@/lib/apiSecurity';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
 const EMAIL_FROM =
@@ -16,7 +16,22 @@ function buildAuditFlagHtml(params: {
   severity: string;
   timestamp: string;
 }): string {
-  const { caseTitle, caseRef, caseId, action, detail, actorEmail, severity, timestamp } = params;
+  const {
+    caseTitle: rawCaseTitle,
+    caseRef: rawCaseRef,
+    caseId: rawCaseId,
+    action: rawAction,
+    detail: rawDetail,
+    actorEmail: rawActorEmail,
+    severity,
+    timestamp,
+  } = params;
+  const caseTitle = escapeHtml(rawCaseTitle);
+  const caseRef = escapeHtml(rawCaseRef);
+  const caseId = escapeHtml(rawCaseId);
+  const action = escapeHtml(rawAction);
+  const detail = escapeHtml(rawDetail);
+  const actorEmail = escapeHtml(rawActorEmail);
   const isCritical = severity === 'critical' || severity === 'sensitive';
   const dashboardLink = `${SITE_URL}/back-office-admin-panel`;
 
@@ -128,7 +143,11 @@ export async function POST(req: NextRequest) {
 
   const resend = new Resend(apiKey);
   const contactEmail = process.env.CONTACT_EMAIL || 'glcontact@glcapitalinvestment.com';
-  const allRecipients = Array.from(new Set([contactEmail, ...internalRecipients].filter(Boolean)));
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const validatedInternalRecipients = internalRecipients.filter(
+    (r) => typeof r === 'string' && EMAIL_REGEX.test(r)
+  );
+  const allRecipients = Array.from(new Set([contactEmail, ...validatedInternalRecipients].filter(Boolean)));
 
   const html = buildAuditFlagHtml({
     caseTitle,

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { requireInternalApiAccess } from '@/lib/apiSecurity';
+import { escapeHtml, requireInternalApiAccess } from '@/lib/apiSecurity';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
 const EMAIL_FROM =
@@ -89,7 +89,7 @@ function buildClientEmailHtml(params: {
             </span>
           </td></tr>
           <tr><td style="background:#f8fafc;border:1px solid #e2e8f0;border-left:3px solid #c9a84c;border-radius:0 8px 8px 0;padding:16px 20px;">
-            <p style="margin:0;color:#334155;font-size:14px;line-height:1.7;">${note.replace(/\n/g, '<br/>')}</p>
+            <p style="margin:0;color:#334155;font-size:14px;line-height:1.7;">${escapeHtml(note).replace(/\n/g, '<br/>')}</p>
           </td></tr>
         </table>
       </td></tr>`
@@ -218,7 +218,7 @@ function buildInternalNotificationHtml(params: {
               note
                 ? `<tr><td style="padding:14px 18px;background:#fffbeb;">
               <span style="color:#92400e;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Note</span>
-              <p style="margin:3px 0 0;color:#78350f;font-size:13px;line-height:1.6;">${note.replace(/\n/g, '<br/>')}</p>
+              <p style="margin:3px 0 0;color:#78350f;font-size:13px;line-height:1.6;">${escapeHtml(note).replace(/\n/g, '<br/>')}</p>
             </td></tr>`
                 : ''
             }
@@ -274,10 +274,11 @@ export async function POST(req: NextRequest) {
     oldStatus,
     note = null,
     lang = 'fr',
-    changedByEmail = 'système',
     internalRecipients = [],
     notificationType = 'status_change',
   } = body;
+  // Always use the authenticated user's email from the server — never trust the client-supplied value
+  const changedByEmail = guard.userEmail;
 
   if (!clientEmail || !clientName || !caseTitle || !caseId || !newStatus) {
     return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });

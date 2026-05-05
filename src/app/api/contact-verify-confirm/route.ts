@@ -2,11 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createServiceRoleClient } from '../../../lib/supabase/service';
 import { escapeHtml } from '@/lib/apiSecurity';
+import { checkRateLimit, getClientIp, RATE_LIMITS } from '../../../lib/rateLimit';
 
 const EMAIL_FROM =
   process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
 
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = checkRateLimit(`verify-confirm:${ip}`, RATE_LIMITS.email);
+  if (!rl.success) {
+    return NextResponse.redirect(new URL('/contact?error=rate_limited', req.url));
+  }
+
   const { searchParams } = new URL(req.url);
   const token = searchParams.get('token');
 

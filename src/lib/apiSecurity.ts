@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { checkRateLimit, getClientIp, RATE_LIMITS } from '@/lib/rateLimit';
 
-type GuardResult = { ok: true; userId: string } | { ok: false; response: NextResponse };
+type GuardResult =
+  | { ok: true; userId: string; userEmail: string }
+  | { ok: false; response: NextResponse };
 
 export async function requireInternalApiAccess(
   req: NextRequest,
@@ -33,7 +35,7 @@ export async function requireInternalApiAccess(
     };
   }
 
-  return { ok: true, userId: user.id };
+  return { ok: true, userId: user.id, userEmail: user.email ?? 'system' };
 }
 
 export function ensureTrustedUrl(

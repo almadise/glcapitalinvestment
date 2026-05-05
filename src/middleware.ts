@@ -207,19 +207,31 @@ export default async function middleware(request: NextRequest) {
       role = upData?.role ?? null;
     }
   } catch {
-    // If profile fetch fails, allow through - client-side RoleGuard will handle it
+    // Profile fetch failed - deny access to prevent unauthorized access to protected routes
+    const loginUrl = new URL('/sign-up-login-screen', request.url);
+    loginUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
+    const redirect = NextResponse.redirect(loginUrl, 302);
+    copySupabaseCookies(supabaseResponse, redirect);
+    return redirect;
   }
 
-  if (role) {
-    const allowedPrefixes = ROLE_ROUTES[role] ?? [];
-    const isAllowed = allowedPrefixes.some((prefix) => pathname.startsWith(prefix));
+  if (!role) {
+    // No role assigned - deny access rather than silently allowing through
+    const loginUrl = new URL('/sign-up-login-screen', request.url);
+    loginUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
+    const redirect = NextResponse.redirect(loginUrl, 302);
+    copySupabaseCookies(supabaseResponse, redirect);
+    return redirect;
+  }
 
-    if (!isAllowed) {
-      const home = ROLE_HOME[role] ?? '/sign-up-login-screen';
-      const redirect = NextResponse.redirect(new URL(home, request.url), 302);
-      copySupabaseCookies(supabaseResponse, redirect);
-      return redirect;
-    }
+  const allowedPrefixes = ROLE_ROUTES[role] ?? [];
+  const isAllowed = allowedPrefixes.some((prefix) => pathname.startsWith(prefix));
+
+  if (!isAllowed) {
+    const home = ROLE_HOME[role] ?? '/sign-up-login-screen';
+    const redirect = NextResponse.redirect(new URL(home, request.url), 302);
+    copySupabaseCookies(supabaseResponse, redirect);
+    return redirect;
   }
 
   return supabaseResponse;
