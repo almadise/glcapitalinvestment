@@ -3,9 +3,9 @@ import { Resend } from 'resend';
 import { createClient } from '../../../lib/supabase/server';
 import { checkRateLimit, getClientIp, RATE_LIMITS } from '../../../lib/rateLimit';
 import { escapeHtml } from '@/lib/apiSecurity';
+import { CONTACT_EMAIL_FALLBACK, RESEND_FROM_FALLBACK } from '@/lib/companyContact';
 
-const EMAIL_FROM =
-  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
+const EMAIL_FROM = process.env.RESEND_FROM_EMAIL?.trim() || RESEND_FROM_FALLBACK;
 
 export async function POST(req: NextRequest) {
   // ── Rate limiting ──────────────────────────────────────────
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     console.error('[send-contact] Unexpected DB error:', dbErr);
   }
 
-  const to = process.env.CONTACT_EMAIL || 'glcontact@glcapitalinvestment.com';
+  const to = process.env.CONTACT_EMAIL || CONTACT_EMAIL_FALLBACK;
 
   const submittedAt = new Date().toLocaleString('fr-FR', {
     timeZone: 'Europe/Paris',

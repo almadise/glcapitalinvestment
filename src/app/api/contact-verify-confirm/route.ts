@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createServiceRoleClient } from '../../../lib/supabase/service';
 import { escapeHtml } from '@/lib/apiSecurity';
+import { CONTACT_EMAIL_FALLBACK, RESEND_FROM_FALLBACK } from '@/lib/companyContact';
 
-const EMAIL_FROM =
-  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
+const EMAIL_FROM = process.env.RESEND_FROM_EMAIL?.trim() || RESEND_FROM_FALLBACK;
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
 
   // Send admin notification
   const apiKey = process.env.RESEND_API_KEY;
-  const adminEmail = process.env.CONTACT_EMAIL || 'glcontact@glcapitalinvestment.com';
+  const adminEmail = process.env.CONTACT_EMAIL || CONTACT_EMAIL_FALLBACK;
 
   if (apiKey) {
     const resend = new Resend(apiKey);

@@ -2,6 +2,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
+import {
+  ENTITY_GL_CAPITAL,
+  OFFICIAL_PUBLIC_EMAIL,
+  OFFICIAL_WEBSITE_DISPLAY,
+  OFFICIAL_WEBSITE_URL,
+  PARIS_WORLD_OFFICE,
+  REGISTERED_ADDRESS_ONE_LINE_FR,
+} from '@/lib/companyContact';
 
 export default function PublicFooter() {
   const { t } = useLanguage();
@@ -52,8 +60,21 @@ export default function PublicFooter() {
               )}
             </p>
             <div className="text-white/40 text-xs font-mono space-y-1">
-              <p>General Luxury SA - 9 Rue Bonnet, 95400 ARNOUVILLE, France</p>
-              <p>glcontact@glcapitalinvestment.com · +33 984 046951</p>
+              <p>
+                {ENTITY_GL_CAPITAL} — {PARIS_WORLD_OFFICE}
+              </p>
+              <p>{REGISTERED_ADDRESS_ONE_LINE_FR}</p>
+              <p>{OFFICIAL_PUBLIC_EMAIL}</p>
+              <p>
+                <a
+                  href={OFFICIAL_WEBSITE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/50 hover:text-white/75 underline-offset-2 hover:underline"
+                >
+                  {OFFICIAL_WEBSITE_DISPLAY}
+                </a>
+              </p>
             </div>
           </div>
 

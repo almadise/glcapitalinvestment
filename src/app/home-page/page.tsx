@@ -42,8 +42,9 @@ const organizationSchema = {
   logo: `${baseUrl}/assets/images/logo-1776395060575.png`,
   image: `${baseUrl}/assets/images/gl-capital-financial-district.png`,
   areaServed: [
-    { '@type': 'Place', name: 'Europe' },
-    { '@type': 'Place', name: 'Afrique' },
+    { '@type': 'Place', name: 'Europe de l\'Ouest' },
+    { '@type': 'Place', name: 'Amérique du Nord' },
+    { '@type': 'Place', name: 'Asie' },
     { '@type': 'Place', name: 'Moyen-Orient' },
   ],
   serviceType: [

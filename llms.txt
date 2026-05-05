@@ -1,0 +1,118 @@
+About
+GL Capital Investment SA est une société de conseil en financement institutionnel.
+L'entreprise structure et documente des dossiers pour présentation à des institutions financières agréées.
+GL Capital n'est pas une banque.
+GL Capital n'émet pas d'instruments bancaires.
+GL Capital n'exécute pas de transactions financières.
+GL Capital n'accepte pas de dépôts d'investisseurs.
+Website: https://www.glcapitalinvestment.com
+
+Services and Pricing
+1) Financement de projets
+- Portée: structuration de dossier, revue documentaire, mise en relation institutionnelle.
+- Ticket minimum de référence: 5 M€.
+- Tarification: sur devis.
+
+2) Instruments bancaires (SBLC, BG, MTN, DLC)
+- Portée: conseil documentaire et structuration.
+- GL Capital agit comme intermédiaire de structuration uniquement.
+- Tarification: sur devis.
+
+3) Conseil et structuration financière
+- Portée: évaluation de bancabilité, pré-screening KYC/AML, préparation de soumission.
+- Tarification: sur devis.
+
+4) Opportunités périodiques (Small Cap)
+- Certaines fenêtres peuvent être ouvertes ponctuellement par des plateformes partenaires.
+- Disponibilité non permanente, durée limitée, fermeture possible sans préavis.
+- Aucune publication en catalogue public continu.
+- Pré-qualification minimale: CIS signé, preuve de fonds récente et vérifiable, résumé exécutif du projet/objectif.
+- Aucune garantie de disponibilité continue ni de rendement.
+- Traitement au cas par cas selon conformité, éligibilité et conditions de plateforme au moment de la soumission.
+
+Locations
+Raison sociale affichée: General Luxury SA
+Adresse: Calle Nord 35, 17700 La Jonquera, Girona, Espagne
+Positionnement opérationnel affiché: Paris-France & World Office
+
+Contact
+Nom affiché: glcapitalinvestment
+Email: glcapitalinvestment@gmail.com
+Téléphone: +33 6 23 08 00 69
+Site: https://www.glcapitalinvestment.com
+Page contact: https://www.glcapitalinvestment.com/contact
+
+Service Area
+Couverture annoncée: 47 pays.
+Focus prioritaire: Europe de l'Ouest, USA, Canada, Asie.
+Couverture globale possible selon éligibilité du dossier.
+
+Key Facts
+- Ticket minimum affiché sur l'offre principale: 5 M€.
+- Couverture internationale annoncée: 47 pays.
+- Pré-qualification: 1 à 3 jours ouvrés.
+- Étape NCNDA et cadrage: 1 à 2 jours ouvrés.
+- Revue KYC/AML: 3 à 7 jours ouvrés.
+- Analyse de faisabilité: 48h à 10 jours ouvrés.
+- Décaissement indicatif (après finalisation des accords): 30 jours ouvrés.
+- Délai de réponse formulaire contact: 48h ouvrées.
+
+What Makes Us Different
+- Positionnement strict: conseil, structuration, documentation, pas d'exécution bancaire.
+- Processus de conformité explicite: KYC/AML, screening sanctions, NCNDA.
+- Filtrage d'éligibilité en amont pour réduire les dossiers non qualifiés.
+- Cadre multijuridictionnel annoncé avec couverture internationale.
+- Portail client sécurisé pour suivi des dossiers.
+
+FAQ
+1) Quel est le ticket minimum pour démarrer?
+Le ticket de référence affiché est 5 M€ pour l'offre principale.
+
+2) Vos tarifs sont-ils publics?
+Non. Les services sont indiqués "sur devis".
+
+3) En combien de temps avez-vous un premier retour?
+La pré-qualification est annoncée entre 1 et 3 jours ouvrés.
+
+4) Combien de temps prend la conformité?
+La revue KYC/AML est annoncée entre 3 et 7 jours ouvrés.
+
+5) Combien de pays couvrez-vous?
+La couverture annoncée est de 47 pays.
+
+6) Êtes-vous une banque ou un prêteur direct?
+Non. GL Capital indique ne pas être une banque et ne pas exécuter de transactions financières.
+
+7) Quel délai pour une analyse de faisabilité?
+Le site indique 48h à 10 jours ouvrés selon le dossier.
+
+8) Quand intervient le décaissement?
+Le site indique un décaissement sous 30 jours ouvrés après finalisation des accords, par institutions agréées.
+
+9) Les opportunités Small Cap sont-elles toujours disponibles?
+Non. Elles sont périodiques, non permanentes, et peuvent se fermer sans préavis. Toute demande passe par une pré-qualification (CIS signé, preuve de fonds récente et vérifiable, résumé exécutif du projet/objectif). Aucune disponibilité continue ni rendement n'est garanti.
+
+Markdown Mirrors
+Base path: https://www.glcapitalinvestment.com/markdown-mirrors/
+Format: /markdown-mirrors/{route}/index.md
+Generated files: 20
+https://www.glcapitalinvestment.com/markdown-mirrors/conditions-generales/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/contact/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/contact-success/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/contact/verify/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/cookies/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/faq/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/forgot-password/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/home-page/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/mentions-legales/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/politique-confidentialite/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/qui-sommes-nous/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/reset-password/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/securite-conformite/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/services/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/services-page/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/services/conseil-structuration/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/services/financement-international/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/services/financement-projet/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/services/instruments-bancaires/index.md
+https://www.glcapitalinvestment.com/markdown-mirrors/services/structuration-financiere/index.md

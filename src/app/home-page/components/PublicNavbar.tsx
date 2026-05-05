@@ -19,12 +19,15 @@ export default function PublicNavbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape' && mobileOpen) {
-      setMobileOpen(false);
-      mobileToggleRef.current?.focus();
-    }
-  }, [mobileOpen]);
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && mobileOpen) {
+        setMobileOpen(false);
+        mobileToggleRef.current?.focus();
+      }
+    },
+    [mobileOpen]
+  );
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -45,9 +48,21 @@ export default function PublicNavbar() {
   }, []);
 
   const serviceLinks = [
-    { href: '/services/financement-projet', labelFr: 'Financement de Projet', labelEn: 'Project Financing' },
-    { href: '/services/instruments-bancaires', labelFr: 'Instruments Bancaires', labelEn: 'Banking Instruments' },
-    { href: '/services-page#advisory', labelFr: 'Conseil & Structuration', labelEn: 'Advisory & Structuring' },
+    {
+      href: '/services/financement-projet',
+      labelFr: 'Financement de Projet',
+      labelEn: 'Project Financing',
+    },
+    {
+      href: '/services/instruments-bancaires',
+      labelFr: 'Instruments Bancaires',
+      labelEn: 'Banking Instruments',
+    },
+    {
+      href: '/services-page#advisory',
+      labelFr: 'Conseil & Structuration',
+      labelEn: 'Advisory & Structuring',
+    },
   ];
 
   const navLinks = [
@@ -76,8 +91,14 @@ export default function PublicNavbar() {
       >
         <div className="max-w-screen-2xl mx-auto px-6 lg:px-10 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/home-page" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-navy-900 rounded-lg">
-            <div className="inline-flex items-center justify-center flex-shrink-0" style={{ width: 36, height: 46 }}>
+          <Link
+            href="/home-page"
+            className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-navy-900 rounded-lg"
+          >
+            <div
+              className="inline-flex items-center justify-center flex-shrink-0"
+              style={{ width: 36, height: 46 }}
+            >
               <img
                 alt="GL Capital Investment SA - Logo"
                 width={36}
@@ -87,8 +108,12 @@ export default function PublicNavbar() {
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-white font-bold text-lg tracking-tight leading-none">GL Capital</span>
-              <span className="text-gold text-[10px] font-mono tracking-widest uppercase leading-none mt-0.5">Investment SA</span>
+              <span className="text-white font-bold text-lg tracking-tight leading-none">
+                GL Capital
+              </span>
+              <span className="text-gold text-[10px] font-mono tracking-widest uppercase leading-none mt-0.5">
+                Investment SA
+              </span>
             </div>
           </Link>
 
@@ -176,6 +201,12 @@ export default function PublicNavbar() {
               {t('Connexion', 'Sign In')}
             </Link>
             <Link
+              href="/client-dashboard/ai-assistant"
+              className="px-4 py-2 text-sm font-medium text-white hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1 focus-visible:ring-offset-navy-900 rounded-lg border border-white/20 hover:bg-white/10"
+            >
+              {t('Assistant IA', 'AI Assistant')}
+            </Link>
+            <Link
               href="/client-portal-dashboard"
               className="px-5 py-2 text-sm font-semibold bg-gold hover:bg-gold/90 text-navy-900 rounded-lg transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-navy-900"
             >
@@ -187,15 +218,46 @@ export default function PublicNavbar() {
           <button
             ref={mobileToggleRef}
             className="lg:hidden p-2 text-white hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-lg"
-            aria-label={mobileOpen ? t('Fermer le menu', 'Close menu') : t('Ouvrir le menu', 'Open menu')}
+            aria-label={
+              mobileOpen ? t('Fermer le menu', 'Close menu') : t('Ouvrir le menu', 'Open menu')
+            }
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 5h16"></path>
+                <path d="M4 12h16"></path>
+                <path d="M4 19h16"></path>
+              </svg>
             )}
           </button>
         </div>
@@ -275,7 +337,10 @@ export default function PublicNavbar() {
           <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
             {/* Mobile language toggle */}
             <button
-              onClick={() => { toggleLang(); setMobileOpen(false); }}
+              onClick={() => {
+                toggleLang();
+                setMobileOpen(false);
+              }}
               className="block text-center px-4 py-2 text-sm font-medium text-white border border-white/20 rounded-lg transition-colors hover:bg-white/10"
             >
               {lang === 'fr' ? '🇬🇧 Switch to English' : '🇫🇷 Passer en français'}
@@ -286,6 +351,13 @@ export default function PublicNavbar() {
               className="block text-center px-4 py-2.5 text-sm font-medium text-white border border-white/30 rounded-lg transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
             >
               {t('Connexion', 'Sign In')}
+            </Link>
+            <Link
+              href="/client-dashboard/ai-assistant"
+              onClick={() => setMobileOpen(false)}
+              className="block text-center px-4 py-2.5 text-sm font-medium text-white border border-white/30 rounded-lg transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+            >
+              {t('Assistant IA', 'AI Assistant')}
             </Link>
             <Link
               href="/client-portal-dashboard"

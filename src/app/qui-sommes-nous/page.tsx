@@ -10,12 +10,18 @@ import {
   Globe,
   MapPin,
   Mail,
-  Phone,
   User,
 } from 'lucide-react';
 import PublicNavbar from '@/app/home-page/components/PublicNavbar';
 import PublicFooter from '@/app/home-page/components/PublicFooter';
 import { useLanguage } from '@/context/LanguageContext';
+import {
+  ENTITY_GL_CAPITAL,
+  OFFICIAL_PUBLIC_EMAIL,
+  PARIS_WORLD_OFFICE,
+  REGISTERED_ADDRESS_LINES_EN,
+  REGISTERED_ADDRESS_LINES_FR,
+} from '@/lib/companyContact';
 
 export default function QuiSommesNousPage() {
   const { lang } = useLanguage();
@@ -164,15 +170,16 @@ export default function QuiSommesNousPage() {
               </span>
             </div>
             <div className="rounded-2xl p-8 shadow-sm" style={{ background: '#F7F8FA', border: '1px solid #D8E0EC' }}>
-              <h3 className="font-display text-xl font-bold mb-6" style={{ color: '#1E2D4A' }}>General Luxury SA</h3>
+              <h3 className="font-display text-xl font-bold mb-1" style={{ color: '#1E2D4A' }}>{ENTITY_GL_CAPITAL}</h3>
+              <p className="text-sm mb-6" style={{ color: '#6B7E9A' }}>{PARIS_WORLD_OFFICE}</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm">
                 <div className="flex items-start gap-3">
                   <MapPin size={16} style={{ color: '#B8912A' }} className="flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold mb-0.5" style={{ color: '#1E2D4A' }}>{lang === 'fr' ? 'Adresse' : 'Address'}</p>
-                    <p style={{ color: '#4A5C7A' }}>9 Rue Bonnet</p>
-                    <p style={{ color: '#4A5C7A' }}>95400 ARNOUVILLE</p>
-                    <p style={{ color: '#4A5C7A' }}>France</p>
+                    <p className="font-semibold mb-0.5" style={{ color: '#1E2D4A' }}>{lang === 'fr' ? 'Siège social (General Luxury SA)' : 'Registered office (General Luxury SA)'}</p>
+                    {(lang === 'fr' ? REGISTERED_ADDRESS_LINES_FR : REGISTERED_ADDRESS_LINES_EN).map((line) => (
+                      <p key={line} style={{ color: '#4A5C7A' }}>{line}</p>
+                    ))}
                   </div>
                 </div>
                 <div className="flex flex-col gap-4">
@@ -187,14 +194,7 @@ export default function QuiSommesNousPage() {
                     <Mail size={16} style={{ color: '#B8912A' }} className="flex-shrink-0" />
                     <div>
                       <p className="font-semibold mb-0.5" style={{ color: '#1E2D4A' }}>Email</p>
-                      <a href="mailto:glcontact@glcapitalinvestment.com" className="transition-colors" style={{ color: '#4A5C7A' }}>glcontact@glcapitalinvestment.com</a>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Phone size={16} style={{ color: '#B8912A' }} className="flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold mb-0.5" style={{ color: '#1E2D4A' }}>{lang === 'fr' ? 'Téléphone' : 'Phone'}</p>
-                      <a href="tel:+33984046951" className="transition-colors" style={{ color: '#4A5C7A' }}>+33 984 046951</a>
+                      <a href={`mailto:${OFFICIAL_PUBLIC_EMAIL}`} className="transition-colors" style={{ color: '#4A5C7A' }}>{OFFICIAL_PUBLIC_EMAIL}</a>
                     </div>
                   </div>
                 </div>

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardSidebar from './DashboardSidebar';
@@ -11,9 +11,20 @@ import DossierCharts from './DossierCharts';
 import NotificationSettings from './NotificationSettings';
 import { Toaster } from 'sonner';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Loader2, AlertCircle, LayoutDashboard, FolderOpen, Bell, ShieldOff, Flag, FileWarning } from 'lucide-react';
+import {
+  Loader2,
+  AlertCircle,
+  LayoutDashboard,
+  FolderOpen,
+  Bell,
+  ShieldOff,
+  Flag,
+  FileWarning,
+  Bot,
+} from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
+import { shouldShowAiAssistantNewBadge } from '@/lib/ai/featureFlags';
 import WalkthroughModal from './WalkthroughModal';
 import { usePermissions } from '@/hooks/usePermissions';
 import {
@@ -51,17 +62,25 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
   const { user, userRole, loading: authLoading } = useAuth();
   const { can } = usePermissions();
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [overviewSummary, setOverviewSummary] = useState<OverviewSummary>(EMPTY_OVERVIEW);
   const [lastUpdated, setLastUpdated] = useState<string>('');
+  const showAiBadge = shouldShowAiAssistantNewBadge();
 
   useEffect(() => {
     // Dynamic last-updated timestamp
     const now = new Date();
     setLastUpdated(
       now.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', {
-        day: '2-digit', month: 'long', year: 'numeric',
-      }) + ' à ' + now.toLocaleTimeString(lang === 'fr' ? 'fr-FR' : 'en-US', { hour: '2-digit', minute: '2-digit' })
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      }) +
+        ' à ' +
+        now.toLocaleTimeString(lang === 'fr' ? 'fr-FR' : 'en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
     );
   }, [lang]);
 
@@ -69,10 +88,7 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
     if (!user) return;
     try {
       const [{ data: cases }, { count: pendingDocuments }] = await Promise.all([
-        supabase
-          .from('case_files')
-          .select('status, updated_at, created_at')
-          .eq('user_id', user.id),
+        supabase.from('case_files').select('status, updated_at, created_at').eq('user_id', user.id),
         supabase
           .from('dossier_documents')
           .select('*', { count: 'exact', head: true })
@@ -80,7 +96,11 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
           .eq('scan_passed', false),
       ]);
 
-      const allCases = (cases ?? []) as Array<{ status: CaseStatus; updated_at: string | null; created_at: string | null }>;
+      const allCases = (cases ?? []) as Array<{
+        status: CaseStatus;
+        updated_at: string | null;
+        created_at: string | null;
+      }>;
       const activeCases = allCases.filter((item) => ACTIVE_CASE_STATUSES.includes(item.status));
       const aCompleterCases = allCases.filter((item) => item.status === 'A_COMPLETER');
 
@@ -96,10 +116,12 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
           )[0]?.status ??
         null;
 
-      const lastActivityAt = allCases
-        .map((item) => item.updated_at ?? item.created_at)
-        .filter(Boolean)
-        .sort((a, b) => new Date(b as string).getTime() - new Date(a as string).getTime())[0] ?? null;
+      const lastActivityAt =
+        allCases
+          .map((item) => item.updated_at ?? item.created_at)
+          .filter(Boolean)
+          .sort((a, b) => new Date(b as string).getTime() - new Date(a as string).getTime())[0] ??
+        null;
 
       setOverviewSummary({
         totalCases: allCases.length,
@@ -112,7 +134,7 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
     } catch {
       setOverviewSummary(EMPTY_OVERVIEW);
     }
-  }, [user]);
+  }, [supabase, user]);
 
   useEffect(() => {
     fetchOverviewSummary();
@@ -120,14 +142,27 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
 
     const channel = supabase
       .channel('overview_summary_updates')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'case_files', filter: `user_id=eq.${user.id}` }, fetchOverviewSummary)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'dossier_documents', filter: `user_id=eq.${user.id}` }, fetchOverviewSummary)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'case_files', filter: `user_id=eq.${user.id}` },
+        fetchOverviewSummary
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'dossier_documents',
+          filter: `user_id=eq.${user.id}`,
+        },
+        fetchOverviewSummary
+      )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, fetchOverviewSummary]);
+  }, [supabase, user, fetchOverviewSummary]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -159,7 +194,8 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
 
   // Permission check: allow fallback for authenticated users when role lookup fails.
   // This avoids false "Access Denied" states when profiles/user_profiles are temporarily mismatched.
-  const canViewClientDashboard = can('dashboard:view_client') || (Boolean(user) && userRole === null);
+  const canViewClientDashboard =
+    can('dashboard:view_client') || (Boolean(user) && userRole === null);
   if (!canViewClientDashboard) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center px-6">
@@ -171,7 +207,9 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
             {lang === 'fr' ? 'Accès non autorisé' : 'Access Denied'}
           </h2>
           <p className="text-slate-500 text-sm mb-5">
-            {lang === 'fr' ?'Votre rôle ne vous permet pas d\'accéder à l\'espace client.' :'Your role does not allow access to the client dashboard.'}
+            {lang === 'fr'
+              ? "Votre rôle ne vous permet pas d'accéder à l'espace client."
+              : 'Your role does not allow access to the client dashboard.'}
           </p>
           <Link
             href="/sign-up-login-screen"
@@ -184,16 +222,25 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
     );
   }
 
-  const canViewCaseFiles = can('case_files:view_own') || can('case_files:view_all') || userRole === null;
-  const canViewNotifications = can('notifications:view_own') || can('notifications:view_all') || userRole === null;
-  const statusMeta = overviewSummary.currentStatus ? getCaseStatusMeta(overviewSummary.currentStatus, lang) : null;
-  const progress = overviewSummary.currentStatus ? getCaseProgressPercent(overviewSummary.currentStatus) : 0;
-  const nextMilestone = overviewSummary.currentStatus ? getNextMilestoneLabel(overviewSummary.currentStatus, lang) : null;
+  const canViewCaseFiles =
+    can('case_files:view_own') || can('case_files:view_all') || userRole === null;
+  const canViewNotifications =
+    can('notifications:view_own') || can('notifications:view_all') || userRole === null;
+  const statusMeta = overviewSummary.currentStatus
+    ? getCaseStatusMeta(overviewSummary.currentStatus, lang)
+    : null;
+  const progress = overviewSummary.currentStatus
+    ? getCaseProgressPercent(overviewSummary.currentStatus)
+    : 0;
+  const nextMilestone = overviewSummary.currentStatus
+    ? getNextMilestoneLabel(overviewSummary.currentStatus, lang)
+    : null;
   const actionsRequired = [
     overviewSummary.aCompleterCases > 0
       ? {
           key: 'missing-docs',
-          title: lang === 'fr' ? 'Documents manquants à compléter' : 'Missing documents to complete',
+          title:
+            lang === 'fr' ? 'Documents manquants à compléter' : 'Missing documents to complete',
           count: overviewSummary.aCompleterCases,
           href: '/client-dashboard/case-files',
           cta: lang === 'fr' ? 'Compléter maintenant' : 'Complete now',
@@ -203,7 +250,8 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
     overviewSummary.pendingDocuments > 0
       ? {
           key: 'pending-review',
-          title: lang === 'fr' ? 'Documents en attente de validation' : 'Documents pending validation',
+          title:
+            lang === 'fr' ? 'Documents en attente de validation' : 'Documents pending validation',
           count: overviewSummary.pendingDocuments,
           href: '/client-dashboard/documents',
           cta: lang === 'fr' ? 'Vérifier les documents' : 'Review documents',
@@ -220,12 +268,28 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
   }>;
 
   const tabs = [
-    { id: 'overview' as const, label: lang === 'fr' ? 'Vue d\'ensemble' : 'Overview', icon: LayoutDashboard },
+    {
+      id: 'overview' as const,
+      label: lang === 'fr' ? "Vue d'ensemble" : 'Overview',
+      icon: LayoutDashboard,
+    },
     ...(canViewCaseFiles
-      ? [{ id: 'dossiers' as const, label: lang === 'fr' ? 'Mes dossiers' : 'My files', icon: FolderOpen }]
+      ? [
+          {
+            id: 'dossiers' as const,
+            label: lang === 'fr' ? 'Mes dossiers' : 'My files',
+            icon: FolderOpen,
+          },
+        ]
       : []),
     ...(canViewNotifications
-      ? [{ id: 'notifications' as const, label: lang === 'fr' ? 'Notifications' : 'Notifications', icon: Bell }]
+      ? [
+          {
+            id: 'notifications' as const,
+            label: lang === 'fr' ? 'Notifications' : 'Notifications',
+            icon: Bell,
+          },
+        ]
       : []),
   ];
 
@@ -264,10 +328,14 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-orange-800 text-sm">
-                  {lang === 'fr' ? '⚠️ Action requise - Documents manquants' : '⚠️ Action required - Missing documents'}
+                  {lang === 'fr'
+                    ? '⚠️ Action requise - Documents manquants'
+                    : '⚠️ Action required - Missing documents'}
                 </p>
                 <p className="text-orange-700 text-xs mt-0.5 leading-relaxed">
-                  {lang === 'fr' ?'Un ou plusieurs de vos dossiers nécessitent des documents complémentaires.' :'One or more of your case files require additional documents.'}
+                  {lang === 'fr'
+                    ? 'Un ou plusieurs de vos dossiers nécessitent des documents complémentaires.'
+                    : 'One or more of your case files require additional documents.'}
                 </p>
               </div>
               <Link
@@ -279,7 +347,9 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
             </div>
           )}
 
-          {children ? children : (
+          {children ? (
+            children
+          ) : (
             <>
               {/* Page header */}
               <div className="mb-4 sm:mb-5">
@@ -287,9 +357,24 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
                   {lang === 'fr' ? 'Tableau de bord' : 'Dashboard'}
                 </h1>
                 <p className="text-slate-500 text-sm mt-1">
-                  {lang === 'fr' ? `Vue d'ensemble de vos dossiers - Mis à jour le ${lastUpdated}`
+                  {lang === 'fr'
+                    ? `Vue d'ensemble de vos dossiers - Mis à jour le ${lastUpdated}`
                     : `Overview of your files - Updated ${lastUpdated}`}
                 </p>
+                <div className="mt-3">
+                  <Link
+                    href="/client-dashboard/ai-assistant"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-navy text-white text-sm font-semibold hover:bg-navy/90 transition-colors"
+                  >
+                    <Bot size={14} />
+                    {lang === 'fr' ? 'Assistant IA institutionnel' : 'Institutional AI assistant'}
+                    {showAiBadge && (
+                      <span className="ml-1 inline-flex items-center rounded-full border border-gold/40 bg-gold/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gold">
+                        {lang === 'fr' ? 'Nouveau' : 'New'}
+                      </span>
+                    )}
+                  </Link>
+                </div>
               </div>
 
               {/* Tabs */}
@@ -329,12 +414,18 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
                           </h3>
                           <p className="text-xs text-slate-500 mt-1.5">
                             {nextMilestone
-                              ? (lang === 'fr' ? `Prochain jalon: ${nextMilestone}` : `Next milestone: ${nextMilestone}`)
-                              : (lang === 'fr' ? 'Soumettez un dossier pour démarrer votre parcours.' : 'Submit a dossier to start your journey.')}
+                              ? lang === 'fr'
+                                ? `Prochain jalon: ${nextMilestone}`
+                                : `Next milestone: ${nextMilestone}`
+                              : lang === 'fr'
+                                ? 'Soumettez un dossier pour démarrer votre parcours.'
+                                : 'Submit a dossier to start your journey.'}
                           </p>
                         </div>
                         {statusMeta ? (
-                          <span className={`status-badge border whitespace-nowrap ${statusMeta.badgeClass}`}>
+                          <span
+                            className={`status-badge border whitespace-nowrap ${statusMeta.badgeClass}`}
+                          >
                             <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
                             {statusMeta.label}
                           </span>
@@ -345,7 +436,9 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
                           <span className="text-xs text-slate-500">
                             {lang === 'fr' ? 'Progression estimée' : 'Estimated progress'}
                           </span>
-                          <span className="text-xs font-semibold text-navy font-mono-data">{progress}%</span>
+                          <span className="text-xs font-semibold text-navy font-mono-data">
+                            {progress}%
+                          </span>
                         </div>
                         <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
                           <div
@@ -356,22 +449,39 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
                       </div>
                       <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
                         <div className="rounded-xl border border-slate-200 px-3 py-2.5">
-                          <p className="text-[11px] text-slate-500">{lang === 'fr' ? 'Dossiers actifs' : 'Active dossiers'}</p>
-                          <p className="text-lg font-semibold text-navy font-mono-data">{overviewSummary.activeCases}</p>
+                          <p className="text-[11px] text-slate-500">
+                            {lang === 'fr' ? 'Dossiers actifs' : 'Active dossiers'}
+                          </p>
+                          <p className="text-lg font-semibold text-navy font-mono-data">
+                            {overviewSummary.activeCases}
+                          </p>
                         </div>
                         <div className="rounded-xl border border-slate-200 px-3 py-2.5">
-                          <p className="text-[11px] text-slate-500">{lang === 'fr' ? 'Total dossiers' : 'Total dossiers'}</p>
-                          <p className="text-lg font-semibold text-navy font-mono-data">{overviewSummary.totalCases}</p>
+                          <p className="text-[11px] text-slate-500">
+                            {lang === 'fr' ? 'Total dossiers' : 'Total dossiers'}
+                          </p>
+                          <p className="text-lg font-semibold text-navy font-mono-data">
+                            {overviewSummary.totalCases}
+                          </p>
                         </div>
                         <div className="rounded-xl border border-slate-200 px-3 py-2.5 col-span-2 sm:col-span-1">
-                          <p className="text-[11px] text-slate-500">{lang === 'fr' ? 'Dernière activité' : 'Last activity'}</p>
+                          <p className="text-[11px] text-slate-500">
+                            {lang === 'fr' ? 'Dernière activité' : 'Last activity'}
+                          </p>
                           <p className="text-xs font-semibold text-navy mt-1">
                             {overviewSummary.lastActivityAt
                               ? new Date(overviewSummary.lastActivityAt).toLocaleString(
                                   lang === 'fr' ? 'fr-FR' : 'en-US',
-                                  { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }
+                                  {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                  }
                                 )
-                              : (lang === 'fr' ? 'Aucune activité' : 'No activity yet')}
+                              : lang === 'fr'
+                                ? 'Aucune activité'
+                                : 'No activity yet'}
                           </p>
                         </div>
                       </div>
@@ -389,7 +499,9 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
                             {lang === 'fr' ? 'Aucune action urgente' : 'No urgent action'}
                           </p>
                           <p className="text-xs text-emerald-600 mt-1">
-                            {lang === 'fr' ? 'Votre dossier est à jour pour le moment.' : 'Your dossier is currently up to date.'}
+                            {lang === 'fr'
+                              ? 'Votre dossier est à jour pour le moment.'
+                              : 'Your dossier is currently up to date.'}
                           </p>
                         </div>
                       ) : (
@@ -402,9 +514,14 @@ export default function DashboardLayout({ children }: { children?: React.ReactNo
                             >
                               <div className="flex items-start justify-between gap-2">
                                 <div className="min-w-0">
-                                  <p className="text-xs font-semibold text-amber-900 leading-snug">{action.title}</p>
+                                  <p className="text-xs font-semibold text-amber-900 leading-snug">
+                                    {action.title}
+                                  </p>
                                   <p className="text-[11px] text-amber-700 mt-1">
-                                    {action.count} {lang === 'fr' ? 'dossier(s) concerné(s)' : 'dossier(s) impacted'}
+                                    {action.count}{' '}
+                                    {lang === 'fr'
+                                      ? 'dossier(s) concerné(s)'
+                                      : 'dossier(s) impacted'}
                                   </p>
                                 </div>
                                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white text-amber-800 border border-amber-200 whitespace-nowrap">

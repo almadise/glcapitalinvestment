@@ -15,7 +15,10 @@ serve(async (req) => {
     const { type, to, data } = await req.json();
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     const RESEND_FROM_EMAIL =
-      Deno.env.get("RESEND_FROM_EMAIL") || "GL Capital <glcontact@glcapitalinvestment.com>";
+      Deno.env.get("RESEND_FROM_EMAIL") ||
+      "GL Capital <onboarding@resend.dev>";
+    const EMAIL_FOOTER =
+      "GL Capital Investment SA · Paris-France & World Office · General Luxury SA, Calle Nord 35, 17700 La Jonquera, Girona, Spain";
 
     if (!RESEND_API_KEY) {
       throw new Error("RESEND_API_KEY not configured");
@@ -50,7 +53,7 @@ serve(async (req) => {
             This link expires in <strong style="color: rgba(255,255,255,0.6);">24 hours</strong>. If you did not create an account, please ignore this email.
           </p>
           <p style="color: rgba(255,255,255,0.4); font-size: 12px; text-align: center; margin-top: 32px;">
-            GL Capital Investment SA · 9 Rue Bonnet, 95400 ARNOUVILLE, France
+            ${EMAIL_FOOTER}
           </p>
         </div>
       `;
@@ -76,7 +79,7 @@ serve(async (req) => {
             </p>
           </div>
           <p style="color: rgba(255,255,255,0.4); font-size: 12px; text-align: center; margin-top: 32px;">
-            GL Capital Investment SA · 9 Rue Bonnet, 95400 ARNOUVILLE, France
+            ${EMAIL_FOOTER}
           </p>
         </div>
       `;
@@ -124,7 +127,7 @@ serve(async (req) => {
             </a>
           </div>
           <p style="color: rgba(255,255,255,0.4); font-size: 12px; text-align: center; margin-top: 32px;">
-            GL Capital Investment SA · 9 Rue Bonnet, 95400 ARNOUVILLE, France
+            ${EMAIL_FOOTER}
           </p>
         </div>
       `;
@@ -148,7 +151,7 @@ serve(async (req) => {
             Conservez cette référence pour toutes vos communications. Notre équipe vous contactera sous 1 à 3 jours ouvrés.
           </p>
           <p style="color: rgba(255,255,255,0.4); font-size: 12px; text-align: center; margin-top: 32px;">
-            GL Capital Investment SA · 9 Rue Bonnet, 95400 ARNOUVILLE, France
+            ${EMAIL_FOOTER}
           </p>
         </div>
       `;
@@ -173,7 +176,7 @@ serve(async (req) => {
             </p>
           </div>
           <p style="color: rgba(255,255,255,0.4); font-size: 12px; text-align: center; margin-top: 32px;">
-            GL Capital Investment SA · 9 Rue Bonnet, 95400 ARNOUVILLE, France
+            ${EMAIL_FOOTER}
           </p>
         </div>
       `;

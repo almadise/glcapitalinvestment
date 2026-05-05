@@ -4,6 +4,7 @@ import Link from 'next/link';
 import AppLogo from '@/components/ui/AppLogo';
 import { Home, Mail, ServerCrash, RefreshCw } from 'lucide-react';
 import { captureError } from '@/lib/logger';
+import { OFFICIAL_PUBLIC_EMAIL } from '@/lib/companyContact';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -33,8 +34,8 @@ export default function ServerError({ error, reset }: ErrorProps) {
     home: { fr: 'Retour à l\'accueil', en: 'Back to Home' },
     contact: { fr: 'Contacter le support', en: 'Contact Support' },
     info: {
-      fr: "Si le problème persiste, contactez notre équipe à glcontact@glcapitalinvestment.com en mentionnant l'heure et l'action effectuée.",
-      en: 'If the problem persists, contact our team at glcontact@glcapitalinvestment.com mentioning the time and action performed.',
+      fr: `Si le problème persiste, contactez notre équipe à ${OFFICIAL_PUBLIC_EMAIL} en mentionnant l'heure et l'action effectuée.`,
+      en: `If the problem persists, contact our team at ${OFFICIAL_PUBLIC_EMAIL} mentioning the time and action performed.`,
     },
   };
 
@@ -119,7 +120,7 @@ export default function ServerError({ error, reset }: ErrorProps) {
       <footer className="bg-white border-t border-slate-200 px-4 py-4 text-center">
         <p className="text-xs text-slate-400">
           © {new Date()?.getFullYear()} GL Capital Investment SA -{' '}
-          <a href="mailto:glcontact@glcapitalinvestment.com" className="hover:text-navy transition-colors">glcontact@glcapitalinvestment.com</a>
+          <a href={`mailto:${OFFICIAL_PUBLIC_EMAIL}`} className="hover:text-navy transition-colors">{OFFICIAL_PUBLIC_EMAIL}</a>
         </p>
       </footer>
     </div>

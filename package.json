@@ -41,6 +41,7 @@
     "dev": "next dev -p 4028",
     "build": "next build",
     "start": "next dev -p 4028",
+    "mirrors:generate": "node scripts/generate_markdown_mirrors.mjs https://www.glcapitalinvestment.com",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "lint:api": "next lint --dir src/app/api --file src/middleware.ts --file src/lib/apiSecurity.ts --file src/lib/rateLimit.ts",
@@ -55,7 +56,9 @@
     "@supabase/supabase-js": "latest",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
+    "cheerio": "^1.2.0",
     "framer-motion": "^11.15.0",
+    "gsap": "^3.15.0",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.7",
     "lucide-react": "^1.8.0",
@@ -65,7 +68,8 @@
     "react-hook-form": "^7.72.1",
     "recharts": "^2.15.2",
     "resend": "^4.5.1",
-    "sonner": "^1.7.1"
+    "sonner": "^1.7.1",
+    "turndown": "^7.2.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { requireInternalApiAccess } from '@/lib/apiSecurity';
+import { CONTACT_EMAIL_FALLBACK, RESEND_FROM_FALLBACK } from '@/lib/companyContact';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
-const EMAIL_FROM =
-  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
+const EMAIL_FROM = process.env.RESEND_FROM_EMAIL?.trim() || RESEND_FROM_FALLBACK;
 
 function buildAuditFlagHtml(params: {
   caseTitle: string;
@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
   }
 
   const resend = new Resend(apiKey);
-  const contactEmail = process.env.CONTACT_EMAIL || 'glcontact@glcapitalinvestment.com';
+  const contactEmail = process.env.CONTACT_EMAIL || CONTACT_EMAIL_FALLBACK;
   const allRecipients = Array.from(new Set([contactEmail, ...internalRecipients].filter(Boolean)));
 
   const html = buildAuditFlagHtml({

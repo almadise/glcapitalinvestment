@@ -4,6 +4,15 @@ import { Mail, User, Building2, Briefcase, ArrowRight, AlertCircle, Loader2 } fr
 import PublicNavbar from '@/app/home-page/components/PublicNavbar';
 import PublicFooter from '@/app/home-page/components/PublicFooter';
 import { useLanguage } from '@/context/LanguageContext';
+import {
+  ENTITY_GL_CAPITAL,
+  OFFICIAL_PUBLIC_EMAIL,
+  OFFICIAL_WEBSITE_DISPLAY,
+  OFFICIAL_WEBSITE_URL,
+  PARIS_WORLD_OFFICE,
+  REGISTERED_ADDRESS_LINES_EN,
+  REGISTERED_ADDRESS_LINES_FR,
+} from '@/lib/companyContact';
 
 interface LeadFormData {
   name: string;
@@ -180,8 +189,9 @@ export default function ContactLeadPage() {
 
                 {/* Contact info */}
                 <div className="rounded-2xl p-5 space-y-4" style={{ background: '#FFFFFF', border: '1px solid #D8E0EC' }}>
-                  <h2 className="font-display font-bold text-base" style={{ color: '#1E2D4A' }}>GL Capital Investment SA</h2>
-                  <div className="space-y-3 text-sm" style={{ color: '#4A5C7A' }}>
+                  <h2 className="font-display font-bold text-base" style={{ color: '#1E2D4A' }}>{ENTITY_GL_CAPITAL}</h2>
+                  <p className="text-xs" style={{ color: '#6B7E9A' }}>{PARIS_WORLD_OFFICE}</p>
+                  <div className="space-y-3 text-sm mt-3" style={{ color: '#4A5C7A' }}>
                     <div className="flex items-start gap-2.5">
                       <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: '#F5EDD0' }}>
                         <Mail size={14} style={{ color: '#B8912A' }} aria-hidden="true" />
@@ -189,11 +199,11 @@ export default function ContactLeadPage() {
                       <div>
                         <div className="font-semibold text-xs uppercase tracking-wider mb-0.5" style={{ color: '#1E2D4A' }}>Email</div>
                         <a
-                          href="mailto:glcontact@glcapitalinvestment.com"
+                          href={`mailto:${OFFICIAL_PUBLIC_EMAIL}`}
                           className="transition-colors focus-visible:outline-none focus-visible:ring-2 rounded"
                           style={{ color: '#4A5C7A' }}
                         >
-                          glcontact@glcapitalinvestment.com
+                          {OFFICIAL_PUBLIC_EMAIL}
                         </a>
                       </div>
                     </div>
@@ -203,13 +213,25 @@ export default function ContactLeadPage() {
                       </div>
                       <div>
                         <div className="font-semibold text-xs uppercase tracking-wider mb-0.5" style={{ color: '#1E2D4A' }}>
-                          {lang === 'fr' ? 'Adresse' : 'Address'}
+                          {lang === 'fr' ? 'Siège social (General Luxury SA)' : 'Registered office (General Luxury SA)'}
                         </div>
-                        <address className="not-italic text-sm" style={{ color: '#4A5C7A' }}>
-                          9 Rue Bonnet<br />
-                          95400 ARNOUVILLE<br />
-                          France
+                        <address className="not-italic text-sm space-y-0.5" style={{ color: '#4A5C7A' }}>
+                          {(lang === 'fr' ? REGISTERED_ADDRESS_LINES_FR : REGISTERED_ADDRESS_LINES_EN).map((line) => (
+                            <React.Fragment key={line}>
+                              {line}
+                              <br />
+                            </React.Fragment>
+                          ))}
                         </address>
+                        <a
+                          href={OFFICIAL_WEBSITE_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block mt-2 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 rounded"
+                          style={{ color: '#B8912A' }}
+                        >
+                          {OFFICIAL_WEBSITE_DISPLAY}
+                        </a>
                       </div>
                     </div>
                   </div>

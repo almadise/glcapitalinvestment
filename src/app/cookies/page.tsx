@@ -4,6 +4,13 @@ import PublicNavbar from '../home-page/components/PublicNavbar';
 import PublicFooter from '../home-page/components/PublicFooter';
 import { useLanguage } from '@/context/LanguageContext';
 import { Shield, Cookie, Lock, Eye, UserCheck, Mail } from 'lucide-react';
+import {
+  ENTITY_GL_CAPITAL,
+  ENTITY_GENERAL_LUXURY,
+  OFFICIAL_PUBLIC_EMAIL,
+  REGISTERED_ADDRESS_ONE_LINE_EN,
+  REGISTERED_ADDRESS_ONE_LINE_FR,
+} from '@/lib/companyContact';
 
 
 const COOKIE_CONSENT_KEY = 'gl-capital-cookie-consent';
@@ -276,13 +283,13 @@ export default function CookiesPage() {
             <p className="text-slate-300 text-sm leading-relaxed mb-5">{t.contactText[lang]}</p>
             <div className="space-y-2 text-sm">
               <p><span className="text-gold font-semibold">{lang === 'fr' ? 'Email conformité :' : 'Compliance email:'}</span>{' '}
-                <a href="mailto:glcontact@glcapitalinvestment.com" className="text-slate-300 hover:text-gold transition-colors">glcontact@glcapitalinvestment.com</a>
+                <a href={`mailto:${OFFICIAL_PUBLIC_EMAIL}`} className="text-slate-300 hover:text-gold transition-colors">{OFFICIAL_PUBLIC_EMAIL}</a>
               </p>
               <p><span className="text-gold font-semibold">{lang === 'fr' ? 'Entité :' : 'Entity:'}</span>{' '}
-                <span className="text-slate-300">General Luxury SA - GL Capital Investment</span>
+                <span className="text-slate-300">{ENTITY_GENERAL_LUXURY} — {ENTITY_GL_CAPITAL}</span>
               </p>
               <p><span className="text-gold font-semibold">{lang === 'fr' ? 'Adresse :' : 'Address:'}</span>{' '}
-                <span className="text-slate-300">ARNOUVILLE, France</span>
+                <span className="text-slate-300">{lang === 'fr' ? REGISTERED_ADDRESS_ONE_LINE_FR : REGISTERED_ADDRESS_ONE_LINE_EN}</span>
               </p>
             </div>
             <div className="mt-5 pt-5 border-t border-white/10">

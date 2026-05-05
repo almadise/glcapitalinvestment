@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 import PublicNavbar from '@/app/home-page/components/PublicNavbar';
 import PublicFooter from '@/app/home-page/components/PublicFooter';
+import { REGISTERED_ADDRESS_ONE_LINE_EN, REGISTERED_ADDRESS_ONE_LINE_FR } from '@/lib/companyContact';
 
 // ── Icons ────────────────────────────────────────────────────────────────────
 
@@ -285,8 +286,8 @@ export default function ServicesPage() {
         <div className="rounded-xl border border-amber-500/40 bg-amber-500/5 p-6 lg:p-8">
           <p className="text-amber-300/90 text-sm leading-relaxed">
             {t(
-              '⚠️ Avis important : GL Capital Investment SA n\'est pas une banque et ne détient aucune licence bancaire ou d\'investissement. GL Capital n\'exécute aucune transaction financière, n\'émet aucun instrument bancaire, et n\'accepte aucun dépôt de la part d\'investisseurs. Toute transaction financière, le cas échéant, est exécutée exclusivement par des institutions financières dûment agréées. Les services proposés constituent exclusivement un accompagnement en structuration, documentation et mise en relation. General Luxury SA - 9 Rue Bonnet, 95400 ARNOUVILLE, France.',
-              '⚠️ Important notice: GL Capital Investment SA is not a bank and holds no banking or investment license. GL Capital does not execute financial transactions, does not issue bank instruments, and does not accept investor deposits. Any financial transaction, where applicable, is executed exclusively by duly licensed financial institutions. The services offered constitute exclusively structuring, documentation and introduction advisory. General Luxury SA - 9 Rue Bonnet, 95400 ARNOUVILLE, France.'
+              `⚠️ Avis important : GL Capital Investment SA n'est pas une banque et ne détient aucune licence bancaire ou d'investissement. GL Capital n'exécute aucune transaction financière, n'émet aucun instrument bancaire, et n'accepte aucun dépôt de la part d'investisseurs. Toute transaction financière, le cas échéant, est exécutée exclusivement par des institutions financières dûment agréées. Les services proposés constituent exclusivement un accompagnement en structuration, documentation et mise en relation. ${REGISTERED_ADDRESS_ONE_LINE_FR}.`,
+              `⚠️ Important notice: GL Capital Investment SA is not a bank and holds no banking or investment license. GL Capital does not execute financial transactions, does not issue bank instruments, and does not accept investor deposits. Any financial transaction, where applicable, is executed exclusively by duly licensed financial institutions. The services offered constitute exclusively structuring, documentation and introduction advisory. ${REGISTERED_ADDRESS_ONE_LINE_EN}.`
             )}
           </p>
         </div>

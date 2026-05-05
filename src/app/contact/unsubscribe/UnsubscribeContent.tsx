@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { MailX, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { OFFICIAL_PUBLIC_EMAIL } from '@/lib/companyContact';
 
 export default function UnsubscribeContent() {
   const searchParams = useSearchParams();
@@ -108,7 +109,7 @@ export default function UnsubscribeContent() {
 
             <p className="text-slate-400 text-xs mt-4">
               Vous pouvez toujours nous contacter directement à{' '}
-              <a href="mailto:glcontact@glcapitalinvestment.com" className="text-gold hover:underline">glcontact@glcapitalinvestment.com</a>
+              <a href={`mailto:${OFFICIAL_PUBLIC_EMAIL}`} className="text-gold hover:underline">{OFFICIAL_PUBLIC_EMAIL}</a>
             </p>
           </>
         )}

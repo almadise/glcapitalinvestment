@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import AppLogo from '@/components/ui/AppLogo';
 import { Home, ArrowLeft, Mail, Search } from 'lucide-react';
+import { OFFICIAL_PUBLIC_EMAIL } from '@/lib/companyContact';
 
 export default function NotFound() {
   const [lang, setLang] = useState<'fr' | 'en'>('fr');
@@ -120,7 +121,7 @@ export default function NotFound() {
       <footer className="bg-white border-t border-slate-200 px-4 py-4 text-center">
         <p className="text-xs text-slate-400">
           © {new Date()?.getFullYear()} GL Capital Investment SA -{' '}
-          <a href="mailto:glcontact@glcapitalinvestment.com" className="hover:text-navy transition-colors">glcontact@glcapitalinvestment.com</a>
+          <a href={`mailto:${OFFICIAL_PUBLIC_EMAIL}`} className="hover:text-navy transition-colors">{OFFICIAL_PUBLIC_EMAIL}</a>
         </p>
       </footer>
     </div>

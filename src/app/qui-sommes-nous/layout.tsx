@@ -5,7 +5,7 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital8049.built
 export const metadata: Metadata = {
   title: 'Qui Sommes-Nous - GL Capital Investment SA',
   description:
-    'Découvrez GL Capital Investment SA : notre mission, nos valeurs de conformité, confidentialité et transparence, et notre engagement envers les porteurs de projets institutionnels en Europe et en Afrique.',
+    "Découvrez GL Capital Investment SA : notre mission, nos valeurs de conformité, confidentialité et transparence, et notre engagement envers les porteurs de projets institutionnels en Europe de l'Ouest, en Amérique du Nord, en Asie et au Moyen-Orient.",
   keywords: 'GL Capital équipe, mission financement institutionnel, valeurs conformité, structuration financière',
   alternates: { canonical: `${baseUrl}/qui-sommes-nous` },
   openGraph: {

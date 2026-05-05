@@ -11,6 +11,7 @@ import BankingInstrumentsSection from './components/BankingInstrumentsSection';
 import AdvisorySection from './components/AdvisorySection';
 import ServicesComparisonTable from './components/ServicesComparisonTable';
 import ServicesFooterCTA from './components/ServicesFooterCTA';
+import PeriodicOpportunitiesSection from './components/PeriodicOpportunitiesSection';
 import HomeFooter from '../home-page/components/HomeFooter';
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital8049.builtwithrocket.new';
@@ -88,6 +89,7 @@ export default function ServicesPage() {
       <ProjectFinancingSection />
       <BankingInstrumentsSection />
       <AdvisorySection />
+      <PeriodicOpportunitiesSection />
       <ServicesComparisonTable />
       <ServicesFooterCTA />
       <ServicesStickyCTA />

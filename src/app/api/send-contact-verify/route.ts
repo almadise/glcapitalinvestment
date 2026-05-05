@@ -2,9 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createServiceRoleClient } from '../../../lib/supabase/service';
 import { checkRateLimit, getClientIp, RATE_LIMITS } from '../../../lib/rateLimit';
+import { resolveDevOrSandboxRecipient } from '@/lib/resendRecipients';
+import {
+  OFFICIAL_PUBLIC_EMAIL,
+  RESEND_FROM_FALLBACK,
+  TRANSACTIONAL_EMAIL_FOOTER_LINE,
+} from '@/lib/companyContact';
 
-const EMAIL_FROM =
-  process.env.RESEND_FROM_EMAIL?.trim() || 'GL Capital <glcontact@glcapitalinvestment.com>';
+const EMAIL_FROM = process.env.RESEND_FROM_EMAIL?.trim() || RESEND_FROM_FALLBACK;
 
 export async function POST(req: NextRequest) {
   // ── Rate limiting ──────────────────────────────────────────
@@ -127,7 +132,7 @@ export async function POST(req: NextRequest) {
               <p style="margin:0 0 8px;color:#94a3b8;font-size:12px;">Ce lien est valable 24 heures. Si vous n'avez pas soumis cette demande, ignorez cet email.</p>
               <p style="margin:0;color:#94a3b8;font-size:11px;word-break:break-all;">Lien : ${verifyUrl}</p>
               <hr style="border:none;border-top:1px solid #e2e8f0;margin:28px 0;" />
-              <p style="margin:0;color:#94a3b8;font-size:11px;text-align:center;">GL Capital Investment SA · 9 Rue Bonnet, 95400 ARNOUVILLE, France</p>
+              <p style="margin:0;color:#94a3b8;font-size:11px;text-align:center;">${TRANSACTIONAL_EMAIL_FOOTER_LINE}</p>
               <p style="margin:8px 0 0;text-align:center;">
                 <a href="${siteUrl}/contact/unsubscribe?email=${encodeURIComponent(email)}" style="color:#94a3b8;font-size:11px;">Se désabonner des communications</a>
               </p>
@@ -142,20 +147,31 @@ export async function POST(req: NextRequest) {
 
   const resend = new Resend(apiKey);
   const isProduction = process.env.NODE_ENV === 'production';
-  const devRecipient =
-    process.env.RESEND_TEST_RECIPIENT?.trim() || process.env.CONTACT_EMAIL?.trim();
-  const recipientEmail = isProduction ? email : devRecipient || email;
+  const { to: recipientEmail, redirected, configError } = resolveDevOrSandboxRecipient({
+    productionRecipient: email,
+    fromAddress: EMAIL_FROM,
+    isProduction,
+  });
 
-  if (!isProduction && recipientEmail !== email) {
+  if (configError) {
+    console.error('[send-contact-verify]', configError);
+    return NextResponse.json({ success: false, error: configError }, { status: 503 });
+  }
+
+  if (!isProduction && redirected) {
     console.info(
-      `[send-contact-verify] Mode dev actif: envoi redirige vers ${recipientEmail} (au lieu de ${email})`
+      `[send-contact-verify] Mode dev actif: envoi adressé à ${recipientEmail} (demandeur du formulaire : ${email})`
     );
   }
 
   try {
+    const replyTo =
+      process.env.RESEND_REPLY_TO?.trim() || process.env.CONTACT_EMAIL?.trim() || OFFICIAL_PUBLIC_EMAIL;
+
     const { error: sendError } = await resend.emails.send({
       from: EMAIL_FROM,
       to: recipientEmail,
+      replyTo,
       subject: 'Confirmez votre demande - GL Capital Investment SA',
       html,
     });

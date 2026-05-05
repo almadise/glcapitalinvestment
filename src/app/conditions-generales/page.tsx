@@ -3,6 +3,12 @@ import type { Metadata } from 'next';
 import PublicNav from '@/components/PublicNav';
 import HomeFooter from '@/app/home-page/components/HomeFooter';
 import { FileText, AlertCircle, Shield, DollarSign } from 'lucide-react';
+import {
+  ENTITY_GL_CAPITAL,
+  ENTITY_GENERAL_LUXURY,
+  OFFICIAL_PUBLIC_EMAIL,
+  REGISTERED_ADDRESS_ONE_LINE_FR,
+} from '@/lib/companyContact';
 
 export const metadata: Metadata = {
   title: 'Conditions Générales - GL Capital Investment SA',
@@ -125,8 +131,8 @@ export default function ConditionsGeneralesPage() {
           </div>
 
           <div className="bg-navy-900/60 border border-navy-700 rounded-2xl p-7 text-center">
-            <p className="text-white/40 text-xs">GL Capital Investment SA - General Luxury SA</p>
-            <p className="text-white/40 text-xs">9 Rue Bonnet, 95400 ARNOUVILLE, France - glcontact@glcapitalinvestment.com - +33 984 046951</p>
+            <p className="text-white/40 text-xs">{ENTITY_GL_CAPITAL} — {ENTITY_GENERAL_LUXURY}</p>
+            <p className="text-white/40 text-xs">{REGISTERED_ADDRESS_ONE_LINE_FR} — {OFFICIAL_PUBLIC_EMAIL}</p>
           </div>
         </div>
       </section>

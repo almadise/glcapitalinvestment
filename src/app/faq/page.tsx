@@ -48,6 +48,13 @@ const faqs = [
       en: `No. GL Capital Investment SA is not a bank, fund manager, or credit institution. GL Capital does not execute any direct financial transactions.\n\nOur role is exclusively that of an institutional intermediary specializing in:\n\n• Structuring and presenting financing files\n• Connecting clients with licensed partner financial institutions\n• Advisory on documentation and regulatory compliance\n• Support in due diligence processes\n\nAll financial transactions are carried out directly between the client and the partner financial institutions (banks, funds, credit institutions). GL Capital never intervenes in the flow of funds and holds no client assets.\n\nGL Capital operates in strict compliance with applicable regulations and does not offer any service subject to banking or financial licensing.`,
     },
   },
+  {
+    q: { fr: 'Publiez-vous des programmes Small Cap en continu ?', en: 'Do you publish Small Cap programs continuously?' },
+    a: {
+      fr: `Non. Les opportunités Small Cap sont périodiques, non permanentes, et peuvent se fermer sans préavis.\n\nGL Capital ne publie pas ces fenêtres comme un catalogue public. Chaque demande est traitée au cas par cas, après pré-qualification.\n\nPré-qualification minimale :\n\n• CIS signé\n• Preuve de fonds récente et vérifiable\n• Résumé exécutif du projet ou objectif d'investissement\n\nAucune disponibilité continue ni rendement n'est garanti. Le traitement dépend de la conformité, de l'éligibilité et des conditions de plateforme au moment de la soumission.`,
+      en: `No. Small Cap opportunities are periodic, not permanent, and may close without prior notice.\n\nGL Capital does not publish these windows as a public catalog. Each request is handled case by case, after pre-qualification.\n\nMinimum pre-qualification:\n\n• Signed CIS\n• Recent and verifiable proof of funds\n• Executive summary of the project or investment objective\n\nNo continuous availability or return is guaranteed. Processing depends on compliance, eligibility, and platform conditions at submission time.`,
+    },
+  },
 ];
 
 function AccordionItem({ faq, index, lang }: { faq: typeof faqs[0]; index: number; lang: 'fr' | 'en' }) {

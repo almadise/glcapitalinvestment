@@ -5,6 +5,15 @@ import { useLanguage } from '@/context/LanguageContext';
 import { ArrowLeft, Globe } from 'lucide-react';
 import PublicNavbar from '@/app/home-page/components/PublicNavbar';
 import PublicFooter from '@/app/home-page/components/PublicFooter';
+import {
+  ENTITY_GENERAL_LUXURY,
+  GENERAL_LUXURY_NIE,
+  OFFICIAL_PUBLIC_EMAIL,
+  PARIS_WORLD_OFFICE,
+  REGISTERED_ADDRESS_STREET_EN,
+  REGISTERED_ADDRESS_STREET_FR,
+  REGISTRO_MERCANTIL_CERT,
+} from '@/lib/companyContact';
 
 const content = {
   fr: {
@@ -19,9 +28,11 @@ const content = {
 **GL Capital Investment SA**
 Raison sociale : GL Capital Investment SA
 Numéro d'immatriculation : [Numéro RCS à compléter]
-Adresse du siège social : General Luxury SA - ARNOUVILLE, France
-Email : glcontact@glcapitalinvestment.com
-Téléphone : +33 984 046951`,
+Siège social (${ENTITY_GENERAL_LUXURY}) : ${REGISTERED_ADDRESS_STREET_FR}
+Bureau : ${PARIS_WORLD_OFFICE}
+N.I.E. : ${GENERAL_LUXURY_NIE}
+${REGISTRO_MERCANTIL_CERT}
+Email : ${OFFICIAL_PUBLIC_EMAIL}`,
       },
       {
         id: 'hebergeur',title: '2. Hébergeur',
@@ -75,7 +86,7 @@ Conformément au RGPD, vous disposez des droits suivants :
 
 Pour exercer ces droits ou pour toute question relative à la protection de vos données, vous pouvez contacter notre délégué à la protection des données à l'adresse suivante :
 
-**glcontact@glcapitalinvestment.com**`,
+**${OFFICIAL_PUBLIC_EMAIL}**`,
       },
     ],
   },
@@ -91,9 +102,11 @@ Pour exercer ces droits ou pour toute question relative à la protection de vos 
 **GL Capital Investment SA**
 Company name: GL Capital Investment SA
 Registration number: [RCS number to be completed]
-Registered office: General Luxury SA - ARNOUVILLE, France
-Email: glcontact@glcapitalinvestment.com
-Phone: +33 984 046951`,
+Registered office (${ENTITY_GENERAL_LUXURY}): ${REGISTERED_ADDRESS_STREET_EN}
+Office: ${PARIS_WORLD_OFFICE}
+N.I.E.: ${GENERAL_LUXURY_NIE}
+${REGISTRO_MERCANTIL_CERT}
+Email: ${OFFICIAL_PUBLIC_EMAIL}`,
       },
       {
         id: 'hebergeur',
@@ -152,7 +165,7 @@ In accordance with the GDPR, you have the following rights:
 
 To exercise these rights or for any questions regarding the protection of your data, you may contact our data protection officer at:
 
-**glcontact@glcapitalinvestment.com**`,
+**${OFFICIAL_PUBLIC_EMAIL}**`,
       },
     ],
   },
@@ -272,10 +285,10 @@ export default function MentionsLegalesPage() {
             {activeLang === 'fr' ?'Pour toute question juridique ou relative à la protection des données :' :'For any legal or data protection questions:'}
           </p>
           <a
-            href="mailto:glcontact@glcapitalinvestment.com"
+            href={`mailto:${OFFICIAL_PUBLIC_EMAIL}`}
             className="inline-block bg-gold text-navy font-bold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity"
           >
-            glcontact@glcapitalinvestment.com
+            {OFFICIAL_PUBLIC_EMAIL}
           </a>
         </div>
       </main>

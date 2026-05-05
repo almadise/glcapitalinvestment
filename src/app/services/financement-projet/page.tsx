@@ -190,14 +190,14 @@ export default function FinancementProjetPage() {
                 </div>
                 <p className="text-navy font-semibold text-base leading-snug">
                   {lang === 'fr'
-                    ? <>GL Capital s'appuie sur un réseau de banques d'affaires, d'investisseurs institutionnels et d'opérateurs financiers spécialisés en <strong>Europe</strong>, en <strong>Afrique</strong> et en <strong>Asie</strong>. Les identités de ces partenaires sont protégées par le secret bancaire et ne sont communiquées qu'aux porteurs de dossiers éligibles, dans le cadre strict de la procédure de conformité.</>
-                    : <>GL Capital relies on a network of investment banks, institutional investors and specialised financial operators in <strong>Europe</strong>, <strong>Africa</strong> and <strong>Asia</strong>. The identities of these partners are protected by banking secrecy and are only communicated to eligible file holders, within the strict framework of the compliance procedure.</>
+                    ? <>GL Capital s'appuie sur un réseau de banques d'affaires, d'investisseurs institutionnels et d'opérateurs financiers spécialisés en <strong>Europe de l'Ouest</strong>, en <strong>Amérique du Nord</strong>, en <strong>Asie</strong> et au <strong>Moyen-Orient</strong>. Les identités de ces partenaires sont protégées par le secret bancaire et ne sont communiquées qu'aux porteurs de dossiers éligibles, dans le cadre strict de la procédure de conformité.</>
+                    : <>GL Capital relies on a network of investment banks, institutional investors and specialised financial operators in <strong>Western Europe</strong>, <strong>North America</strong>, <strong>Asia</strong> and the <strong>Middle East</strong>. The identities of these partners are protected by banking secrecy and are only communicated to eligible file holders, within the strict framework of the compliance procedure.</>
                   }
                 </p>
               </div>
             </div>
             <div className="flex flex-wrap justify-center gap-4 mt-8">
-              {(lang === 'fr' ? ['Europe', 'Afrique', 'Asie'] : ['Europe', 'Africa', 'Asia'])?.map((region) => (
+              {(lang === 'fr' ? ["Europe de l'Ouest", 'Amérique du Nord', 'Asie', 'Moyen-Orient'] : ['Western Europe', 'North America', 'Asia', 'Middle East'])?.map((region) => (
                 <div key={`region-${region}`} className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-full px-5 py-2.5 shadow-sm">
                   <CheckCircle size={14} className="text-gold" />
                   <span className="text-navy text-sm font-medium">{region}</span>
