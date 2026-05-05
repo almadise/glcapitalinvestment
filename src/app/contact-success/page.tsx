@@ -62,18 +62,18 @@ export default function ContactSuccessPage() {
           number: '02',
           icon: Search,
           title: 'Pre-eligibility analysis',
-          description: 'Our experts review your file against our institutional criteria.',
+          description: 'Our experts review your application against our institutional criteria.',
         },
         {
           number: '03',
           icon: Video,
           title: 'Qualification call',
-          description: 'If your file is retained, a video conference call will be scheduled.',
+          description: 'If your application is retained, a video conference call will be scheduled.',
         },
         {
           number: '04',
           icon: FolderOpen,
-          title: 'Full file requested',
+          title: 'Full application package requested',
           description: 'We will request the complete set of supporting documents.',
         },
         {
@@ -132,16 +132,16 @@ export default function ContactSuccessPage() {
 
           <div className="inline-flex items-center gap-2 bg-gold/10 border border-gold/20 rounded-full px-4 py-1.5 mb-6">
             <span className="text-gold text-xs font-semibold tracking-widest uppercase">
-              {lang === 'fr' ? 'Dossier reçu' : 'File received'}
+              {lang === 'fr' ? 'Dossier reçu' : 'Application received'}
             </span>
           </div>
 
           <h1 className="font-display text-3xl lg:text-4xl font-bold text-white mb-5 leading-snug">
-            {lang === 'fr' ?'Votre dossier a bien été reçu.' :'Your file has been received.'}
+            {lang === 'fr' ?'Votre dossier a bien été reçu.' :'Your application has been received.'}
           </h1>
 
           <p className="text-slate-300 text-base lg:text-lg leading-relaxed max-w-2xl mx-auto mb-4">
-            {lang === 'fr' ?'Merci pour votre demande. Notre équipe de spécialistes va analyser votre dossier selon nos critères de pré-éligibilité institutionnelle et vous contactera dans les meilleurs délais.' :'Thank you for your submission. Our team of specialists will review your file against our institutional pre-eligibility criteria and will contact you as soon as possible.'}
+            {lang === 'fr' ?'Merci pour votre demande. Notre équipe de spécialistes va analyser votre dossier selon nos critères de pré-éligibilité institutionnelle et vous contactera dans les meilleurs délais.' :'Thank you for your submission. Our team of specialists will review your application against our institutional pre-eligibility criteria and will contact you as soon as possible.'}
           </p>
 
           <div className="flex items-center justify-center gap-2 text-slate-400 text-sm">
@@ -164,7 +164,7 @@ export default function ContactSuccessPage() {
               {lang === 'fr' ? 'Ce qui se passe maintenant' : 'What happens next'}
             </h2>
             <p className="text-slate-400 text-sm max-w-xl mx-auto">
-              {lang === 'fr' ?'Notre processus est structuré pour garantir une analyse rigoureuse de chaque dossier.' :'Our process is structured to ensure a rigorous analysis of every file.'}
+              {lang === 'fr' ?'Notre processus est structuré pour garantir une analyse rigoureuse de chaque dossier.' :'Our process is structured to ensure a rigorous analysis of every application.'}
             </p>
           </div>
 
@@ -210,7 +210,7 @@ export default function ContactSuccessPage() {
                 {lang === 'fr' ? 'Préparez vos documents' : 'Prepare your documents'}
               </h3>
               <p className="text-slate-400 text-sm">
-                {lang === 'fr' ?'Si votre dossier est retenu, les pièces suivantes vous seront demandées :' :'If your file is retained, the following documents will be requested:'}
+                {lang === 'fr' ?'Si votre dossier est retenu, les pièces suivantes vous seront demandées :' :'If your application is retained, the following documents will be requested:'}
               </p>
             </div>
           </div>

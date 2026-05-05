@@ -358,7 +358,7 @@ export default function HeroSection() {
             onMouseEnter={(e) => (e.currentTarget.style.background = '#C9A23B')}
             onMouseLeave={(e) => (e.currentTarget.style.background = '#B8912A')}
           >
-            {t('Soumettre un dossier', 'Submit a dossier')}
+            {t('Soumettre un dossier', 'Submit an application')}
             <svg
               ref={primaryCtaIconRef}
               xmlns="http://www.w3.org/2000/svg"

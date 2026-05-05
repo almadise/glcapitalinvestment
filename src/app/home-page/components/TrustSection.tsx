@@ -26,7 +26,7 @@ export default function TrustSection() {
       titleFr: 'Rigueur de conformité',
       titleEn: 'Compliance Rigour',
       descFr: "Chaque dossier passe un screening KYC/AML, des vérifications de sanctions et un contrôle PPE avant toute soumission.",
-      descEn: 'Every dossier goes through KYC/AML screening, sanctions checks, and PEP verification before submission.',
+      descEn: 'Every application goes through KYC/AML screening, sanctions checks, and PEP verification before submission.',
     },
     {
       icon: (

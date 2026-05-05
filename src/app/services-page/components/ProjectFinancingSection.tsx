@@ -140,7 +140,7 @@ export default function ProjectFinancingSection() {
               className="flex items-center justify-center gap-2 w-full py-3 font-semibold rounded-xl transition-all duration-200 active:scale-95 text-sm"
               style={{ background: '#1E2D4A', color: '#FFFFFF' }}
             >
-              {t('Soumettre un dossier de projet', 'Submit Project Dossier')}
+              {t('Soumettre un dossier de projet', 'Submit Project Application')}
               <ArrowRight size={14} />
             </Link>
           </div>

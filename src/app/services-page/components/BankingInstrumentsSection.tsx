@@ -129,7 +129,7 @@ export default function BankingInstrumentsSection() {
           className="inline-flex items-center gap-2 px-6 py-3 font-semibold rounded-xl transition-all duration-200 active:scale-95 text-sm"
           style={{ background: '#B8912A', color: '#FFFFFF' }}
         >
-          {t('Soumettre un dossier SBLC/BG', 'Submit SBLC/BG Dossier')}
+          {t('Soumettre un dossier SBLC/BG', 'Submit SBLC/BG application')}
           <ArrowRight size={14} />
         </Link>
       </div>

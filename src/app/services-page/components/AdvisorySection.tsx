@@ -25,7 +25,7 @@ export default function AdvisorySection() {
       titleFr: 'Revue & structuration documentaire',
       titleEn: 'Documentation Review & Structuring',
       descFr: 'Revue complète et restructuration du dossier : résumé exécutif, business plan, modèle financier et KYC.',
-      descEn: 'Complete review and restructuring of the dossier package: executive summary, business plan, financial model, and KYC.',
+      descEn: 'Complete review and restructuring of the application package: executive summary, business plan, financial model, and KYC.',
       deliverableFr: 'Documents annotés + structure révisée',
       deliverableEn: 'Annotated documents + revised structure',
       timelineFr: '7–14 jours',
@@ -66,7 +66,7 @@ export default function AdvisorySection() {
     {
       id: 'for-2',
       titleFr: 'Dossiers précédemment rejetés',
-      titleEn: 'Previously rejected dossiers',
+      titleEn: 'Previously rejected applications',
       descFr: 'Projets rejetés par des banques ou IFD qui nécessitent une analyse des causes de rejet et un plan de remédiation.',
       descEn: 'Projects rejected by banks or DFIs that require analysis of rejection causes and a remediation plan.',
     },
@@ -93,7 +93,7 @@ export default function AdvisorySection() {
               <p className="text-lg max-w-2xl" style={{ color: '#4A5C7A' }}>
                 {t(
                   'Évaluation de bancabilité, revue documentaire, pré-screening conformité et structuration de dossier. Pour les clients qui ont besoin d\'un cadrage expert avant la soumission formelle ou en appui parallèle.',
-                  'Bankability assessment, documentation review, compliance pre-screening, and dossier structuring. For clients who need expert guidance before formal submission or as parallel support.'
+                  'Bankability assessment, documentation review, compliance pre-screening, and application structuring. For clients who need expert guidance before formal submission or as parallel support.'
                 )}
               </p>
             </div>

@@ -85,7 +85,7 @@ const PACKAGES: Package[] = [
       'Note de présentation partenaire',
     ],
     deliverablesEn: [
-      'Complete financing dossier (PDF + Excel)',
+      'Complete financing application package (PDF + Excel)',
       'Full KYC/AML review and NCNDA',
       'Structured financial model with assumptions',
       'Institutional executive summary',
@@ -93,7 +93,7 @@ const PACKAGES: Package[] = [
       'Partner presentation note',
     ],
     ctaLabelFr: 'Soumettre mon dossier',
-    ctaLabelEn: 'Submit my dossier',
+    ctaLabelEn: 'Submit my application',
     ctaHref: '/dossier-submission-wizard',
     highlight: true,
     badge: { fr: 'Plus demandé', en: 'Most requested' },

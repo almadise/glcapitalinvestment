@@ -38,5 +38,10 @@ jest-test-results.json
 .env.*
 !.env.example
 
+# Sensitive partner/internal documents
+PARTENAIRE GLCAPITAL/
+PARTENAIRE USA/
+ENTETE  GL GENERAL LUXURY FRANCE & WORLD OFFICE.pdf
+
 # Optional: if using TurboRepo or monorepo
 turbo/

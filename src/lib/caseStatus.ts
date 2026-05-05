@@ -122,11 +122,11 @@ const NEXT_MILESTONE: Record<CaseStatus, { fr: string; en: string }> = {
   },
   CLOTURE: {
     fr: 'Dossier finalise',
-    en: 'Dossier completed',
+    en: 'Application completed',
   },
   REJETE: {
     fr: 'Relance ou nouveau dossier',
-    en: 'Resubmission or new dossier',
+    en: 'Resubmission or new application',
   },
 };
 

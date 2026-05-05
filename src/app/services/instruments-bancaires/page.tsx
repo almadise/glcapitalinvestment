@@ -84,6 +84,11 @@ export default function InstrumentsBancairesPage() {
               ? "GL Capital Investment SA propose à ses clients qualifiés des solutions adossées à des instruments bancaires reconnus, utilisés comme leviers de garantie pour l'accès aux lignes de crédit institutionnelles."
               : 'GL Capital offers qualified clients financing solutions backed by recognised banking instruments.'}
           </p>
+          <p className="text-slate-400 text-sm mt-4 max-w-3xl">
+            {lang === 'fr'
+              ? 'Nous intervenons également en qualité de Mandate Wallet pour des groupes vendeurs de crypto-actifs.'
+              : 'We are also a Mandate Wallet for cryptocurrency seller groups.'}
+          </p>
         </div>
       </section>
       {/* Instruments Grid */}

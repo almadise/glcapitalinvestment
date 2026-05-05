@@ -263,7 +263,7 @@ export default function WizardContent() {
 
   const handleFinalSubmit = async () => {
     if (!user) {
-      toast.error(t('Vous devez être connecté pour soumettre un dossier', 'You must be signed in to submit a dossier'));
+      toast.error(t('Vous devez être connecté pour soumettre un dossier', 'You must be signed in to submit an application'));
       return;
     }
     setIsSubmitting(true);
@@ -342,7 +342,7 @@ export default function WizardContent() {
       toast.warning(
         t(
           `Votre dossier a été signalé pour examen approfondi :\n${flagMessages.join('\n')}`,
-          `Your dossier has been flagged for enhanced review:\n${flagMessages.join('\n')}`
+          `Your application has been flagged for enhanced review:\n${flagMessages.join('\n')}`
         ),
         { duration: 6000 }
       );
@@ -429,7 +429,7 @@ export default function WizardContent() {
         actor_email: user.email,
         action: 'STATUS_CHANGE',
         target_ref: ref,
-        detail: `Dossier submitted by client - compliance: ${complianceStatus} - documents: ${cleanFiles.length} - required_docs: ${uploadedRequiredDocIds.size}/${requiredDocIds.length} - optional_docs: ${optionalDocCount}`,
+        detail: `Application submitted by client - compliance: ${complianceStatus} - documents: ${cleanFiles.length} - required_docs: ${uploadedRequiredDocIds.size}/${requiredDocIds.length} - optional_docs: ${optionalDocCount}`,
         severity: 'info',
       });
 
@@ -446,7 +446,7 @@ export default function WizardContent() {
 
       setIsSubmitting(false);
       setSubmitted(true);
-      toast.success(t(`Dossier soumis - Référence : ${ref}`, `Dossier submitted - Reference: ${ref}`));
+      toast.success(t(`Dossier soumis - Référence : ${ref}`, `Application submitted - Reference: ${ref}`));
     } catch (err: any) {
       setIsSubmitting(false);
       toast.error(err.message || t('Échec de la soumission. Veuillez réessayer.', 'Submission failed. Please try again.'));
@@ -469,12 +469,12 @@ export default function WizardContent() {
           <CheckCircle2 size={36} className="text-emerald-600" />
         </div>
         <h1 className="text-2xl font-bold text-navy mb-3">
-          {t('Dossier soumis avec succès', 'Dossier Submitted Successfully')}
+          {t('Dossier soumis avec succès', 'Application Submitted Successfully')}
         </h1>
         <p className="text-gray-500 mb-4">
           {t(
             'Votre dossier de financement a été reçu et sera examiné par notre équipe.',
-            'Your financing dossier has been received and will be reviewed by our team.'
+            'Your financing application has been received and will be reviewed by our team.'
           )}
         </p>
         <div className="bg-navy rounded-2xl p-6 mb-8 text-left">
@@ -513,7 +513,7 @@ export default function WizardContent() {
             <div>
               <p className="text-amber-800 text-xs font-semibold mb-1">{t('Prochaines étapes', 'What happens next?')}</p>
               <ul className="text-amber-700 text-xs space-y-1 leading-relaxed">
-                <li>• {t('Notre équipe examinera votre dossier sous 1 à 3 jours ouvrables', 'Our team will review your dossier within 1–3 business days')}</li>
+                <li>• {t('Notre équipe examinera votre dossier sous 1 à 3 jours ouvrables', 'Our team will review your application within 1–3 business days')}</li>
                 <li>• {t('Vous pourrez être contacté pour des documents supplémentaires', 'You may be contacted for additional documents')}</li>
                 <li>• {t('Toutes les communications se feront via le portail sécurisé', 'All communications will occur through the secure portal')}</li>
                 <li>• {t('Les soumissions aux partenaires sont confidentielles sous NCNDA', 'Partner submissions are confidential under NCNDA')}</li>
@@ -536,7 +536,7 @@ export default function WizardContent() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-navy">
-          {t('Soumettre un dossier de financement', 'Submit a Financing Dossier')}
+          {t('Soumettre un dossier de financement', 'Submit a financing application')}
         </h1>
         <p className="text-gray-500 text-sm mt-1">
           {t(
@@ -762,7 +762,7 @@ export default function WizardContent() {
               <p className="text-blue-700 text-xs leading-relaxed">
                 {t(
                   'Toutes les informations d\'identité sont traitées selon des protocoles KYC/AML stricts. La fourniture d\'informations inexactes peut entraîner le rejet de votre dossier.',
-                  'All identity information is processed under strict KYC/AML protocols. Providing inaccurate or untraceable information may result in rejection of your dossier.'
+                  'All identity information is processed under strict KYC/AML protocols. Providing inaccurate or untraceable information may result in rejection of your application.'
                 )}
               </p>
             </div>
@@ -1248,7 +1248,7 @@ export default function WizardContent() {
               </div>
               <div>
                 <h2 className="text-lg font-bold text-navy">{t('Révision & Soumission', 'Review & Submit')}</h2>
-                <p className="text-gray-500 text-sm">{t('Vérifiez votre dossier avant la soumission finale', 'Review your dossier before final submission')}</p>
+                <p className="text-gray-500 text-sm">{t('Vérifiez votre dossier avant la soumission finale', 'Review your application before final submission')}</p>
               </div>
             </div>
 
@@ -1357,7 +1357,7 @@ export default function WizardContent() {
                     <p className="text-white/50 text-xs leading-relaxed">
                       {t(
                         'En soumettant ce dossier, je confirme que toutes les informations fournies sont exactes et complètes. Je reconnais que GL Capital effectuera un contrôle KYC/AML et que les fausses informations peuvent entraîner un rejet et un signalement aux autorités compétentes.',
-                        'By submitting this dossier, I confirm that all information provided is accurate and complete. I acknowledge that GL Capital will conduct KYC/AML screening and that false information may result in rejection and reporting to relevant authorities.'
+                        'By submitting this application, I confirm that all information provided is accurate and complete. I acknowledge that GL Capital will conduct KYC/AML screening and that false information may result in rejection and reporting to relevant authorities.'
                       )}
                     </p>
                   </div>
@@ -1403,7 +1403,7 @@ export default function WizardContent() {
               {isSubmitting ? (
                 <><Loader2 size={16} className="animate-spin" />{t('Soumission...', 'Submitting...')}</>
               ) : (
-                <>{t('Soumettre le dossier', 'Submit Dossier')}<CheckCircle2 size={16} /></>
+                <>{t('Soumettre le dossier', 'Submit application')}<CheckCircle2 size={16} /></>
               )}
             </button>
           )}

@@ -43,7 +43,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
         notifs.push({
           id: `sub-${d.id}`,
           type: 'new_submission',
-          title: t('Nouveau dossier soumis', 'New Dossier Submission'),
+          title: t('Nouveau dossier soumis', 'New application submission'),
           description: `${d.org?.name || 'Unknown'} - ${d.ref}`,
           ref: d.ref,
           dossierId: d.id,
@@ -98,7 +98,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
           id: `timeout-${d.id}`,
           type: 'verification_timeout',
           title: t('Délai de vérification dépassé', 'Verification Timeout'),
-          description: t(`Dossier ${d.ref} en attente depuis plus de 72h`, `Dossier ${d.ref} pending for over 72 hours`),
+          description: t(`Dossier ${d.ref} en attente depuis plus de 72h`, `Application ${d.ref} pending for over 72 hours`),
           ref: d.ref,
           dossierId: d.id,
           createdAt: d.created_at,
@@ -133,7 +133,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
       .channel('admin_notifications_hub')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'case_files' }, () => {
         fetchNotifications();
-        toast.info(t('Nouveau dossier reçu', 'New dossier submission received'));
+        toast.info(t('Nouveau dossier reçu', 'New application received'));
       })
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'audit_logs' }, (payload) => {
         const log = payload.new as any;
@@ -225,7 +225,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
         target: notif.ref || '',
         metadata: {
           actor_email: user.email,
-          detail: `Reminder sent for dossier ${notif.ref} (verification timeout)`,
+          detail: `Reminder sent for application ${notif.ref} (verification timeout)`,
           severity: 'info',
         },
       });
@@ -238,7 +238,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
         title: t('Rappel - Documents manquants', 'Reminder - Missing documents'),
         message: t(
           `Votre dossier ${notif.ref} nécessite des documents complémentaires. Merci de compléter votre dossier.`,
-          `Your dossier ${notif.ref} requires additional documents. Please complete your file.`
+          `Your application ${notif.ref} requires additional documents. Please complete your file.`
         ),
         metadata: { case_ref: notif.ref, triggered_by: user.email },
       });
@@ -262,7 +262,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
         target: notif.ref || '',
         metadata: {
           actor_email: user.email,
-          detail: `Dossier ${notif.ref} escalated due to verification timeout`,
+          detail: `Application ${notif.ref} escalated due to verification timeout`,
           severity: 'sensitive',
         },
       });

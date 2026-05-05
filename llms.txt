@@ -16,6 +16,7 @@ Services and Pricing
 2) Instruments bancaires (SBLC, BG, MTN, DLC)
 - Portée: conseil documentaire et structuration.
 - GL Capital agit comme intermédiaire de structuration uniquement.
+- GL Capital intervient également en qualité de Mandate Wallet pour des groupes vendeurs de crypto-actifs.
 - Tarification: sur devis.
 
 3) Conseil et structuration financière
@@ -30,6 +31,14 @@ Services and Pricing
 - Aucune garantie de disponibilité continue ni de rendement.
 - Traitement au cas par cas selon conformité, éligibilité et conditions de plateforme au moment de la soumission.
 
+5) Institutional Ticketing Policy / Politique de tickets institutionnels
+- FR: Positionnement principal: opportunités institutionnelles généralement à partir de 100 M (préférence 500 M+).
+- EN: Primary positioning: institutional opportunities generally from 100M (500M+ preferred).
+- FR: Opportunités inférieures à 100 M: évaluation ponctuelle et strictement au cas par cas.
+- EN: Opportunities below 100M: occasional evaluation and strictly case by case.
+- FR: Prérequis: bénéficiaire effectif identifié, fonds libres et transférables, compliance package complet.
+- EN: Prerequisites: identified beneficial owner, unrestricted transferable funds, complete compliance package.
+
 Locations
 Raison sociale affichée: General Luxury SA
 Adresse: Calle Nord 35, 17700 La Jonquera, Girona, Espagne
@@ -38,7 +47,6 @@ Positionnement opérationnel affiché: Paris-France & World Office
 Contact
 Nom affiché: glcapitalinvestment
 Email: glcapitalinvestment@gmail.com
-Téléphone: +33 6 23 08 00 69
 Site: https://www.glcapitalinvestment.com
 Page contact: https://www.glcapitalinvestment.com/contact
 

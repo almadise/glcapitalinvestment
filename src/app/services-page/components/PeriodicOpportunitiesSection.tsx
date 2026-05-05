@@ -46,6 +46,32 @@ export default function PeriodicOpportunitiesSection() {
               'Important: no continuous availability or return is guaranteed. Processing depends on compliance, eligibility, and platform conditions at submission time.'
             )}
           </p>
+
+          <div className="rounded-xl p-5 mt-5" style={{ background: '#F7F8FA', border: '1px solid #E8EDF5' }}>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#1E2D4A' }}>
+              {t('Politique de tickets institutionnels', 'Institutional ticketing policy')}
+            </p>
+            <ul className="space-y-2 text-sm text-slate-600">
+              <li>
+                {t(
+                  "• Positionnement principal : opportunités institutionnelles généralement à partir de 100 M (préférence 500 M+).",
+                  '• Primary positioning: institutional opportunities generally from 100M (500M+ preferred).'
+                )}
+              </li>
+              <li>
+                {t(
+                  "• Opportunités inférieures à 100 M : évaluation ponctuelle et strictement au cas par cas.",
+                  '• Opportunities below 100M: occasional evaluation and strictly case by case.'
+                )}
+              </li>
+              <li>
+                {t(
+                  "• Prérequis de recevabilité : bénéficiaire effectif identifié, fonds libres et transférables, compliance package complet.",
+                  '• Eligibility prerequisites: identified beneficial owner, unrestricted transferable funds, complete compliance package.'
+                )}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>

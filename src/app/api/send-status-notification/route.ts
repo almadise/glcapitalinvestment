@@ -58,12 +58,12 @@ function buildClientEmailHtml(params: {
 
   const subject = isFr
     ? `Mise à jour de votre dossier - ${caseTitle}`
-    : `Update on your case file - ${caseTitle}`;
+    : `Update on your application - ${caseTitle}`;
 
   const greeting = isFr ? `Bonjour ${clientName},` : `Dear ${clientName},`;
   const intro = isFr
     ? `Nous vous informons que le statut de votre dossier <strong>${caseTitle}</strong> a été mis à jour.`
-    : `We are writing to inform you that the status of your case file <strong>${caseTitle}</strong> has been updated.`;
+    : `We are writing to inform you that the status of your application <strong>${caseTitle}</strong> has been updated.`;
 
   const statusLabel = isFr ? statusInfo.fr : statusInfo.en;
   const oldStatusLabel = oldStatus
@@ -98,7 +98,7 @@ function buildClientEmailHtml(params: {
   const ctaText = isFr ? 'Accéder à mon portail' : 'Access my portal';
   const footerNote = isFr
     ? 'Ce message vous a été envoyé automatiquement suite à une mise à jour de votre dossier GL Capital.'
-    : 'This message was sent automatically following an update to your GL Capital case file.';
+    : 'This message was sent automatically following an update to your GL Capital application.';
 
   return `<!DOCTYPE html>
 <html lang="${lang}">
@@ -111,7 +111,7 @@ function buildClientEmailHtml(params: {
           <h1 style="margin:0;color:#c9a84c;font-size:22px;font-weight:700;letter-spacing:3px;text-transform:uppercase;">GL CAPITAL</h1>
           <p style="margin:4px 0 0;color:#c9a84c;font-size:11px;letter-spacing:4px;text-transform:uppercase;opacity:0.8;">Investment SA</p>
           <div style="margin-top:20px;display:inline-block;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:6px 18px;">
-            <span style="color:#c9a84c;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">${isFr ? 'Mise à jour de dossier' : 'Case File Update'}</span>
+            <span style="color:#c9a84c;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">${isFr ? 'Mise à jour de dossier' : 'Application update'}</span>
           </div>
         </td></tr>
         <tr><td style="background:#c9a84c;height:3px;"></td></tr>
@@ -124,7 +124,7 @@ function buildClientEmailHtml(params: {
             <tr><td style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:20px;">
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr><td style="padding-bottom:12px;border-bottom:1px solid #f1f5f9;">
-                  <span style="color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">${isFr ? 'Dossier' : 'Case file'}</span>
+                  <span style="color:#94a3b8;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">${isFr ? 'Dossier' : 'Application'}</span>
                   <p style="margin:4px 0 0;color:#0a1941;font-size:15px;font-weight:700;">${caseTitle}</p>
                 </td></tr>
                 <tr><td style="padding-top:12px;">
@@ -292,7 +292,7 @@ export async function POST(req: NextRequest) {
   if (CLIENT_NOTIFY_STATUSES.includes(newStatus)) {
     const clientSubject = isFr
       ? `Mise à jour de votre dossier - ${caseTitle}`
-      : `Update on your case file - ${caseTitle}`;
+      : `Update on your application - ${caseTitle}`;
     try {
       const { error } = await resend.emails.send({
         from: EMAIL_FROM,

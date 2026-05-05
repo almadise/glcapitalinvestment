@@ -12,7 +12,7 @@ export default function ServicesFooterCTA() {
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-10 text-center">
         <p className="text-xs font-mono tracking-widest uppercase mb-4" style={{ color: '#D4B055' }}>{t('Prêt à commencer ?', 'Ready to Start?')}</p>
         <h2 className="text-4xl font-bold text-white mb-4">
-          {t('Soumettez votre dossier dès aujourd\'hui', 'Submit your dossier today')}
+          {t('Soumettez votre dossier dès aujourd\'hui', 'Submit your application today')}
         </h2>
         <p className="text-white/60 max-w-xl mx-auto mb-8 text-sm leading-relaxed">
           {t(
@@ -26,7 +26,7 @@ export default function ServicesFooterCTA() {
             className="flex items-center gap-2 px-8 py-4 font-semibold rounded-xl transition-all duration-200 active:scale-95"
             style={{ background: '#B8912A', color: '#FFFFFF' }}
           >
-            {t('Soumettre un dossier', 'Submit a dossier')}
+            {t('Soumettre un dossier', 'Submit an application')}
             <ArrowRight size={16} />
           </Link>
           <Link
