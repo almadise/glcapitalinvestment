@@ -66,7 +66,7 @@ const servicesSchema = {
       item: {
         '@type': 'FinancialProduct',
         name: 'Programme Global de Financement',
-        description: 'Accès diversifié à des sources de financement pour 20 classes d\'actifs : hôtels, construction, énergie, immobilier, infrastructure, mines, agriculture et bien d\'autres.',
+        description: 'Accès diversifié à des sources de financement pour 21 classes d\'actifs : hôtels, construction, énergie, immobilier, infrastructure, mines, agriculture et bien d\'autres.',
         url: `${baseUrl}/services/global-funding-program`,
         provider: { '@type': 'Organization', name: 'GL Capital Investment SA' },
       },
