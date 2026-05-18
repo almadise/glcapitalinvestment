@@ -18,7 +18,7 @@ export default function BankingInstrumentsSection() {
   ];
 
   const whatWeDontDo = [
-    { id: 'bi-no-1', itemFr: 'Les instruments bancaires peuvent être loués ou achetés', itemEn: 'Issue, sell, or lease banking instruments', descFr: '', descEn: 'Only licensed banks can issue SBLC/BG' },
+    { id: 'bi-no-1', itemFr: 'Émettre, vendre ou louer des instruments bancaires', itemEn: 'Issue, sell, or lease banking instruments', descFr: 'Seules les banques agréées peuvent émettre des SBLC/BG', descEn: 'Only licensed banks can issue SBLC/BG' },
     { id: 'bi-no-2', itemFr: 'Monétiser ou "encaisser" des instruments', itemEn: 'Monetize or "cash" instruments', descFr: 'Illégal dans la plupart des juridictions sans licence bancaire', descEn: 'This is illegal in most jurisdictions without a banking license' },
     { id: 'bi-no-3', itemFr: 'Collecter des codes PIN bancaires, codes SWIFT ou identifiants privés', itemEn: 'Collect banking PINs, SWIFT codes, or private credentials', descFr: 'Jamais requis - signal d\'alerte si demandé', descEn: 'Never required - a red flag if requested' },
     { id: 'bi-no-4', itemFr: 'Garantir l\'émission ou l\'approbation d\'instruments', itemEn: 'Guarantee instrument issuance or approval', descFr: 'Décision prise exclusivement par l\'institution émettrice', descEn: 'Decision made exclusively by issuing institution' },

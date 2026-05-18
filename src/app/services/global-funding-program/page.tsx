@@ -94,7 +94,7 @@ export default function GlobalFundingProgramPage() {
         { number: '01', title: 'Soumission', description: 'Présentation du dossier avec documents justificatifs' },
         { number: '02', title: 'Évaluation', description: 'Analyse approfondie du projet et de la viabilité' },
         { number: '03', title: 'Sélection', description: 'Identification des sources de financement appropriées' },
-        { number: '04', title: 'Structuration', description: 'Montage technique et documen taire' },
+        { number: '04', title: 'Structuration', description: 'Montage technique et documentaire' },
         { number: '05', title: 'Finalisation', description: 'Signature et décaissement sous 30j' },
       ]
     : [
@@ -153,7 +153,7 @@ export default function GlobalFundingProgramPage() {
               </span>
             </div>
             <h2 className="font-display text-3xl lg:text-4xl font-bold text-navy mb-4">
-              {lang === 'fr' ? '20 Catégories de Financement' : '20 Financing Categories'}
+              {lang === 'fr' ? '21 Catégories de Financement' : '21 Financing Categories'}
             </h2>
             <p className="text-slate-500 text-base max-w-xl mx-auto">
               {lang === 'fr'
