@@ -13,6 +13,8 @@ export default function BankingInstrumentsSection() {
     { id: 'bi-do-3', itemFr: 'Structuration KYC entreprise pour soumission à la banque émettrice', itemEn: 'Corporate KYC structuring for issuing bank submission', descFr: 'Conforme aux exigences GAFI et des banques correspondantes', descEn: 'Compliant with FATF and correspondent bank requirements' },
     { id: 'bi-do-4', itemFr: 'Coordination avec les institutions émettrices agréées', itemEn: 'Coordination with licensed issuing institutions', descFr: 'Les noms des partenaires ne sont jamais divulgués au client', descEn: 'Partner names are never disclosed to the client' },
     { id: 'bi-do-5', itemFr: 'Pré-screening de conformité de la transaction sous-jacente', itemEn: 'Compliance pre-screening of underlying transaction', descFr: 'Sanctions, PPE, revue de conformité commerciale', descEn: 'Sanctions, PEP, trade compliance review' },
+    { id: 'bi-do-6', itemFr: 'Les instruments bancaires des fournisseurs du réseau GL Capital Investment sont émis par des Top banques', itemEn: 'The banking instruments offered by GL Capital Investment\'s network of providers are issued by leading banks', descFr: '', descEn: '' },
+    { id: 'bi-do-7', itemFr: 'Le réseau de GL Capital Investment collabore avec les Monétiseurs des instruments bancaires', itemEn: 'GL Capital Investment\'s network collaborates with monetizers of cash-backed banking instruments', descFr: '', descEn: '' },
   ];
 
   const whatWeDontDo = [
