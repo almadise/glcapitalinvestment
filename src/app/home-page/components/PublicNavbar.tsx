@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Building2, Shield, Globe, BarChart3 } from 'lucide-react';
 
 export default function PublicNavbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -50,23 +51,35 @@ export default function PublicNavbar() {
   const serviceLinks = [
     {
       href: '/services/financement-projet',
+      icon: Building2,
       labelFr: 'Financement de Projet',
       labelEn: 'Project Financing',
+      descFr: 'Infrastructure, énergie, immobilier',
+      descEn: 'Infrastructure, energy, real estate',
     },
     {
       href: '/services/instruments-bancaires',
+      icon: Shield,
       labelFr: 'Instruments Bancaires',
       labelEn: 'Banking Instruments',
+      descFr: 'SBLC / BG - Montage & structuration',
+      descEn: 'SBLC / BG - Structure & setup',
     },
     {
       href: '/services/global-funding-program',
+      icon: Globe,
       labelFr: 'Programme Global de Financement',
       labelEn: 'Global Funding Program',
+      descFr: 'Hôtels, énergie, immobilier, 21 classes d\'actifs',
+      descEn: 'Hotels, energy, real estate, 21 asset classes',
     },
     {
       href: '/services-page#advisory',
+      icon: BarChart3,
       labelFr: 'Conseil & Structuration',
       labelEn: 'Advisory & Structuring',
+      descFr: 'Bankabilité, documentation, conformité',
+      descEn: 'Bankability, documentation, compliance',
     },
   ];
 
@@ -162,16 +175,29 @@ export default function PublicNavbar() {
                         {t('Tous les services', 'All services')}
                       </Link>
                       <div className="my-1 h-px bg-white/10" />
-                      {serviceLinks.map((service) => (
-                        <Link
-                          key={service.href}
-                          href={service.href}
-                          onClick={() => setServicesOpen(false)}
-                          className="block px-3 py-2 rounded-lg text-sm text-white hover:bg-white/10 transition-colors"
-                        >
-                          {lang === 'fr' ? service.labelFr : service.labelEn}
-                        </Link>
-                      ))}
+                      {serviceLinks.map((service) => {
+                        const IconComponent = service.icon;
+                        return (
+                          <Link
+                            key={service.href}
+                            href={service.href}
+                            onClick={() => setServicesOpen(false)}
+                            className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors group"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-gold/20 transition-colors">
+                              <IconComponent size={16} className="text-gold" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-white">
+                                {lang === 'fr' ? service.labelFr : service.labelEn}
+                              </p>
+                              <p className="text-xs text-white/50 mt-0.5">
+                                {lang === 'fr' ? service.descFr : service.descEn}
+                              </p>
+                            </div>
+                          </Link>
+                        );
+                      })}
                     </div>
                   )}
                 </div>

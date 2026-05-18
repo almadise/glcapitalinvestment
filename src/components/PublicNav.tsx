@@ -11,28 +11,32 @@ const serviceItems = [
     icon: Building2,
     labelFr: 'Financement de Projet',
     label: 'Project Financing',
-    desc: 'Infrastructure, énergie, immobilier',
+    descFr: 'Infrastructure, énergie, immobilier',
+    desc: 'Infrastructure, energy, real estate',
   },
   {
     href: '/services/instruments-bancaires',
     icon: Shield,
     labelFr: 'Instruments Bancaires',
     label: 'Banking Instruments',
-    desc: 'SBLC / BG - Montage & structuration',
+    descFr: 'SBLC / BG - Montage & structuration',
+    desc: 'SBLC / BG - Structure & setup',
   },
   {
     href: '/services/global-funding-program',
     icon: Globe,
     labelFr: 'Programme Global de Financement',
     label: 'Global Funding Program',
-    desc: 'Hôtels, énergie, immobilier, 21 classes d\'actifs',
+    descFr: 'Hôtels, énergie, immobilier, 21 classes d\'actifs',
+    desc: 'Hotels, energy, real estate, 21 asset classes',
   },
   {
     href: '/services-page#advisory',
     icon: BarChart3,
     labelFr: 'Conseil & Structuration',
     label: 'Advisory & Structuring',
-    desc: 'Bankabilité, documentation, conformité',
+    descFr: 'Bankabilité, documentation, conformité',
+    desc: 'Bankability, documentation, compliance',
   },
 ];
 
@@ -121,7 +125,7 @@ export default function PublicNav() {
                             <p className="text-white text-sm font-semibold">
                               {t(item.labelFr, item.label)}
                             </p>
-                            <p className="text-white/50 text-xs mt-0.5">{item.desc}</p>
+                            <p className="text-white/50 text-xs mt-0.5">{t(item.descFr, item.desc)}</p>
                           </div>
                         </Link>
                       ))}
