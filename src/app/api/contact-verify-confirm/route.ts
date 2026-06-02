@@ -10,8 +10,10 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const token = searchParams.get('token');
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || req.url;
+
   if (!token) {
-    return NextResponse.redirect(new URL('/contact?error=invalid_token', req.url));
+    return NextResponse.redirect(new URL('/contact?error=invalid_token', baseUrl));
   }
 
   let supabase;
@@ -19,7 +21,7 @@ export async function GET(req: NextRequest) {
     supabase = createServiceRoleClient();
   } catch (e) {
     console.error('[contact-verify-confirm] Supabase service client:', e);
-    return NextResponse.redirect(new URL('/contact?error=server_config', req.url));
+    return NextResponse.redirect(new URL('/contact?error=server_config', baseUrl));
   }
 
   // Look up the pending verification
@@ -31,12 +33,12 @@ export async function GET(req: NextRequest) {
     .single();
 
   if (fetchError || !pending) {
-    return NextResponse.redirect(new URL('/contact?error=token_not_found', req.url));
+    return NextResponse.redirect(new URL('/contact?error=token_not_found', baseUrl));
   }
 
   // Check expiry
   if (new Date(pending.expires_at) < new Date()) {
-    return NextResponse.redirect(new URL('/contact?error=token_expired', req.url));
+    return NextResponse.redirect(new URL('/contact?error=token_expired', baseUrl));
   }
 
   // Mark token as used
@@ -116,5 +118,5 @@ export async function GET(req: NextRequest) {
       .catch((e) => console.error('[contact-verify-confirm] Admin email error:', e));
   }
 
-  return NextResponse.redirect(new URL('/contact-success', req.url));
+  return NextResponse.redirect(new URL('/contact-success', baseUrl));
 }
