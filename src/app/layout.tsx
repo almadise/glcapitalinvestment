@@ -64,8 +64,8 @@ export default function RootLayout({
               {children}
             </ErrorBoundary>
           </AuthProvider>
+          <CookieBanner />
         </LanguageProvider>
-        <CookieBanner />
         <GoogleAnalytics />
       </body>
     </html>

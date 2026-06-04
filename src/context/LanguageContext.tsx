@@ -51,10 +51,17 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const toggleLang = useCallback(() => {
-    setLang(lang === 'fr' ? 'en' : 'fr');
-  }, [lang, setLang]);
+    setLangState((current) => {
+      const next: Lang = current === 'fr' ? 'en' : 'fr';
+      STORAGE_KEYS.forEach((key) => localStorage.setItem(key, next));
+      return next;
+    });
+  }, []);
 
-  const t = useCallback((fr: string, en: string) => (lang === 'fr' ? fr : en), [lang]);
+  const t = useCallback(
+    (french: string, english: string) => (lang === 'en' ? english : french),
+    [lang]
+  );
 
   const value = useMemo(
     () => ({ lang, setLang, toggleLang, t, ready }),

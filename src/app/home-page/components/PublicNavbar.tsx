@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
+import LanguageToggle from '@/components/LanguageToggle';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function PublicNavbar() {
@@ -11,7 +12,7 @@ export default function PublicNavbar() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileToggleRef = useRef<HTMLButtonElement>(null);
   const servicesDropdownRef = useRef<HTMLDivElement>(null);
-  const { lang, toggleLang, t } = useLanguage();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -200,15 +201,7 @@ export default function PublicNavbar() {
 
           {/* Right actions */}
           <div className="hidden lg:flex items-center gap-3">
-            {/* Language toggle */}
-            <button
-              onClick={toggleLang}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-white/20 text-xs font-semibold text-white hover:bg-white/10 hover:border-white/40 transition-all"
-              title={lang === 'fr' ? 'Switch to English' : 'Passer en français'}
-              aria-label={lang === 'fr' ? 'Switch to English' : 'Passer en français'}
-            >
-              {lang === 'fr' ? '🇬🇧 EN' : '🇫🇷 FR'}
-            </button>
+            <LanguageToggle />
             <Link
               href="/sign-up-login-screen"
               className="px-4 py-2 text-sm font-medium text-white hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1 focus-visible:ring-offset-navy-900 rounded-lg"
@@ -351,15 +344,9 @@ export default function PublicNavbar() {
           )}
           <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
             {/* Mobile language toggle */}
-            <button
-              onClick={() => {
-                toggleLang();
-                setMobileOpen(false);
-              }}
-              className="block text-center px-4 py-2 text-sm font-medium text-white border border-white/20 rounded-lg transition-colors hover:bg-white/10"
-            >
-              {lang === 'fr' ? '🇬🇧 Switch to English' : '🇫🇷 Passer en français'}
-            </button>
+            <div className="flex justify-center py-1">
+              <LanguageToggle />
+            </div>
             <Link
               href="/sign-up-login-screen"
               onClick={() => setMobileOpen(false)}

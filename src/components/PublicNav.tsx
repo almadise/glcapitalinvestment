@@ -2,7 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import AppLogo from '@/components/ui/AppLogo';
-import { Menu, X, ChevronDown, Globe, Shield, Building2, BarChart3 } from 'lucide-react';
+import { Menu, X, ChevronDown, Shield, Building2, BarChart3 } from 'lucide-react';
+import LanguageToggle from '@/components/LanguageToggle';
 import { useLanguage } from '@/context/LanguageContext';
 
 const serviceItems = [
@@ -69,7 +70,7 @@ export default function PublicNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { lang, toggleLang, t } = useLanguage();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -172,13 +173,10 @@ export default function PublicNav() {
 
         {/* Right actions */}
         <div className="hidden lg:flex items-center gap-3">
-          <button
-            onClick={toggleLang}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white/60 hover:text-white border border-white/20 hover:border-white/40 rounded-lg transition-all duration-200"
-          >
-            <Globe size={12} />
-            {lang === 'fr' ? 'EN' : 'FR'}
-          </button>
+          <LanguageToggle
+            className="flex items-center gap-1 rounded-lg border border-white/20 p-0.5"
+            buttonClassName="px-3 py-1.5 text-xs font-medium rounded-md transition-all"
+          />
           <Link
             href="/sign-up-login-screen"
             className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors"
@@ -230,13 +228,10 @@ export default function PublicNav() {
             ))}
           </div>
           <div className="pt-3 border-t border-navy-700 flex gap-3">
-            <button
-              onClick={toggleLang}
-              className="px-3 py-2 text-xs font-medium text-white/60 border border-white/20 rounded-lg"
-            >
-              <Globe size={12} className="inline mr-1" />
-              {lang === 'fr' ? 'EN' : 'FR'}
-            </button>
+            <LanguageToggle
+              className="flex items-center gap-1 rounded-lg border border-white/20 p-0.5"
+              buttonClassName="px-3 py-2 text-xs font-medium rounded-md transition-all"
+            />
             <Link
               href="/sign-up-login-screen"
               className="flex-1 text-center px-4 py-2.5 text-sm font-medium text-white/80 border border-white/20 rounded-lg"

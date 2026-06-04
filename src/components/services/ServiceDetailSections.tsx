@@ -8,7 +8,7 @@ import { ServiceHeroBackground } from '@/components/services/ServiceHeroBackgrou
 import { useLanguage } from '@/context/LanguageContext';
 
 function pick(lang: 'fr' | 'en', item: Bilingual) {
-  return lang === 'fr' ? item.fr : item.en;
+  return lang === 'en' ? item.en : item.fr;
 }
 
 type ServiceDetailSectionsProps = {
