@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import { Bot, Loader2, SendHorizonal, ShieldCheck, User } from 'lucide-react';
 import DashboardLayout from '../components/DashboardLayout';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 type ChatRole = 'user' | 'assistant';
 

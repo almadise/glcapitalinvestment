@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import {
   ENTITY_GL_CAPITAL,
   OFFICIAL_PUBLIC_EMAIL,
@@ -18,9 +18,12 @@ export default function PublicFooter() {
     { labelFr: 'Accueil', labelEn: 'Home', href: '/home-page' },
     { labelFr: 'Qui sommes-nous', labelEn: 'About Us', href: '/qui-sommes-nous' },
     { labelFr: 'Services', labelEn: 'Services', href: '/services' },
-    { labelFr: 'Financement de Projet', labelEn: 'Project Financing', href: '/services/financement-projet' },
-    { labelFr: 'Instruments Bancaires', labelEn: 'Banking Instruments', href: '/services/instruments-bancaires' },
-    { labelFr: 'Conseil & Structuration', labelEn: 'Advisory & Structuring', href: '/services-page#advisory' },
+    { labelFr: 'Financement de projet', labelEn: 'Project Finance', href: '/services/financement-projet' },
+    { labelFr: 'Instruments bancaires', labelEn: 'Bank Instruments', href: '/services/instruments-bancaires' },
+    { labelFr: 'Prêts', labelEn: 'Loans', href: '/services/prets' },
+    { labelFr: 'Placement privé', labelEn: 'Private Placement', href: '/services/placement-prive' },
+    { labelFr: 'Conseil crypto-actifs', labelEn: 'Crypto Advisory', href: '/services/conseil-crypto' },
+    { labelFr: 'Conseil & structuration', labelEn: 'Advisory & Structuring', href: '/services/conseil-structuration' },
     { labelFr: 'Contact', labelEn: 'Contact', href: '/contact' },
     { labelFr: 'FAQ', labelEn: 'FAQ', href: '/faq' },
     { labelFr: 'Portail Client', labelEn: 'Client Portal', href: '/client-portal-dashboard' },

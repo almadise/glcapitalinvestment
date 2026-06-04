@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { CheckCircle2, XCircle, MinusCircle } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 const Check = () => <CheckCircle2 size={16} className="text-emerald-500 mx-auto" />;
 const Cross = () => <XCircle size={16} className="text-red-400 mx-auto" />;

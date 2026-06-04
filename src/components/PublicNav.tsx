@@ -3,38 +3,65 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import AppLogo from '@/components/ui/AppLogo';
 import { Menu, X, ChevronDown, Globe, Shield, Building2, BarChart3 } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 const serviceItems = [
   {
     href: '/services/financement-projet',
     icon: Building2,
-    labelFr: 'Financement de Projet',
-    label: 'Project Financing',
-    desc: 'Infrastructure, énergie, immobilier',
+    labelFr: 'Financement de projet',
+    labelEn: 'Project Finance',
+    descFr: 'Programme mondial, 2 M€ à 4 Md€',
+    descEn: 'Global programme, €2M to €4B',
   },
   {
     href: '/services/instruments-bancaires',
     icon: Shield,
-    labelFr: 'Instruments Bancaires',
-    label: 'Banking Instruments',
-    desc: 'SBLC / BG - Montage & structuration',
+    labelFr: 'Instruments bancaires',
+    labelEn: 'Bank Instruments',
+    descFr: 'Achat, location, monétisation, SBLC',
+    descEn: 'Purchase, lease, monetization, SBLC',
   },
   {
-    href: '/services-page#advisory',
+    href: '/services/prets',
+    icon: Building2,
+    labelFr: 'Prêts',
+    labelEn: 'Loans',
+    descFr: 'Prêts commerciaux et de projet',
+    descEn: 'Commercial and project loans',
+  },
+  {
+    href: '/services/placement-prive',
+    icon: Shield,
+    labelFr: 'Placement privé',
+    labelEn: 'Private Placement',
+    descFr: 'Programmes PPP, fonds éligibles',
+    descEn: 'PPP programs, eligible funds',
+  },
+  {
+    href: '/services/conseil-crypto',
     icon: BarChart3,
-    labelFr: 'Conseil & Structuration',
-    label: 'Advisory & Structuring',
-    desc: 'Bankabilité, documentation, conformité',
+    labelFr: 'Conseil crypto-actifs',
+    labelEn: 'Crypto Advisory',
+    descFr: 'OTC, prêt-emprunt, conservation',
+    descEn: 'OTC, lending, custody',
+  },
+  {
+    href: '/services/conseil-structuration',
+    icon: BarChart3,
+    labelFr: 'Conseil & structuration',
+    labelEn: 'Advisory & Structuring',
+    descFr: 'Bankabilité, documentation, conformité',
+    descEn: 'Bankability, documentation, compliance',
   },
 ];
 
 const navLinks = [
-  { href: '/home-page', labelFr: 'Accueil', label: 'Home' },
-  { href: '/qui-sommes-nous', labelFr: 'Qui sommes-nous', label: 'About Us' },
-  { href: '/services-page', labelFr: 'Services', label: 'Services', hasDropdown: true },
-  { href: '/contact', labelFr: 'Contact', label: 'Contact' },
-  { href: '/faq', labelFr: 'FAQ', label: 'FAQ' },
+  { href: '/home-page', labelFr: 'Accueil', labelEn: 'Home' },
+  { href: '/qui-sommes-nous', labelFr: 'Qui sommes-nous', labelEn: 'About Us' },
+  { href: '/services-page', labelFr: 'Services', labelEn: 'Services', hasDropdown: true },
+  { href: '/contact', labelFr: 'Contact', labelEn: 'Contact' },
+  { href: '/faq', labelFr: 'FAQ', labelEn: 'FAQ' },
 ];
 
 export default function PublicNav() {
@@ -42,7 +69,7 @@ export default function PublicNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { lang, setLang, t } = useLanguage();
+  const { lang, toggleLang, t } = useLanguage();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -90,7 +117,7 @@ export default function PublicNav() {
                       ? 'text-gold-400 bg-white/10' :'text-white/80 hover:text-white hover:bg-white/10'
                   }`}
                 >
-                  {t(link.labelFr, link.label)}
+                  {t(link.labelFr, link.labelEn)}
                   <ChevronDown
                     size={14}
                     className={`transition-transform duration-200 ${servicesOpen ? 'rotate-180' : ''}`}
@@ -102,7 +129,7 @@ export default function PublicNav() {
                     <div className="p-2">
                       {serviceItems.map((item) => (
                         <Link
-                          key={`dropdown-${item.label}`}
+                          key={`dropdown-${item.href}`}
                           href={item.href}
                           onClick={() => setServicesOpen(false)}
                           className="flex items-start gap-3 p-3 rounded-lg hover:bg-navy-700 transition-colors duration-150 group"
@@ -112,9 +139,9 @@ export default function PublicNav() {
                           </div>
                           <div>
                             <p className="text-white text-sm font-semibold">
-                              {t(item.labelFr, item.label)}
+                              {t(item.labelFr, item.labelEn)}
                             </p>
-                            <p className="text-white/50 text-xs mt-0.5">{item.desc}</p>
+                            <p className="text-white/50 text-xs mt-0.5">{t(item.descFr, item.descEn)}</p>
                           </div>
                         </Link>
                       ))}
@@ -133,11 +160,11 @@ export default function PublicNav() {
               </div>
             ) : (
               <Link
-                key={`nav-${link.label}`}
+                key={`nav-${link.href}`}
                 href={link.href}
                 className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
               >
-                {t(link.labelFr, link.label)}
+                {t(link.labelFr, link.labelEn)}
               </Link>
             )
           )}
@@ -146,7 +173,7 @@ export default function PublicNav() {
         {/* Right actions */}
         <div className="hidden lg:flex items-center gap-3">
           <button
-            onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
+            onClick={toggleLang}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white/60 hover:text-white border border-white/20 hover:border-white/40 rounded-lg transition-all duration-200"
           >
             <Globe size={12} />
@@ -181,30 +208,30 @@ export default function PublicNav() {
         <div className="lg:hidden bg-navy-900/98 backdrop-blur-md border-t border-navy-700 px-6 py-4 space-y-1 animate-slide-up">
           {navLinks.map((link) => (
             <Link
-              key={`mobile-${link.label}`}
+              key={`mobile-${link.href}`}
               href={link.href}
               onClick={() => setMobileOpen(false)}
               className="block px-4 py-3 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
             >
-              {t(link.labelFr, link.label)}
+              {t(link.labelFr, link.labelEn)}
             </Link>
           ))}
           <div className="pl-4 space-y-1">
             {serviceItems.map((item) => (
               <Link
-                key={`mobile-service-${item.label}`}
+                key={`mobile-service-${item.href}`}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-2 px-4 py-2.5 text-sm text-gold-400 hover:text-gold-300 rounded-lg transition-colors"
               >
                 <item.icon size={14} />
-                {t(item.labelFr, item.label)}
+                {t(item.labelFr, item.labelEn)}
               </Link>
             ))}
           </div>
           <div className="pt-3 border-t border-navy-700 flex gap-3">
             <button
-              onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
+              onClick={toggleLang}
               className="px-3 py-2 text-xs font-medium text-white/60 border border-white/20 rounded-lg"
             >
               <Globe size={12} className="inline mr-1" />

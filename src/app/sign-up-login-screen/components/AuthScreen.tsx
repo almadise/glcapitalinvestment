@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Toaster } from 'sonner';
 import AppLogo from '@/components/ui/AppLogo';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { Eye, EyeOff, Shield, Lock, Mail, Building2, CheckCircle2, ArrowRight, Smartphone, AlertCircle, MailCheck, RefreshCw } from 'lucide-react';
 
 type AuthMode = 'login' | 'register';

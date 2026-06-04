@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Shield, CheckCircle2, XCircle, AlertTriangle, ArrowRight } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function BankingInstrumentsSection() {
   const { t } = useLanguage();

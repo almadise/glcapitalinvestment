@@ -17,7 +17,7 @@ import {
   CalendarDays,
   Flag,
 } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { caseFileDescription, caseFileLabel, caseFileType } from '@/lib/caseFileLabel';
 import {
   getCaseStatusLabel,

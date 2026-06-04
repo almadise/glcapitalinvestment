@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Menu, Bell, Search, ChevronDown, User, Globe, UserCircle } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useNotificationCount } from '@/hooks/useNotifications';

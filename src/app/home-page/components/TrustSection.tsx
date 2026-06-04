@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function TrustSection() {
   const { t } = useLanguage();

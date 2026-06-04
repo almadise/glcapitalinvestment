@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useCallback, useMemo } from 'react';
 import { Toaster, toast } from 'sonner';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { createClient } from '@/lib/supabase/client';
 import { Plus, Search, Filter, Edit3, Trash2, Link2, MapPin, FileText, BarChart3, ChevronRight, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 

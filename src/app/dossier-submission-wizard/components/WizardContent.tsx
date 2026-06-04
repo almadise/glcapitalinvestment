@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast, Toaster } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { createClient } from '@/lib/supabase/client';
 import { insertCaseFileWithSchemaFallback } from '@/lib/supabase/caseFiles';
 import { runComplianceCheck, getComplianceStatus } from '@/lib/compliance/complianceEngine';

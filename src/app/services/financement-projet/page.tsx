@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import PublicNavbar from '@/app/home-page/components/PublicNavbar';
 import PublicFooter from '@/app/home-page/components/PublicFooter';
+import { ServiceDetailSections, ServiceHero } from '@/components/services/ServiceDetailSections';
+import { projectFinanceContent } from '@/lib/content/glCapitalRedactionnel';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function FinancementProjetPage() {
@@ -22,16 +24,16 @@ export default function FinancementProjetPage() {
 
   const eligibilityCriteria = lang === 'fr'
     ? [
-        { icon: Banknote, label: 'Montant minimum', value: "200 millions d'euros ou USD" },
-        { icon: Shield, label: 'Apport en fonds propres requis', value: '5 % à 10 % du besoin total (selon la nature du projet)' },
-        { icon: Building2, label: 'Entités éligibles', value: 'Entreprises, gouvernements, organisations internationales, associations' },
-        { icon: Globe, label: 'Garanties souveraines acceptées', value: "Obligations d'État, bons du Trésor, nantissement de ressources naturelles" },
+        { icon: Banknote, label: 'Fourchette de montants', value: '2 000 000 EUR à 4 000 000 000 EUR' },
+        { icon: Shield, label: 'Durée', value: '1 à 25 ans' },
+        { icon: Building2, label: 'Taux indicatif', value: '4 %' },
+        { icon: Globe, label: 'Délai de pré-qualification', value: 'Éligibilité vérifiable sous 48 heures' },
       ]
     : [
-        { icon: Banknote, label: 'Minimum amount', value: '€200 million or USD equivalent' },
-        { icon: Shield, label: 'Required equity contribution', value: '5% to 10% of total need (depending on project nature)' },
-        { icon: Building2, label: 'Eligible entities', value: 'Companies, governments, international organisations, associations' },
-        { icon: Globe, label: 'Sovereign guarantees accepted', value: 'Government bonds, treasury bills, pledge of natural resources' },
+        { icon: Banknote, label: 'Amount range', value: 'EUR 2,000,000 to EUR 4,000,000,000' },
+        { icon: Shield, label: 'Tenor', value: '1 to 25 years' },
+        { icon: Building2, label: 'Indicative rate', value: '4%' },
+        { icon: Globe, label: 'Pre-qualification', value: 'Eligibility check within 48 hours' },
       ];
 
   const steps = lang === 'fr'
@@ -53,37 +55,22 @@ export default function FinancementProjetPage() {
   return (
     <div className="min-h-screen bg-white">
       <PublicNavbar />
-      {/* Hero */}
-      <section className="pt-28 pb-16 relative overflow-hidden">
-        <div
-          className="absolute inset-0 bg-center bg-cover"
-          style={{ backgroundImage: "url('/assets/images/financial-hero-v2.png')" }}
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-navy/55" aria-hidden="true" />
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-dark/90 via-navy/80 to-navy-light/85" aria-hidden="true" />
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-gold blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gold blur-3xl" />
-        </div>
-        <div className="max-w-screen-xl mx-auto px-6 lg:px-10 xl:px-16 relative z-10">
-          <div className="inline-flex items-center gap-2 bg-gold/10 border border-gold/20 rounded-full px-4 py-1.5 mb-6">
-            <span className="text-gold text-xs font-semibold tracking-widest uppercase">
-              {lang === 'fr' ? 'Services' : 'Services'}
-            </span>
-          </div>
-          <h1 className="font-display text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 leading-tight">
-            {lang === 'fr' ? (
-              <>Financement de projets<br /><span className="text-gradient-gold">d'investissement</span></>
-            ) : (
-              <>Project Investment<br /><span className="text-gradient-gold">Financing</span></>
-            )}
-          </h1>
-          <p className="text-slate-300 text-lg lg:text-xl leading-relaxed max-w-3xl border-l-2 border-gold/40 pl-5">
-            {lang === 'fr' ? "GL Capital Investment SA mobilise son réseau d'institutions financières partenaires pour accompagner les porteurs de projets dans l'obtention de financements par dette adaptés à leurs besoins." :'GL Capital mobilises its network of partner financial institutions to support project holders in obtaining debt financing.'}
-          </p>
-        </div>
-      </section>
+      <ServiceHero
+        titleLines={{
+          fr: 'Financement de projets',
+          en: 'Project Investment',
+        }}
+        titleAccent={{
+          fr: "d'investissement",
+          en: 'Financing',
+        }}
+        subtitle={projectFinanceContent.heroSubtitle}
+        backgroundImage="/assets/images/financial-hero-v2.png"
+      />
+      <ServiceDetailSections
+        sections={projectFinanceContent.sections}
+        showBottomCta={false}
+      />
       {/* Eligibility */}
       <section className="py-20 bg-slate-50">
         <div className="max-w-screen-xl mx-auto px-6 lg:px-10 xl:px-16">

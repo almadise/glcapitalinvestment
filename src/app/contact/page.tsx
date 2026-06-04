@@ -13,6 +13,7 @@ import {
   REGISTERED_ADDRESS_LINES_EN,
   REGISTERED_ADDRESS_LINES_FR,
 } from '@/lib/companyContact';
+import { contactProjectTypes } from '@/lib/content/glCapitalRedactionnel';
 
 interface LeadFormData {
   name: string;
@@ -22,19 +23,8 @@ interface LeadFormData {
   message: string;
 }
 
-const PROJECT_TYPES_FR = [
-  'Financement de projet',
-  'Instruments bancaires (SBLC/BG/MTN)',
-  'Conseil & Structuration',
-  'Autre',
-];
-
-const PROJECT_TYPES_EN = [
-  'Project Finance',
-  'Bank Instruments (SBLC/BG/MTN)',
-  'Advisory & Structuring',
-  'Other',
-];
+const PROJECT_TYPES_FR = contactProjectTypes.fr;
+const PROJECT_TYPES_EN = contactProjectTypes.en;
 
 export default function ContactLeadPage() {
   const { lang } = useLanguage();

@@ -1,10 +1,11 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import AppLogo from '@/components/ui/AppLogo';
 import { Home, Mail, ServerCrash, RefreshCw } from 'lucide-react';
 import { captureError } from '@/lib/logger';
 import { OFFICIAL_PUBLIC_EMAIL } from '@/lib/companyContact';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -12,7 +13,7 @@ interface ErrorProps {
 }
 
 export default function ServerError({ error, reset }: ErrorProps) {
-  const [lang, setLang] = useState<'fr' | 'en'>('fr');
+  const { lang, setLang, t } = useLanguage();
 
   useEffect(() => {
     // Log 500 errors to Supabase error_logs table for real-time monitoring
@@ -22,22 +23,6 @@ export default function ServerError({ error, reset }: ErrorProps) {
       source: 'error-boundary',
     });
   }, [error]);
-
-  const t = {
-    badge: { fr: 'Erreur 500', en: 'Error 500' },
-    title: { fr: 'Erreur serveur', en: 'Server Error' },
-    subtitle: {
-      fr: 'Une erreur interne s\'est produite. Notre équipe technique a été notifiée et travaille à la résolution.',
-      en: 'An internal error occurred. Our technical team has been notified and is working on a resolution.',
-    },
-    retry: { fr: 'Réessayer', en: 'Try Again' },
-    home: { fr: 'Retour à l\'accueil', en: 'Back to Home' },
-    contact: { fr: 'Contacter le support', en: 'Contact Support' },
-    info: {
-      fr: `Si le problème persiste, contactez notre équipe à ${OFFICIAL_PUBLIC_EMAIL} en mentionnant l'heure et l'action effectuée.`,
-      en: `If the problem persists, contact our team at ${OFFICIAL_PUBLIC_EMAIL} mentioning the time and action performed.`,
-    },
-  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -79,15 +64,25 @@ export default function ServerError({ error, reset }: ErrorProps) {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 rounded-full px-4 py-1.5 mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-red-700 text-xs font-semibold tracking-wide uppercase">{t?.badge?.[lang]}</span>
+            <span className="text-red-700 text-xs font-semibold tracking-wide uppercase">{t('Erreur 500', 'Error 500')}</span>
           </div>
 
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-navy mb-3">{t?.title?.[lang]}</h1>
-          <p className="text-slate-500 text-base leading-relaxed mb-6 max-w-sm mx-auto">{t?.subtitle?.[lang]}</p>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-navy mb-3">{t('Erreur serveur', 'Server Error')}</h1>
+          <p className="text-slate-500 text-base leading-relaxed mb-6 max-w-sm mx-auto">
+            {t(
+              "Une erreur interne s'est produite. Notre équipe technique a été notifiée et travaille à la résolution.",
+              'An internal error occurred. Our technical team has been notified and is working on a resolution.'
+            )}
+          </p>
 
           {/* Info box */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 text-left">
-            <p className="text-amber-800 text-xs leading-relaxed">{t?.info?.[lang]}</p>
+            <p className="text-amber-800 text-xs leading-relaxed">
+              {t(
+                `Si le problème persiste, contactez notre équipe à ${OFFICIAL_PUBLIC_EMAIL} en mentionnant l'heure et l'action effectuée.`,
+                `If the problem persists, contact our team at ${OFFICIAL_PUBLIC_EMAIL} mentioning the time and action performed.`
+              )}
+            </p>
           </div>
 
           {/* Actions */}
@@ -97,21 +92,21 @@ export default function ServerError({ error, reset }: ErrorProps) {
               className="flex items-center justify-center gap-2 px-5 py-3 bg-navy text-white rounded-xl text-sm font-semibold hover:bg-navy/90 transition-colors"
             >
               <RefreshCw size={15} />
-              {t?.retry?.[lang]}
+              {t('Réessayer', 'Try Again')}
             </button>
             <Link
               href="/home-page"
               className="flex items-center justify-center gap-2 px-5 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors"
             >
               <Home size={15} />
-              {t?.home?.[lang]}
+              {t("Retour à l'accueil", 'Back to Home')}
             </Link>
             <Link
               href="/contact"
               className="flex items-center justify-center gap-2 px-5 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors"
             >
               <Mail size={15} />
-              {t?.contact?.[lang]}
+              {t('Contacter le support', 'Contact Support')}
             </Link>
           </div>
         </div>

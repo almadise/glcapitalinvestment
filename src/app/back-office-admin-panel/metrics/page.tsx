@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import BackOfficeLayout from '@/components/BackOfficeLayout';
 import { Users, FolderOpen, AlertTriangle, Mail, Shield, RefreshCw, TrendingUp, TrendingDown, Minus, Activity, CheckCircle2, XCircle, Clock, BarChart3, UserCheck, UserX, Zap } from 'lucide-react';
 import Icon from '@/components/ui/AppIcon';

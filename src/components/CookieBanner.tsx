@@ -1,8 +1,11 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function CookieBanner() {
+  const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -27,7 +30,7 @@ export default function CookieBanner() {
   return (
     <div
       role="dialog"
-      aria-label="Consentement aux cookies"
+      aria-label={t('Consentement aux cookies', 'Cookie consent')}
       aria-live="polite"
       className="fixed bottom-0 left-0 right-0 z-[9999] shadow-2xl"
       style={{ background: '#1E2D4A', borderTop: '1px solid rgba(184,145,42,0.3)' }}
@@ -46,21 +49,24 @@ export default function CookieBanner() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-sm text-white/80 leading-relaxed">
-            Nous utilisons des cookies pour améliorer votre expérience et analyser notre trafic.{' '}
+            {t(
+              'Nous utilisons des cookies pour améliorer votre expérience et analyser notre trafic.',
+              'We use cookies to improve your experience and analyse our traffic.'
+            )}{' '}
             <Link
               href="/cookies"
               className="underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 rounded"
               style={{ color: '#B8912A' }}
             >
-              En savoir plus
+              {t('En savoir plus', 'Learn more')}
             </Link>{' '}
-            sur notre utilisation des cookies et notre{' '}
+            {t('sur notre utilisation des cookies et notre', 'about our cookie use and our')}{' '}
             <Link
               href="/politique-confidentialite"
               className="underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 rounded"
               style={{ color: '#B8912A' }}
             >
-              politique de confidentialité
+              {t('politique de confidentialité', 'privacy policy')}
             </Link>
             .
           </p>
@@ -70,14 +76,14 @@ export default function CookieBanner() {
             onClick={handleDecline}
             className="px-4 py-2 text-sm font-medium text-white/70 border border-white/20 rounded-lg hover:bg-white/10 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
           >
-            Refuser
+            {t('Refuser', 'Decline')}
           </button>
           <button
             onClick={handleAccept}
             className="px-5 py-2 text-sm font-semibold rounded-lg transition-colors active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{ background: '#B8912A', color: '#FFFFFF' }}
           >
-            Accepter
+            {t('Accepter', 'Accept')}
           </button>
         </div>
       </div>

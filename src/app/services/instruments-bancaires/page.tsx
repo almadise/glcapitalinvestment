@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import PublicNavbar from '@/app/home-page/components/PublicNavbar';
 import PublicFooter from '@/app/home-page/components/PublicFooter';
+import { ServiceHero } from '@/components/services/ServiceDetailSections';
+import { bankInstrumentsExtra } from '@/lib/content/glCapitalRedactionnel';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function InstrumentsBancairesPage() {
@@ -55,42 +57,25 @@ export default function InstrumentsBancairesPage() {
   return (
     <div className="min-h-screen bg-white">
       <PublicNavbar />
-      {/* Hero */}
-      <section className="pt-28 pb-16 relative overflow-hidden">
-        <div
-          className="absolute inset-0 bg-center bg-cover"
-          style={{ backgroundImage: "url('/assets/images/services-hero-bg.png')" }}
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-navy/55" aria-hidden="true" />
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-dark/90 via-navy/80 to-navy-light/85" aria-hidden="true" />
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-gold blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gold blur-3xl" />
-        </div>
-        <div className="max-w-screen-xl mx-auto px-6 lg:px-10 xl:px-16 relative z-10">
-          <div className="inline-flex items-center gap-2 bg-gold/10 border border-gold/20 rounded-full px-4 py-1.5 mb-6">
-            <span className="text-gold text-xs font-semibold tracking-widest uppercase">Services</span>
-          </div>
-          <h1 className="font-display text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 leading-tight">
-            {lang === 'fr' ? (
-              <>Instruments bancaires<br /><span className="text-gradient-gold">et montages de garantie</span></>
-            ) : (
-              <>Banking Instruments<br /><span className="text-gradient-gold">&amp; Guarantee Structures</span></>
-            )}
-          </h1>
-          <p className="text-slate-300 text-lg lg:text-xl leading-relaxed max-w-3xl border-l-2 border-gold/40 pl-5">
-            {lang === 'fr'
-              ? "GL Capital Investment SA propose à ses clients qualifiés des solutions adossées à des instruments bancaires reconnus, utilisés comme leviers de garantie pour l'accès aux lignes de crédit institutionnelles."
-              : 'GL Capital offers qualified clients financing solutions backed by recognised banking instruments.'}
-          </p>
-          <p className="text-slate-400 text-sm mt-4 max-w-3xl">
-            {lang === 'fr'
-              ? 'Nous intervenons également en qualité de Mandate Wallet pour des groupes vendeurs de crypto-actifs.'
-              : 'We are also a Mandate Wallet for cryptocurrency seller groups.'}
-          </p>
-        </div>
-      </section>
+      <ServiceHero
+        titleLines={{
+          fr: 'Instruments bancaires',
+          en: 'Banking Instruments',
+        }}
+        titleAccent={{
+          fr: 'et montages de garantie',
+          en: 'Guarantee Structures',
+        }}
+        subtitle={{
+          fr: "GL Capital Investment SA propose à ses clients qualifiés des solutions adossées à des instruments bancaires reconnus, utilisés comme leviers de garantie pour l'accès aux lignes de crédit institutionnelles.",
+          en: 'GL Capital offers qualified clients financing solutions backed by recognised banking instruments.',
+        }}
+        backgroundImage="/assets/images/services-hero-bg.png"
+        secondarySubtitle={{
+          fr: 'Nous intervenons également en qualité de Mandate Wallet pour des groupes vendeurs de crypto-actifs.',
+          en: 'We are also a Mandate Wallet for cryptocurrency seller groups.',
+        }}
+      />
       {/* Instruments Grid */}
       <section className="py-20 bg-slate-50">
         <div className="max-w-screen-xl mx-auto px-6 lg:px-10 xl:px-16">
@@ -126,6 +111,41 @@ export default function InstrumentsBancairesPage() {
                 <p className="text-slate-500 text-sm leading-relaxed">{item?.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+      {/* Purchase / lease / monetization */}
+      <section className="py-20 bg-white">
+        <div className="max-w-screen-xl mx-auto px-6 lg:px-10 xl:px-16">
+          <div className="text-center mb-10">
+            <h2 className="font-display text-3xl lg:text-4xl font-bold text-navy mb-4">
+              {lang === 'fr' ? 'Prestations sur instruments' : 'Instrument services'}
+            </h2>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4 mb-10">
+            {(lang === 'fr' ? bankInstrumentsExtra.services.fr : bankInstrumentsExtra.services.en).map(
+              (label) => (
+                <div
+                  key={label}
+                  className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-full px-6 py-3 shadow-sm"
+                >
+                  <CheckCircle size={14} className="text-gold" />
+                  <span className="text-navy text-sm font-semibold">{label}</span>
+                </div>
+              )
+            )}
+          </div>
+          <div className="max-w-3xl mx-auto bg-slate-50 rounded-2xl p-8 border border-slate-100 text-center">
+            <p className="text-navy font-semibold text-base leading-relaxed">
+              {lang === 'fr' ? bankInstrumentsExtra.nonRecourse.fr : bankInstrumentsExtra.nonRecourse.en}
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 mt-6 text-gold font-semibold text-sm hover:underline"
+            >
+              {lang === 'fr' ? 'Contact' : 'Contact'}
+              <ArrowRight size={14} />
+            </Link>
           </div>
         </div>
       </section>

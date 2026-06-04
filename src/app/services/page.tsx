@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import PublicNavbar from '@/app/home-page/components/PublicNavbar';
 import PublicFooter from '@/app/home-page/components/PublicFooter';
 import { REGISTERED_ADDRESS_ONE_LINE_EN, REGISTERED_ADDRESS_ONE_LINE_FR } from '@/lib/companyContact';

@@ -6,7 +6,7 @@ import {
   ChevronDown, ChevronUp, ArrowRight, CheckCircle2,
   AlertTriangle, Globe, Key,
 } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface AccordionItem {
   id: string;

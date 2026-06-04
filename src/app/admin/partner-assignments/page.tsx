@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import AdminLayout from '../components/AdminLayout';
 import { Building2, Search, Loader2, X, ChevronDown, Globe, RefreshCw, BookOpen, Send, Clock, FileText, Filter, CheckCircle2, XCircle, AlertTriangle, MapPin, Users, ArrowRight, Eye,  } from 'lucide-react';
 import { toast } from 'sonner';

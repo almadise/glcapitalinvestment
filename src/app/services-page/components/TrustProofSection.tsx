@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ShieldCheck, Globe, Clock, Users, ArrowRight, Lock, FileCheck, HandshakeIcon } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 const STATS = [
   { id: 'st-1', valueFr: '12+', valueEn: '12+', labelFr: 'Pays couverts', labelEn: 'Countries covered' },

@@ -10,7 +10,7 @@ import ActivityFeed from './ActivityFeed';
 import DossierCharts from './DossierCharts';
 import NotificationSettings from './NotificationSettings';
 import { Toaster } from 'sonner';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import {
   Loader2,
   AlertCircle,

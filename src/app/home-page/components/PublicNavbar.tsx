@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function PublicNavbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -50,17 +50,32 @@ export default function PublicNavbar() {
   const serviceLinks = [
     {
       href: '/services/financement-projet',
-      labelFr: 'Financement de Projet',
-      labelEn: 'Project Financing',
+      labelFr: 'Financement de projet',
+      labelEn: 'Project Finance',
     },
     {
       href: '/services/instruments-bancaires',
-      labelFr: 'Instruments Bancaires',
-      labelEn: 'Banking Instruments',
+      labelFr: 'Instruments bancaires',
+      labelEn: 'Bank Instruments',
     },
     {
-      href: '/services-page#advisory',
-      labelFr: 'Conseil & Structuration',
+      href: '/services/prets',
+      labelFr: 'Prêts',
+      labelEn: 'Loans',
+    },
+    {
+      href: '/services/placement-prive',
+      labelFr: 'Placement privé',
+      labelEn: 'Private Placement',
+    },
+    {
+      href: '/services/conseil-crypto',
+      labelFr: 'Conseil crypto-actifs',
+      labelEn: 'Crypto Advisory',
+    },
+    {
+      href: '/services/conseil-structuration',
+      labelFr: 'Conseil & structuration',
       labelEn: 'Advisory & Structuring',
     },
   ];
@@ -129,7 +144,7 @@ export default function PublicNavbar() {
                     aria-expanded={servicesOpen}
                     aria-haspopup="menu"
                   >
-                    {lang === 'fr' ? item.labelFr : item.labelEn}
+                    {t(item.labelFr, item.labelEn)}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="14"
@@ -148,7 +163,7 @@ export default function PublicNavbar() {
                   </button>
 
                   {servicesOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-72 rounded-xl border border-white/15 bg-navy-900/95 backdrop-blur-md shadow-xl p-2 z-50">
+                    <div className="absolute top-full left-0 mt-2 w-80 max-h-[70vh] overflow-y-auto rounded-xl border border-white/15 bg-navy-900/95 backdrop-blur-md shadow-xl p-2 z-50">
                       <Link
                         href={item.href}
                         onClick={() => setServicesOpen(false)}
@@ -164,7 +179,7 @@ export default function PublicNavbar() {
                           onClick={() => setServicesOpen(false)}
                           className="block px-3 py-2 rounded-lg text-sm text-white hover:bg-white/10 transition-colors"
                         >
-                          {lang === 'fr' ? service.labelFr : service.labelEn}
+                          {t(service.labelFr, service.labelEn)}
                         </Link>
                       ))}
                     </div>
@@ -177,7 +192,7 @@ export default function PublicNavbar() {
                   role="listitem"
                   className="px-4 py-2 text-sm font-medium text-white hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1 focus-visible:ring-offset-navy-900"
                 >
-                  {lang === 'fr' ? item.labelFr : item.labelEn}
+                  {t(item.labelFr, item.labelEn)}
                 </Link>
               )
             )}
@@ -278,7 +293,7 @@ export default function PublicNavbar() {
                   className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-white hover:text-white hover:bg-white/10 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                   aria-expanded={mobileServicesOpen}
                 >
-                  <span>{lang === 'fr' ? item.labelFr : item.labelEn}</span>
+                  <span>{t(item.labelFr, item.labelEn)}</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="14"
@@ -317,7 +332,7 @@ export default function PublicNavbar() {
                         }}
                         className="block px-3 py-2 text-sm text-white hover:bg-white/10 rounded-lg transition-colors"
                       >
-                        {lang === 'fr' ? service.labelFr : service.labelEn}
+                        {t(service.labelFr, service.labelEn)}
                       </Link>
                     ))}
                   </div>
@@ -330,7 +345,7 @@ export default function PublicNavbar() {
                 onClick={() => setMobileOpen(false)}
                 className="block px-3 py-2.5 text-sm font-medium text-white hover:text-white hover:bg-white/10 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
               >
-                {lang === 'fr' ? item.labelFr : item.labelEn}
+                {t(item.labelFr, item.labelEn)}
               </Link>
             )
           )}

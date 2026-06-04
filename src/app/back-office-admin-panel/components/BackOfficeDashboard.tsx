@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Toaster, toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { createClient } from '@/lib/supabase/client';
 import StatusBadge, { DossierStatus } from '@/components/ui/StatusBadge';
 import { FolderOpen, Shield, Clock, AlertTriangle, CheckCircle2, TrendingUp, Search, Filter, Download, Eye, MessageSquare, FileText, ChevronDown, RefreshCw, X, Edit3, Lock, Network, ClipboardList, File, Bell, History, ChevronRight,  } from 'lucide-react';

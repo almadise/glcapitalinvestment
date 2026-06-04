@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import AppLogo from '@/components/ui/AppLogo';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { LayoutDashboard, FolderOpen, Upload, MessageSquare, Shield, LogOut, ChevronLeft, ChevronRight, Bell, User, FileText, Home } from 'lucide-react';
 
 interface PortalLayoutProps {

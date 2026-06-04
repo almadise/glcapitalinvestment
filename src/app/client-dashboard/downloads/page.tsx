@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import DashboardLayout from '../components/DashboardLayout';
 import PermissionGate from '@/components/PermissionGate';
 import { caseFileDescription, caseFileLabel, caseFileType } from '@/lib/caseFileLabel';

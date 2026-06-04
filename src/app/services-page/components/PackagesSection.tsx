@@ -5,7 +5,7 @@ import {
   Search, Layers, TrendingUp, ArrowRight, CheckCircle2,
   Clock, ChevronDown, ChevronUp, Star,
 } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { trackCTA, trackEvent } from '@/lib/analytics/trackEvent';
 
 interface Package {

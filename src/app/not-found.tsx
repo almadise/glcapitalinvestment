@@ -1,28 +1,13 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import AppLogo from '@/components/ui/AppLogo';
 import { Home, ArrowLeft, Mail, Search } from 'lucide-react';
 import { OFFICIAL_PUBLIC_EMAIL } from '@/lib/companyContact';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function NotFound() {
-  const [lang, setLang] = useState<'fr' | 'en'>('fr');
-
-  const t = {
-    badge: { fr: 'Erreur 404', en: 'Error 404' },
-    title: { fr: 'Page introuvable', en: 'Page Not Found' },
-    subtitle: {
-      fr: 'La page que vous recherchez n\'existe pas ou a été déplacée.',
-      en: 'The page you are looking for does not exist or has been moved.',
-    },
-    home: { fr: 'Retour à l\'accueil', en: 'Back to Home' },
-    back: { fr: 'Page précédente', en: 'Go Back' },
-    contact: { fr: 'Contacter le support', en: 'Contact Support' },
-    links: { fr: 'Liens utiles', en: 'Useful links' },
-    dashboard: { fr: 'Tableau de bord', en: 'Dashboard' },
-    faq: { fr: 'FAQ', en: 'FAQ' },
-    contactPage: { fr: 'Contact', en: 'Contact' },
-  };
+  const { lang, setLang, t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -64,11 +49,16 @@ export default function NotFound() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 rounded-full px-4 py-1.5 mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
-            <span className="text-red-700 text-xs font-semibold tracking-wide uppercase">{t?.badge?.[lang]}</span>
+            <span className="text-red-700 text-xs font-semibold tracking-wide uppercase">{t('Erreur 404', 'Error 404')}</span>
           </div>
 
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-navy mb-3">{t?.title?.[lang]}</h1>
-          <p className="text-slate-500 text-base leading-relaxed mb-8 max-w-sm mx-auto">{t?.subtitle?.[lang]}</p>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-navy mb-3">{t('Page introuvable', 'Page Not Found')}</h1>
+          <p className="text-slate-500 text-base leading-relaxed mb-8 max-w-sm mx-auto">
+            {t(
+              "La page que vous recherchez n'existe pas ou a été déplacée.",
+              'The page you are looking for does not exist or has been moved.'
+            )}
+          </p>
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
@@ -77,33 +67,33 @@ export default function NotFound() {
               className="flex items-center justify-center gap-2 px-5 py-3 bg-navy text-white rounded-xl text-sm font-semibold hover:bg-navy/90 transition-colors"
             >
               <Home size={15} />
-              {t?.home?.[lang]}
+              {t("Retour à l'accueil", 'Back to Home')}
             </Link>
             <button
               onClick={() => typeof window !== 'undefined' && window.history?.back()}
               className="flex items-center justify-center gap-2 px-5 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors"
             >
               <ArrowLeft size={15} />
-              {t?.back?.[lang]}
+              {t('Page précédente', 'Go Back')}
             </button>
             <Link
               href="/contact"
               className="flex items-center justify-center gap-2 px-5 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors"
             >
               <Mail size={15} />
-              {t?.contact?.[lang]}
+              {t('Contacter le support', 'Contact Support')}
             </Link>
           </div>
 
           {/* Useful links */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">{t?.links?.[lang]}</p>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">{t('Liens utiles', 'Useful links')}</p>
             <div className="flex flex-wrap gap-2 justify-center">
               {[
-                { href: '/client-dashboard', label: t?.dashboard?.[lang] },
-                { href: '/faq', label: t?.faq?.[lang] },
-                { href: '/contact', label: t?.contactPage?.[lang] },
-                { href: '/sign-up-login-screen', label: lang === 'fr' ? 'Connexion' : 'Login' },
+                { href: '/client-dashboard', label: t('Tableau de bord', 'Dashboard') },
+                { href: '/faq', label: 'FAQ' },
+                { href: '/contact', label: t('Contact', 'Contact') },
+                { href: '/sign-up-login-screen', label: t('Connexion', 'Login') },
               ]?.map((link) => (
                 <Link
                   key={link?.href}
