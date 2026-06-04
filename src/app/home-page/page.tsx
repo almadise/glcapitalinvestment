@@ -1,12 +1,7 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import PublicNavbar from './components/PublicNavbar';
-import HeroSection from './components/HeroSection';
-import TrustBar from './components/TrustBar';
-import ServicesSection from './components/ServicesSection';
-import ProcessSection from './components/ProcessSection';
-import TrustSection from './components/TrustSection';
-import CaseStudiesSection from './components/CaseStudiesSection';
+import HomePageMain from './components/HomePageMain';
 import PublicFooter from './components/PublicFooter';
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital8049.builtwithrocket.new';
@@ -120,14 +115,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
       <PublicNavbar />
-      <main id="main-content" tabIndex={-1}>
-        <HeroSection />
-        <TrustBar />
-        <ServicesSection />
-        <ProcessSection />
-        <TrustSection />
-        <CaseStudiesSection />
-      </main>
+      <HomePageMain />
       <PublicFooter />
     </div>
   );

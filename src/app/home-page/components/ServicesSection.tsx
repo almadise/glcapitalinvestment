@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function ServicesSection() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   const services = [
     {
@@ -86,7 +86,7 @@ export default function ServicesSection() {
               <h3 className="text-xl font-bold mb-3" style={{ color: '#1E2D4A' }}>{t(service?.titleFr, service?.titleEn)}</h3>
               <p className="text-sm mb-6 leading-relaxed" style={{ color: '#4A5C7A' }}>{t(service?.descFr, service?.descEn)}</p>
               <div className="flex flex-wrap gap-2 mb-6">
-                {t(service?.tagsFr?.join('|'), service?.tagsEn?.join('|'))?.split('|')?.map((tag) => (
+                {(lang === 'en' ? service.tagsEn : service.tagsFr).map((tag) => (
                   <span key={tag} className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ color: '#4A5C7A', border: '1px solid #D8E0EC', background: '#E8EDF5' }}>
                     {tag}
                   </span>

@@ -19,8 +19,14 @@ export default function HeroSection() {
   const primaryCtaIconRef = React.useRef<SVGSVGElement>(null);
   const { t } = useLanguage();
   const pausedHeadline = {
-    fr: 'mobilisez des financements internationaux pour vos projets stratégiques.',
+    fr: 'Mobilisez des financements internationaux pour vos projets stratégiques.',
     en: 'Secure international financing for your strategic projects.',
+  };
+  const sampleCaseCard = {
+    projectFr: 'SPV infrastructure solaire',
+    projectEn: 'Solar Infrastructure SPV',
+    regionFr: 'Afrique de l\'Ouest - 42 M€',
+    regionEn: 'West Africa - €42M',
   };
 
   useLayoutEffect(() => {
@@ -260,8 +266,12 @@ export default function HeroSection() {
               GLC-2026-0047
             </span>
           </div>
-          <p className="text-white text-xs font-semibold mb-1 truncate">Solar Infrastructure SPV</p>
-          <p className="text-white/60 text-[10px] mb-3">West Africa - €42M</p>
+          <p className="text-white text-xs font-semibold mb-1 truncate">
+            {t(sampleCaseCard.projectFr, sampleCaseCard.projectEn)}
+          </p>
+          <p className="text-white/60 text-[10px] mb-3">
+            {t(sampleCaseCard.regionFr, sampleCaseCard.regionEn)}
+          </p>
           <div className="flex items-center gap-2">
             <div
               className="flex-1 h-1.5 rounded-full overflow-hidden"

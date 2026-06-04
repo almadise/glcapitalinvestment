@@ -9,7 +9,8 @@ export default function CaseStudiesSection() {
     {
       typeFr: 'Finance de projet',
       typeEn: 'Project Finance',
-      days: '62 days',
+      daysFr: '62 jours',
+      daysEn: '62 days',
       amount: '€38M',
       sectorFr: 'Énergie renouvelable',
       sectorEn: 'Renewable Energy',
@@ -23,7 +24,8 @@ export default function CaseStudiesSection() {
     {
       typeFr: 'Conseil SBLC',
       typeEn: 'SBLC Advisory',
-      days: '34 days',
+      daysFr: '34 jours',
+      daysEn: '34 days',
       amount: '€12M',
       sectorFr: 'Immobilier commercial',
       sectorEn: 'Commercial Real Estate',
@@ -37,7 +39,8 @@ export default function CaseStudiesSection() {
     {
       typeFr: 'Conseil & Structuration',
       typeEn: 'Advisory & Structuring',
-      days: '48 days',
+      daysFr: '48 jours',
+      daysEn: '48 days',
       amount: '€7.5M',
       sectorFr: 'Agro-industriel',
       sectorEn: 'Agro-industrial',
@@ -83,7 +86,7 @@ export default function CaseStudiesSection() {
                 >
                   {t(c?.typeFr, c?.typeEn)}
                 </span>
-                <span className="text-xs font-mono" style={{ color: '#4A5C7A' }}>{c?.days}</span>
+                <span className="text-xs font-mono" style={{ color: '#4A5C7A' }}>{t(c?.daysFr, c?.daysEn)}</span>
               </div>
               <div className="mb-4">
                 <div className="flex items-baseline gap-2 mb-1">

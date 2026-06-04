@@ -1,21 +1,63 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface StatItem {
+  id: string;
   value: string;
-  suffix: string;
-  label: string;
-  sublabel: string;
+  suffixFr: string;
+  suffixEn: string;
+  labelFr: string;
+  labelEn: string;
+  sublabelFr: string;
+  sublabelEn: string;
 }
 
 const stats: StatItem[] = [
-  { value: '5', suffix: 'M€', label: 'Ticket minimum', sublabel: 'Montant de financement' },
-  { value: '8', suffix: '', label: 'Modes de financement', sublabel: 'Solutions structurées' },
-  { value: '5', suffix: '', label: 'Continents', sublabel: 'Couverture mondiale' },
-  { value: '48', suffix: 'h', label: 'Délai de réponse', sublabel: 'Accusé de réception' },
+  {
+    id: 'ticket',
+    value: '5',
+    suffixFr: 'M€',
+    suffixEn: 'M€',
+    labelFr: 'Ticket minimum',
+    labelEn: 'Minimum ticket',
+    sublabelFr: 'Montant de financement',
+    sublabelEn: 'Financing amount',
+  },
+  {
+    id: 'modes',
+    value: '8',
+    suffixFr: '',
+    suffixEn: '',
+    labelFr: 'Modes de financement',
+    labelEn: 'Financing modes',
+    sublabelFr: 'Solutions structurées',
+    sublabelEn: 'Structured solutions',
+  },
+  {
+    id: 'continents',
+    value: '5',
+    suffixFr: '',
+    suffixEn: '',
+    labelFr: 'Continents',
+    labelEn: 'Continents',
+    sublabelFr: 'Couverture mondiale',
+    sublabelEn: 'Global coverage',
+  },
+  {
+    id: 'response',
+    value: '48',
+    suffixFr: 'h',
+    suffixEn: 'h',
+    labelFr: 'Délai de réponse',
+    labelEn: 'Response time',
+    sublabelFr: 'Accusé de réception',
+    sublabelEn: 'Acknowledgement',
+  },
 ];
 
 export default function TrustBar() {
+  const { t } = useLanguage();
   const [counts, setCounts] = useState(stats.map(() => 0));
   const ref = useRef<HTMLDivElement>(null);
   const animated = useRef(false);
@@ -57,12 +99,15 @@ export default function TrustBar() {
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-10">
         <div className="grid grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, i) => (
-            <div key={stat.label} className="text-center px-8 py-6" style={{ borderRight: '1px solid #D8E0EC' }}>
+            <div key={stat.id} className="text-center px-8 py-6" style={{ borderRight: '1px solid #D8E0EC' }}>
               <div className="text-4xl lg:text-5xl font-bold tabular-nums mb-1" style={{ color: '#1E2D4A' }}>
-                {counts[i]}{stat.suffix}
+                {counts[i]}
+                {t(stat.suffixFr, stat.suffixEn)}
               </div>
-              <p className="text-sm font-semibold mb-1" style={{ color: '#B8912A' }}>{stat.label}</p>
-              <p className="text-xs" style={{ color: '#4A5C7A' }}>{stat.sublabel}</p>
+              <p className="text-sm font-semibold mb-1" style={{ color: '#B8912A' }}>
+                {t(stat.labelFr, stat.labelEn)}
+              </p>
+              <p className="text-xs" style={{ color: '#4A5C7A' }}>{t(stat.sublabelFr, stat.sublabelEn)}</p>
             </div>
           ))}
         </div>
