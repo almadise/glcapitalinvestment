@@ -11,8 +11,8 @@ export const siteRegulatoryDisclaimer: Bilingual = {
 };
 
 export const pppRegulatoryNote: Bilingual = {
-  fr: "Les programmes de placement privé ne constituent pas une offre publique continue. Participation sur invitation, après conformité. Tickets indicatifs à partir de 100 M USD/EUR. Instruments loués non acceptés. Rendements indicatifs uniquement, confirmés par la plateforme au moment de l'opération.",
-  en: 'Private placement programmes do not constitute a continuous public offer. Participation by invitation, after compliance. Indicative tickets from USD/EUR 100M. Leased instruments not accepted. Returns are indicative only, confirmed by the platform at the time of the operation.',
+  fr: "Les programmes de placement privé ne constituent pas une offre publique continue. Participation sur invitation, après conformité. Fourchettes indicatives : Small Cap à partir de 100 K USD/EUR ; Large Cap (cash) 100 M à 5 Md ; instruments 125 M à 5 Md. Instruments loués non acceptés. Rendements indicatifs uniquement, confirmés par la plateforme au moment de l'opération.",
+  en: 'Private placement programmes do not constitute a continuous public offer. Participation by invitation, after compliance. Indicative ranges: Small Cap from USD/EUR 100K; Large Cap (cash) USD/EUR 100M to 5B; instruments USD/EUR 125M to 5B. Leased instruments not accepted. Returns are indicative only, confirmed by the platform at the time of the operation.',
 };
 
 export const loanRegulatoryNote: Bilingual = {

@@ -155,13 +155,13 @@ export default function ServicesSection() {
           <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
         </svg>
       ),
-      badge: '100M+',
+      badge: '100K–5B',
       titleFr: 'Placement privé',
       titleEn: 'Private Placement',
       descFr:
-        'Programmes PPP pour propriétaires de fonds éligibles. Cash hold, MT-799, MT-760, sans trading spéculatif.',
+        'PPP Small Cap (à partir de 100 K), Large Cap cash (100 M à 5 Md) et instruments (125 M à 5 Md USD/EUR).',
       descEn:
-        'PPP programmes for eligible fund owners. Cash hold, MT-799, MT-760, no speculative trading.',
+        'PPP Small Cap (from 100K), Large Cap cash (100M to 5B), and instruments (125M to 5B USD/EUR).',
       tagsFr: ['PPP', 'MTN', 'Institutionnel'],
       tagsEn: ['PPP', 'MTN', 'Institutional'],
       href: '/services/placement-prive',

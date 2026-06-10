@@ -14,12 +14,12 @@ export default function InstitutionalProgramsHubSection() {
       icon: Layers,
       titleFr: 'Placement privé (PPP)',
       titleEn: 'Private placement (PPP)',
-      badgeFr: '100 M USD/EUR+',
-      badgeEn: 'USD/EUR 100M+',
+      badgeFr: '100 K à 5 Md USD/EUR',
+      badgeEn: 'USD/EUR 100K to 5B',
       descFr:
-        'Cash hold, blocage MT-799, MT-760, MT-542, Euroclear. Tickets institutionnels, fonds libres et non bloqués.',
+        'Small Cap à partir de 100 K ; Large Cap cash 100 M à 5 Md ; instruments 125 M à 5 Md. Fonds libres et non bloqués.',
       descEn:
-        'Cash hold, MT-799 block, MT-760, MT-542, Euroclear. Institutional tickets, unrestricted unblocked funds.',
+        'Small Cap from 100K; Large Cap cash 100M to 5B; instruments 125M to 5B. Unrestricted unblocked funds.',
     },
     {
       href: '/services/prets',

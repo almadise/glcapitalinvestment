@@ -89,16 +89,16 @@ export const contactProjectTypeHints: Record<string, ContactProjectTypeHint> = {
   },
   'Programmes de placement privé': {
     message: {
-      fr: 'PPP institutionnels : ticket indicatif à partir de 100 M USD/EUR, fonds libres et non bloqués. CIS et preuve de fonds requis.',
-      en: 'Institutional PPP: indicative ticket from USD/EUR 100M, unrestricted unblocked funds. CIS and proof of funds required.',
+      fr: 'PPP : Small Cap à partir de 100 K USD/EUR ; Large Cap (cash) 100 M à 5 Md ; instruments 125 M à 5 Md. Fonds libres, CIS et preuve de fonds requis.',
+      en: 'PPP: Small Cap from USD/EUR 100K; Large Cap (cash) USD/EUR 100M to 5B; instruments USD/EUR 125M to 5B. Unrestricted funds, CIS and proof of funds required.',
     },
     href: '/services/placement-prive',
     linkLabel: { fr: 'Placement privé', en: 'Private Placement' },
   },
   'Private Placement Programs': {
     message: {
-      fr: 'PPP institutionnels : ticket indicatif à partir de 100 M USD/EUR, fonds libres et non bloqués. CIS et preuve de fonds requis.',
-      en: 'Institutional PPP: indicative ticket from USD/EUR 100M, unrestricted unblocked funds. CIS and proof of funds required.',
+      fr: 'PPP : Small Cap à partir de 100 K USD/EUR ; Large Cap (cash) 100 M à 5 Md ; instruments 125 M à 5 Md. Fonds libres, CIS et preuve de fonds requis.',
+      en: 'PPP: Small Cap from USD/EUR 100K; Large Cap (cash) USD/EUR 100M to 5B; instruments USD/EUR 125M to 5B. Unrestricted funds, CIS and proof of funds required.',
     },
     href: '/services/placement-prive',
     linkLabel: { fr: 'Placement privé', en: 'Private Placement' },
@@ -124,8 +124,8 @@ export const projectFinanceContent = {
           en: 'The programme described here mainly covers euro amounts (EUR 2M to EUR 4B, indicative rate 4%). For a commercial loan in US dollars (USD 5M to 5.5B, indicative rate 3%, insurance surety bond, step by step procedure), see the Loans page.',
         },
         {
-          fr: "Pour les programmes de placement privé (PPP, tickets à partir de 100 M USD/EUR), la page Placement privé détaille les schémas cash hold, MT-799, MT-760 et Euroclear.",
-          en: 'For private placement programs (PPP, tickets from USD/EUR 100M), the Private Placement page sets out cash hold, MT-799, MT-760, and Euroclear structures.',
+          fr: "Pour les programmes de placement privé (PPP : Small Cap à partir de 100 K, Large Cap cash 100 M à 5 Md, instruments 125 M à 5 Md USD/EUR), la page Placement privé détaille les schémas cash hold, MT-799, MT-760 et Euroclear.",
+          en: 'For private placement programs (PPP: Small Cap from 100K, Large Cap cash USD/EUR 100M to 5B, instruments USD/EUR 125M to 5B), the Private Placement page sets out cash hold, MT-799, MT-760, and Euroclear structures.',
         },
       ],
       note: {
@@ -331,12 +331,30 @@ export const privatePlacementContent = {
       ],
     },
     {
+      id: 'tickets',
+      title: { fr: 'Fourchettes par catégorie', en: 'Ranges by category' },
+      bullets: [
+        {
+          fr: 'Small Cap : à partir de 100 000 USD/EUR',
+          en: 'Small Cap: from USD/EUR 100,000',
+        },
+        {
+          fr: 'Large Cap (cash) : 100 M à 5 Md USD/EUR',
+          en: 'Large Cap (cash): USD/EUR 100M to 5B',
+        },
+        {
+          fr: 'Programmes avec instruments (MT-760, MT-542, Euroclear) : 125 M à 5 Md USD/EUR',
+          en: 'Instrument programmes (MT-760, MT-542, Euroclear): USD/EUR 125M to 5B',
+        },
+      ],
+    },
+    {
       id: 'structure',
       title: { fr: "Structure de l'offre", en: 'Offer structure' },
       bullets: [
         {
-          fr: 'Plateformes et traders en Europe, Asie et autres places : minimum USD/EUR 100 à 500 M (50 M possible selon approbation), fonds librement transférables',
-          en: 'Platforms and traders in Europe, Asia, and other centres: minimum USD/EUR 100M to 500M (50M possible with approval), freely transferable cash on deposit',
+          fr: 'Plateformes et traders en Europe, Asie et autres places : fonds librement transférables, selon la catégorie Small Cap, Large Cap ou instruments',
+          en: 'Platforms and traders in Europe, Asia, and other centres: freely transferable funds, under Small Cap, Large Cap, or instrument programme categories',
         },
         {
           fr: "Cash déposé auprès d'une banque de premier rang, sous contrôle du bénéficiaire effectif des fonds.",
@@ -358,10 +376,6 @@ export const privatePlacementContent = {
           fr: "Seul le bénéficiaire effectif de fonds libres, transférables et assignables à la plateforme peut être recevable.",
           en: 'Only the beneficial owner of unrestricted, transferable funds assignable to the platform may qualify.',
         },
-        {
-          fr: "En dessous de 100 M : évaluation au cas par cas ; 50 M possible sur approbation plateforme, les montants plus élevés restant préférés.",
-          en: 'Below 100M: case by case review; 50M possible with platform approval, with higher amounts preferred.',
-        },
       ],
     },
     {
@@ -375,28 +389,28 @@ export const privatePlacementContent = {
       ],
       bullets: [
         {
-          fr: 'Cash, mise en attente administrative (USD 100 M à 5 Md) : sans SWIFT ni transfert de fonds',
-          en: 'Cash, administrative hold (USD 100M to 5B): no SWIFT or fund transfer required',
+          fr: 'Large Cap — Cash, mise en attente administrative (USD/EUR 100 M à 5 Md) : sans SWIFT ni transfert de fonds',
+          en: 'Large Cap — Cash, administrative hold (USD/EUR 100M to 5B): no SWIFT or fund transfer required',
         },
         {
-          fr: "Cash, blocage/réserve (USD 100 M à 5 Md) : blocage ou réserve d'un an, confirmation SWIFT MT-799",
-          en: 'Cash, block/reserve (USD 100M to 5B): one-year block or reserve, SWIFT MT-799 confirmation',
+          fr: "Large Cap — Cash, blocage/réserve (USD/EUR 100 M à 5 Md) : blocage ou réserve d'un an, confirmation SWIFT MT-799",
+          en: 'Large Cap — Cash, block/reserve (USD/EUR 100M to 5B): one-year block or reserve, SWIFT MT-799 confirmation',
         },
         {
-          fr: 'SWIFT MT-760 (USD 150 M à 5 Md) : SBLC, garanties bancaires, MTN pour un an',
-          en: 'SWIFT MT-760 (USD 150M to 5B): SBLC, bank guarantees, MTN for one year',
+          fr: 'Instruments — SWIFT MT-760 (USD/EUR 125 M à 5 Md) : SBLC, garanties bancaires, MTN pour un an',
+          en: 'Instruments — SWIFT MT-760 (USD/EUR 125M to 5B): SBLC, bank guarantees, MTN for one year',
         },
         {
-          fr: 'SWIFT MT-542 (USD 150 M à 5 Md) : certificats de dépôt et MTN, modalités contractuelles et conformité',
-          en: 'SWIFT MT-542 (USD 150M to 5B): certificates of deposit and MTN, subject to contract and compliance',
+          fr: 'Instruments — SWIFT MT-542 (USD/EUR 125 M à 5 Md) : certificats de dépôt et MTN, modalités contractuelles et conformité',
+          en: 'Instruments — SWIFT MT-542 (USD/EUR 125M to 5B): certificates of deposit and MTN, subject to contract and compliance',
         },
         {
-          fr: "Euroclear, livraison libre (150 M USD à 5 Md) : règlement d'instruments éligibles pour un an",
-          en: 'Euroclear free delivery ($150M to $5B): settlement of eligible instruments for one year',
+          fr: "Instruments — Euroclear, livraison libre (USD/EUR 125 M à 5 Md) : règlement d'instruments éligibles pour un an",
+          en: 'Instruments — Euroclear free delivery (USD/EUR 125M to 5B): settlement of eligible instruments for one year',
         },
         {
-          fr: 'Small cap : de 100 000 à 99 millions, programmes périodiques ouverts et fermés sans préavis',
-          en: 'Small cap: $100,000 to $99 million, periodic programs opened and closed without notice',
+          fr: 'Small Cap : à partir de 100 000 USD/EUR, programmes périodiques ouverts et fermés sans préavis',
+          en: 'Small Cap: from USD/EUR 100,000, periodic programs opened and closed without notice',
         },
       ],
     },
@@ -405,24 +419,24 @@ export const privatePlacementContent = {
       title: { fr: 'Cadre opérationnel par programme', en: 'Operational framework by programme' },
       bullets: [
         {
-          fr: "1. Cash, mise en attente administrative (100 M à 5 Md USD) : mécanisme d'attente administrative, sans transmission SWIFT ni transfert de fonds. Les fonds restent sur le compte du client ; le client en conserve le contrôle pendant toute la durée du programme.",
-          en: '1. Cash, administrative hold (USD 100M to 5B): administrative hold mechanism, no SWIFT transmission or fund transfer. Funds remain in the client\'s account; the client retains control throughout the programme.',
+          fr: "1. Large Cap — Cash, mise en attente administrative (100 M à 5 Md USD/EUR) : mécanisme d'attente administrative, sans transmission SWIFT ni transfert de fonds. Les fonds restent sur le compte du client ; le client en conserve le contrôle pendant toute la durée du programme.",
+          en: '1. Large Cap — Cash, administrative hold (USD/EUR 100M to 5B): administrative hold mechanism, no SWIFT transmission or fund transfer. Funds remain in the client\'s account; the client retains control throughout the programme.',
         },
         {
-          fr: "2. Cash, blocage ou réserve (100 M à 5 Md USD) : la banque du client place les fonds en blocage ou réserve pour un an, avec confirmation SWIFT MT-799. Les fonds restent sur le compte du client et sous son contrôle.",
-          en: '2. Cash, block or reserve (USD 100M to 5B): the client\'s bank places funds under block or reserve for one year, with SWIFT MT-799 confirmation. Funds remain in the client\'s account and under the client\'s control.',
+          fr: "2. Large Cap — Cash, blocage ou réserve (100 M à 5 Md USD/EUR) : la banque du client place les fonds en blocage ou réserve pour un an, avec confirmation SWIFT MT-799. Les fonds restent sur le compte du client et sous son contrôle.",
+          en: '2. Large Cap — Cash, block or reserve (USD/EUR 100M to 5B): the client\'s bank places funds under block or reserve for one year, with SWIFT MT-799 confirmation. Funds remain in the client\'s account and under the client\'s control.',
         },
         {
-          fr: "3. SWIFT MT-760 (150 M à 5 Md USD) : affectation temporaire de la plateforme comme bénéficiaire d'un instrument éligible pour un an (SBLC, BG, MTN), sous réserve des termes contractuels et de l'approbation conformité.",
-          en: '3. SWIFT MT-760 (USD 150M to 5B): temporary assignment of the platform as beneficiary of an eligible instrument for one year (SBLC, BG, MTN), subject to contractual terms and compliance approval.',
+          fr: "3. Instruments — SWIFT MT-760 (125 M à 5 Md USD/EUR) : affectation temporaire de la plateforme comme bénéficiaire d'un instrument éligible pour un an (SBLC, BG, MTN), sous réserve des termes contractuels et de l'approbation conformité.",
+          en: '3. Instruments — SWIFT MT-760 (USD/EUR 125M to 5B): temporary assignment of the platform as beneficiary of an eligible instrument for one year (SBLC, BG, MTN), subject to contractual terms and compliance approval.',
         },
         {
-          fr: "4. SWIFT MT-542 (150 M à 5 Md USD) : même logique d'affectation temporaire pour un an sur certificats de dépôt et MTN, sous réserve des termes contractuels et de l'approbation conformité.",
-          en: '4. SWIFT MT-542 (USD 150M to 5B): same temporary assignment logic for one year on certificates of deposit and MTN, subject to contractual terms and compliance approval.',
+          fr: "4. Instruments — SWIFT MT-542 (125 M à 5 Md USD/EUR) : même logique d'affectation temporaire pour un an sur certificats de dépôt et MTN, sous réserve des termes contractuels et de l'approbation conformité.",
+          en: '4. Instruments — SWIFT MT-542 (USD/EUR 125M to 5B): same temporary assignment logic for one year on certificates of deposit and MTN, subject to contractual terms and compliance approval.',
         },
         {
-          fr: "5. Euroclear, livraison libre (150 M à 5 Md USD) : instruction de livraison et de règlement d'un instrument éligible (CD, SBLC, BG, MTN) pour un an, sous réserve des termes contractuels et de l'approbation conformité.",
-          en: '5. Euroclear free delivery (USD 150M to 5B): delivery and settlement instruction for an eligible instrument (CD, SBLC, BG, MTN) for one year, subject to contractual terms and compliance approval.',
+          fr: "5. Instruments — Euroclear, livraison libre (125 M à 5 Md USD/EUR) : instruction de livraison et de règlement d'un instrument éligible (CD, SBLC, BG, MTN) pour un an, sous réserve des termes contractuels et de l'approbation conformité.",
+          en: '5. Instruments — Euroclear free delivery (USD/EUR 125M to 5B): delivery and settlement instruction for an eligible instrument (CD, SBLC, BG, MTN) for one year, subject to contractual terms and compliance approval.',
         },
       ],
       note: {

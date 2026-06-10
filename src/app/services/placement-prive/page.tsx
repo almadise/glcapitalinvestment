@@ -18,9 +18,9 @@ const relatedLinks = [
     titleFr: 'Opportunités périodiques',
     titleEn: 'Periodic opportunities',
     descFr:
-      'Fenêtres Small Cap, politique de tickets institutionnels (100 M+, préférence 500 M+).',
+      'Small Cap à partir de 100 K ; Large Cap cash 100 M à 5 Md ; instruments 125 M à 5 Md USD/EUR.',
     descEn:
-      'Small Cap windows, institutional ticketing policy (100M+, 500M+ preferred).',
+      'Small Cap from 100K; Large Cap cash 100M to 5B; instruments 125M to 5B USD/EUR.',
   },
   {
     href: '/services/instruments-bancaires',

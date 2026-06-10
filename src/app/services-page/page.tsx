@@ -92,7 +92,7 @@ const servicesSchema = {
         '@type': 'FinancialProduct',
         name: 'Programmes de placement privé',
         description:
-          'Programmes PPP institutionnels : cash hold, MT-799, MT-760, Euroclear. Tickets à partir de 100 M USD/EUR.',
+          'Programmes PPP : Small Cap à partir de 100 K, Large Cap cash 100 M à 5 Md, instruments 125 M à 5 Md USD/EUR.',
         url: `${baseUrl}/services/placement-prive`,
         provider: { '@type': 'Organization', name: 'GL Capital Investment SA' },
       },

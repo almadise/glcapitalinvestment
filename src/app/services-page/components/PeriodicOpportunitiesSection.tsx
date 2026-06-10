@@ -85,14 +85,20 @@ export default function PeriodicOpportunitiesSection() {
             <ul className="space-y-2 text-sm text-slate-600">
               <li>
                 {t(
-                  '• Positionnement principal : opportunités institutionnelles généralement à partir de 100 M (préférence 500 M+).',
-                  '• Primary positioning: institutional opportunities generally from 100M (500M+ preferred).'
+                  '• Small Cap : à partir de 100 000 USD/EUR.',
+                  '• Small Cap: from USD/EUR 100,000.'
                 )}
               </li>
               <li>
                 {t(
-                  '• Opportunités inférieures à 100 M : évaluation ponctuelle et strictement au cas par cas.',
-                  '• Opportunities below 100M: occasional evaluation and strictly case by case.'
+                  '• Large Cap (cash) : 100 M à 5 Md USD/EUR.',
+                  '• Large Cap (cash): USD/EUR 100M to 5B.'
+                )}
+              </li>
+              <li>
+                {t(
+                  '• Programmes avec instruments (MT-760, MT-542, Euroclear) : 125 M à 5 Md USD/EUR.',
+                  '• Instrument programmes (MT-760, MT-542, Euroclear): USD/EUR 125M to 5B.'
                 )}
               </li>
               <li>

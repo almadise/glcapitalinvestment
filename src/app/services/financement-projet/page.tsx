@@ -40,8 +40,8 @@ const relatedLinks = [
     icon: Layers,
     titleFr: 'Placement privé',
     titleEn: 'Private placement',
-    descFr: 'PPP institutionnels : cash hold, MT-799, MT-760, tickets à partir de 100 M USD/EUR.',
-    descEn: 'Institutional PPP: cash hold, MT-799, MT-760, tickets from USD/EUR 100M.',
+    descFr: 'PPP : Small Cap à partir de 100 K ; Large Cap cash 100 M à 5 Md ; instruments 125 M à 5 Md.',
+    descEn: 'PPP: Small Cap from 100K; Large Cap cash 100M to 5B; instruments 125M to 5B.',
   },
   {
     href: '/services/instruments-bancaires',

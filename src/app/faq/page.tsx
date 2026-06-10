@@ -66,8 +66,8 @@ const faqs = [
       en: 'Do you publish Small Cap programs continuously?',
     },
     a: {
-      fr: `Non. Les opportunités Small Cap sont périodiques, non permanentes, et peuvent se fermer sans préavis.\n\nGL Capital ne publie pas ces fenêtres comme un catalogue public. Chaque demande est traitée au cas par cas, après pré-qualification.\n\nPré-qualification minimale :\n\n• CIS signé\n• Preuve de fonds récente et vérifiable\n• Résumé exécutif du projet ou objectif d'investissement\n\nAucune disponibilité continue ni rendement n'est garanti. Le traitement dépend de la conformité, de l'éligibilité et des conditions de plateforme au moment de la soumission.`,
-      en: `No. Small Cap opportunities are periodic, not permanent, and may close without prior notice.\n\nGL Capital does not publish these windows as a public catalog. Each request is handled case by case, after pre-qualification.\n\nMinimum pre-qualification:\n\n• Signed CIS\n• Recent and verifiable proof of funds\n• Executive summary of the project or investment objective\n\nNo continuous availability or return is guaranteed. Processing depends on compliance, eligibility, and platform conditions at submission time.`,
+      fr: `Non. Les opportunités Small Cap sont périodiques, non permanentes, et peuvent se fermer sans préavis. Ticket indicatif : à partir de 100 000 USD/EUR.\n\nGL Capital ne publie pas ces fenêtres comme un catalogue public. Chaque demande est traitée au cas par cas, après pré-qualification.\n\nPré-qualification minimale :\n\n• CIS signé\n• Preuve de fonds récente et vérifiable\n• Résumé exécutif du projet ou objectif d'investissement\n\nAucune disponibilité continue ni rendement n'est garanti. Le traitement dépend de la conformité, de l'éligibilité et des conditions de plateforme au moment de la soumission.`,
+      en: `No. Small Cap opportunities are periodic, not permanent, and may close without prior notice. Indicative ticket: from USD/EUR 100,000.\n\nGL Capital does not publish these windows as a public catalog. Each request is handled case by case, after pre-qualification.\n\nMinimum pre-qualification:\n\n• Signed CIS\n• Recent and verifiable proof of funds\n• Executive summary of the project or investment objective\n\nNo continuous availability or return is guaranteed. Processing depends on compliance, eligibility, and platform conditions at submission time.`,
     },
   },
   {
@@ -126,8 +126,8 @@ const faqs = [
       en: 'What is the difference between MT-760 and MT-542?',
     },
     a: {
-      fr: `Les deux messages SWIFT servent à structurer un programme PPP d'un an, avec affectation temporaire de la plateforme comme bénéficiaire, sous réserve de conformité :\n\n• MT-760 (à partir de 150 M USD) : SBLC, garanties bancaires, MTN.\n• MT-542 (à partir de 150 M USD) : certificats de dépôt et MTN.\n\nLes montants, cycles et conditions exacts sont définis dans l'accord de programme. Aucun rendement n'est garanti à l'avance. Voir la page Placement privé.`,
-      en: `Both SWIFT messages structure a one year PPP programme, with temporary assignment of the platform as beneficiary, subject to compliance:\n\n• MT-760 (from USD 150M): SBLC, bank guarantees, MTN.\n• MT-542 (from USD 150M): certificates of deposit and MTN.\n\nExact amounts, cycles, and conditions are defined in the programme agreement. No return is guaranteed in advance. See the Private Placement page.`,
+      fr: `Les deux messages SWIFT servent à structurer un programme PPP d'un an, avec affectation temporaire de la plateforme comme bénéficiaire, sous réserve de conformité :\n\n• MT-760 (125 M à 5 Md USD/EUR) : SBLC, garanties bancaires, MTN.\n• MT-542 (125 M à 5 Md USD/EUR) : certificats de dépôt et MTN.\n\nLes montants, cycles et conditions exacts sont définis dans l'accord de programme. Aucun rendement n'est garanti à l'avance. Voir la page Placement privé.`,
+      en: `Both SWIFT messages structure a one year PPP programme, with temporary assignment of the platform as beneficiary, subject to compliance:\n\n• MT-760 (USD/EUR 125M to 5B): SBLC, bank guarantees, MTN.\n• MT-542 (USD/EUR 125M to 5B): certificates of deposit and MTN.\n\nExact amounts, cycles, and conditions are defined in the programme agreement. No return is guaranteed in advance. See the Private Placement page.`,
     },
   },
 ];

@@ -71,7 +71,7 @@ GL Capital Investment SA est une plateforme de structuration et de présentation
 
 Les informations présentées sur ce site ont un caractère purement informatif et ne constituent pas une offre de services financiers réglementés.
 
-**Programmes de placement privé (PPP) :** GL Capital ne publie pas d'offre publique continue de placement. Les PPP sont traités sur invitation, après conformité, pour des tickets institutionnels (indicatif à partir de 100 M USD/EUR). Aucun rendement n'est garanti. Les instruments loués ne sont pas acceptés.
+**Programmes de placement privé (PPP) :** GL Capital ne publie pas d'offre publique continue de placement. Les PPP sont traités sur invitation, après conformité. Fourchettes indicatives : Small Cap à partir de 100 K USD/EUR ; Large Cap (cash) 100 M à 5 Md ; instruments 125 M à 5 Md. Aucun rendement n'est garanti. Les instruments loués ne sont pas acceptés.
 
 **Prêts commerciaux :** GL Capital structure les dossiers et assure la mise en relation avec des prêteurs partenaires. Le décaissement relève exclusivement du prêteur retenu, après approbation et souscription de la caution d'assurance requise. Les taux et montants publiés sont indicatifs.`,
       },
@@ -156,7 +156,7 @@ GL Capital Investment SA is a platform for structuring and presenting financing 
 
 The information presented on this website is purely informational and does not constitute an offer of regulated financial services.
 
-**Private placement programmes (PPP):** GL Capital does not publish a continuous public placement offer. PPP files are handled by invitation, after compliance, for institutional tickets (indicative from USD/EUR 100M). No return is guaranteed. Leased instruments are not accepted.
+**Private placement programmes (PPP):** GL Capital does not publish a continuous public placement offer. PPP files are handled by invitation, after compliance. Indicative ranges: Small Cap from USD/EUR 100K; Large Cap (cash) USD/EUR 100M to 5B; instruments USD/EUR 125M to 5B. No return is guaranteed. Leased instruments are not accepted.
 
 **Commercial loans:** GL Capital structures files and facilitates introductions to partner lenders. Disbursement is carried out exclusively by the selected lender, after approval and arrangement of the required insurance surety bond. Published rates and amounts are indicative.`,
       },
