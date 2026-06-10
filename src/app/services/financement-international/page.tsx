@@ -1,10 +1,11 @@
+import { getPublicSiteUrl } from '@/lib/companyContact';
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import PublicNavbar from '@/app/home-page/components/PublicNavbar';
 import PublicFooter from '@/app/home-page/components/PublicFooter';
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+const baseUrl = getPublicSiteUrl();
 
 export const metadata: Metadata = {
   title: 'Financement International - Structuration et accès institutionnel',
@@ -33,7 +34,8 @@ export default function FinancementInternationalPage() {
             Financement international
           </h1>
           <p className="text-white/75 max-w-3xl text-lg">
-            Nous structurons les dossiers pour des projets transfrontaliers et facilitons leur présentation à des institutions financières agréées.
+            Nous structurons les dossiers pour des projets transfrontaliers et facilitons leur
+            présentation à des institutions financières agréées.
           </p>
         </div>
       </section>
@@ -52,10 +54,18 @@ export default function FinancementInternationalPage() {
           <div className="card-surface p-6">
             <h2 className="text-xl font-bold text-navy mb-3">Paramètres clés</h2>
             <div className="space-y-3 text-sm">
-              <p><strong>Ticket d’entrée:</strong> 5M EUR+</p>
-              <p><strong>Délai moyen:</strong> 21 à 45 jours</p>
-              <p><strong>Couverture:</strong> Projets multi-juridictions</p>
-              <p><strong>Conformité:</strong> KYC/AML + NCNDA</p>
+              <p>
+                <strong>Ticket d’entrée:</strong> 5M EUR+
+              </p>
+              <p>
+                <strong>Délai moyen:</strong> 21 à 45 jours
+              </p>
+              <p>
+                <strong>Couverture:</strong> Projets multi-juridictions
+              </p>
+              <p>
+                <strong>Conformité:</strong> KYC/AML + NCNDA
+              </p>
             </div>
           </div>
         </div>
@@ -66,13 +76,23 @@ export default function FinancementInternationalPage() {
           <div className="card-surface p-6">
             <h2 className="text-lg font-bold text-navy mb-2">Expertise FR/EN</h2>
             <p className="text-sm text-slate-600 leading-relaxed">
-              FR: Notre équipe aligne votre dossier sur les standards des institutions internationales (DFI, banques commerciales, fonds spécialisés), avec une approche orientée risque, conformité et lisibilité financière. EN: Our team aligns your file with international institution standards (DFIs, commercial banks, specialized funds), with a risk-oriented, compliant, and finance-readable approach.
+              FR: Notre équipe aligne votre dossier sur les standards des institutions
+              internationales (DFI, banques commerciales, fonds spécialisés), avec une approche
+              orientée risque, conformité et lisibilité financière. EN: Our team aligns your file
+              with international institution standards (DFIs, commercial banks, specialized funds),
+              with a risk-oriented, compliant, and finance-readable approach.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
-              <Link href="/dossier-submission-wizard" className="px-5 py-2.5 rounded-xl bg-navy text-white text-sm font-semibold">
+              <Link
+                href="/dossier-submission-wizard"
+                className="px-5 py-2.5 rounded-xl bg-navy text-white text-sm font-semibold"
+              >
                 Soumettre un dossier
               </Link>
-              <Link href="/contact" className="px-5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-navy">
+              <Link
+                href="/contact"
+                className="px-5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-navy"
+              >
                 Parler à un conseiller
               </Link>
             </div>

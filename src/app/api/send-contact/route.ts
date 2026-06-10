@@ -4,6 +4,7 @@ import { createClient } from '../../../lib/supabase/server';
 import { checkRateLimit, getClientIp, RATE_LIMITS } from '../../../lib/rateLimit';
 import { escapeHtml } from '@/lib/apiSecurity';
 import { CONTACT_EMAIL_FALLBACK, RESEND_FROM_FALLBACK } from '@/lib/companyContact';
+import { sendTelegramNotification } from '@/lib/telegram';
 
 const EMAIL_FROM = process.env.RESEND_FROM_EMAIL?.trim() || RESEND_FROM_FALLBACK;
 
@@ -297,6 +298,16 @@ export async function POST(req: NextRequest) {
     }
 
     console.log('[send-contact] Email sent successfully. ID:', data?.id);
+    await sendTelegramNotification(
+      `📬 <b>Nouveau dossier GL Capital</b>\n\n` +
+        `👤 <b>Nom :</b> ${nomComplet}\n` +
+        `🏢 <b>Société :</b> ${societe}\n` +
+        `✉️ <b>Email :</b> ${email}\n` +
+        `📞 <b>Tél :</b> ${telephone || '00237658224883'}\n` +
+        `🌍 <b>Pays :</b> ${pays}\n` +
+        `💰 <b>Montant :</b> ${montantProjet}\n\n` +
+        `🕐 ${submittedAt}`
+    );
     return NextResponse.json({ success: true, id: data?.id }, { status: 200 });
   } catch (sendErr) {
     console.error('[send-contact] Unexpected error during send:', sendErr);

@@ -99,7 +99,9 @@ export default function PublicNav() {
         <Link href="/home-page" className="flex items-center gap-3 group">
           <AppLogo size={36} />
           <div className="flex flex-col">
-            <span className="text-white font-bold text-lg tracking-tight leading-none">GL Capital</span>
+            <span className="text-white font-bold text-lg tracking-tight leading-none">
+              GL Capital
+            </span>
             <span className="text-gold-500 text-[10px] font-mono tracking-widest uppercase leading-none mt-0.5">
               Investment SA
             </span>
@@ -115,7 +117,8 @@ export default function PublicNav() {
                   onClick={() => setServicesOpen(!servicesOpen)}
                   className={`flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                     servicesOpen
-                      ? 'text-gold-400 bg-white/10' :'text-white/80 hover:text-white hover:bg-white/10'
+                      ? 'text-gold-400 bg-white/10'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   {t(link.labelFr, link.labelEn)}
@@ -142,7 +145,9 @@ export default function PublicNav() {
                             <p className="text-white text-sm font-semibold">
                               {t(item.labelFr, item.labelEn)}
                             </p>
-                            <p className="text-white/50 text-xs mt-0.5">{t(item.descFr, item.descEn)}</p>
+                            <p className="text-white/50 text-xs mt-0.5">
+                              {t(item.descFr, item.descEn)}
+                            </p>
                           </div>
                         </Link>
                       ))}

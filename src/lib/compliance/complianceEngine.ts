@@ -62,11 +62,7 @@ const HIGH_RISK_COUNTRIES = new Set([
 
 // ─── Restricted Entity Types ──────────────────────────────────────────────────
 // Entity types that require additional scrutiny or are blocked
-const BLOCKED_ENTITY_TYPES = new Set([
-  'shell',
-  'anonymous_trust',
-  'bearer_shares',
-]);
+const BLOCKED_ENTITY_TYPES = new Set(['shell', 'anonymous_trust', 'bearer_shares']);
 
 const HIGH_RISK_ENTITY_TYPES = new Set([
   'individual', // Sole proprietors require enhanced KYC
@@ -74,10 +70,10 @@ const HIGH_RISK_ENTITY_TYPES = new Set([
 
 // ─── Ownership Thresholds ─────────────────────────────────────────────────────
 const UBO_DISCLOSURE_THRESHOLD = 25; // % - EU 4AMLD standard
-const UBO_HIGH_RISK_THRESHOLD = 10;  // % - enhanced due-diligence threshold
+const UBO_HIGH_RISK_THRESHOLD = 10; // % - enhanced due-diligence threshold
 
 // ─── Amount Thresholds (EUR) ──────────────────────────────────────────────────
-const MIN_FINANCING_AMOUNT = 500_000;   // EUR - minimum ticket size
+const MIN_FINANCING_AMOUNT = 500_000; // EUR - minimum ticket size
 const MAX_UNVERIFIED_AMOUNT = 50_000_000; // EUR - above this requires enhanced review
 
 // ─── Rule Definitions ─────────────────────────────────────────────────────────
@@ -209,8 +205,9 @@ function checkUBOOwnershipThreshold(data: DossierPayload): ComplianceViolation |
 
 // Rule 8: High-risk country + individual entity = block
 function checkHighRiskCountryIndividual(data: DossierPayload): ComplianceViolation | null {
-  const isHighRisk = (data.orgCountry && HIGH_RISK_COUNTRIES.has(data.orgCountry.toUpperCase())) ||
-                     (data.uboNationality && HIGH_RISK_COUNTRIES.has(data.uboNationality.toUpperCase()));
+  const isHighRisk =
+    (data.orgCountry && HIGH_RISK_COUNTRIES.has(data.orgCountry.toUpperCase())) ||
+    (data.uboNationality && HIGH_RISK_COUNTRIES.has(data.uboNationality.toUpperCase()));
   const isIndividual = data.orgType?.toLowerCase() === 'individual';
   if (isHighRisk && isIndividual) {
     return {

@@ -18,12 +18,28 @@ export default function PublicFooter() {
     { labelFr: 'Accueil', labelEn: 'Home', href: '/home-page' },
     { labelFr: 'Qui sommes-nous', labelEn: 'About Us', href: '/qui-sommes-nous' },
     { labelFr: 'Services', labelEn: 'Services', href: '/services' },
-    { labelFr: 'Financement de projet', labelEn: 'Project Finance', href: '/services/financement-projet' },
-    { labelFr: 'Instruments bancaires', labelEn: 'Bank Instruments', href: '/services/instruments-bancaires' },
+    {
+      labelFr: 'Financement de projet',
+      labelEn: 'Project Finance',
+      href: '/services/financement-projet',
+    },
+    {
+      labelFr: 'Instruments bancaires',
+      labelEn: 'Bank Instruments',
+      href: '/services/instruments-bancaires',
+    },
     { labelFr: 'Prêts', labelEn: 'Loans', href: '/services/prets' },
     { labelFr: 'Placement privé', labelEn: 'Private Placement', href: '/services/placement-prive' },
-    { labelFr: 'Conseil crypto-actifs', labelEn: 'Crypto Advisory', href: '/services/conseil-crypto' },
-    { labelFr: 'Conseil & structuration', labelEn: 'Advisory & Structuring', href: '/services/conseil-structuration' },
+    {
+      labelFr: 'Conseil crypto-actifs',
+      labelEn: 'Crypto Advisory',
+      href: '/services/conseil-crypto',
+    },
+    {
+      labelFr: 'Conseil & structuration',
+      labelEn: 'Advisory & Structuring',
+      href: '/services/conseil-structuration',
+    },
     { labelFr: 'Contact', labelEn: 'Contact', href: '/contact' },
     { labelFr: 'FAQ', labelEn: 'FAQ', href: '/faq' },
     { labelFr: 'Portail Client', labelEn: 'Client Portal', href: '/client-portal-dashboard' },
@@ -42,7 +58,10 @@ export default function PublicFooter() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="inline-flex items-center justify-center flex-shrink-0" style={{ width: 36, height: 46 }}>
+              <div
+                className="inline-flex items-center justify-center flex-shrink-0"
+                style={{ width: 36, height: 46 }}
+              >
                 <img
                   alt="GL Capital Investment SA - Logo"
                   width={36}
@@ -53,7 +72,9 @@ export default function PublicFooter() {
               </div>
               <div>
                 <p className="text-white font-bold">GL Capital Investment SA</p>
-                <p className="text-white/50 text-xs font-mono">{t('Conseil en Financement Institutionnel', 'Institutional Financing Advisory')}</p>
+                <p className="text-white/50 text-xs font-mono">
+                  {t('Conseil en Financement Institutionnel', 'Institutional Financing Advisory')}
+                </p>
               </div>
             </div>
             <p className="text-white/55 text-sm leading-relaxed mb-4 max-w-sm">
@@ -83,11 +104,16 @@ export default function PublicFooter() {
 
           {/* Platform links */}
           <div>
-            <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-4">{t('Plateforme', 'Platform')}</p>
+            <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-4">
+              {t('Plateforme', 'Platform')}
+            </p>
             <ul className="space-y-2">
               {platformLinks?.map((link) => (
                 <li key={link?.href}>
-                  <Link href={link?.href} className="text-white/55 hover:text-white/85 text-sm transition-colors">
+                  <Link
+                    href={link?.href}
+                    className="text-white/55 hover:text-white/85 text-sm transition-colors"
+                  >
                     {t(link?.labelFr, link?.labelEn)}
                   </Link>
                 </li>
@@ -97,11 +123,16 @@ export default function PublicFooter() {
 
           {/* Legal links */}
           <div>
-            <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-4">{t('Légal & Conformité', 'Legal & Compliance')}</p>
+            <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-4">
+              {t('Légal & Conformité', 'Legal & Compliance')}
+            </p>
             <ul className="space-y-2">
               {legalLinks?.map((link) => (
                 <li key={link?.href}>
-                  <Link href={link?.href} className="text-white/55 hover:text-white/85 text-sm transition-colors">
+                  <Link
+                    href={link?.href}
+                    className="text-white/55 hover:text-white/85 text-sm transition-colors"
+                  >
                     {t(link?.labelFr, link?.labelEn)}
                   </Link>
                 </li>
@@ -111,7 +142,7 @@ export default function PublicFooter() {
               <p className="text-[10px] text-white/45 leading-relaxed">
                 {t(
                   "GL Capital n'est pas une banque et ne détient aucune licence bancaire ou d'investissement. Toute transaction est exécutée par des institutions agréées.",
-                  "GL Capital is not a bank and holds no banking or investment license. All transactions are executed by licensed institutions."
+                  'GL Capital is not a bank and holds no banking or investment license. All transactions are executed by licensed institutions.'
                 )}
               </p>
             </div>
@@ -122,7 +153,7 @@ export default function PublicFooter() {
         <div className="border-t border-navy-700/50 pt-8 flex flex-col lg:flex-row items-center justify-between gap-4">
           <p className="text-white/40 text-xs text-center lg:text-left">
             {t(
-              '© 2026 General Luxury SA. Tous droits réservés. GL Capital ne détient pas de licence bancaire ou d\'investissement. Toutes les transactions sont exécutées par des institutions financières dûment agréées.',
+              "© 2026 General Luxury SA. Tous droits réservés. GL Capital ne détient pas de licence bancaire ou d'investissement. Toutes les transactions sont exécutées par des institutions financières dûment agréées.",
               '© 2026 General Luxury SA. All rights reserved. GL Capital holds no banking or investment license. All transactions are executed by duly licensed financial institutions.'
             )}
           </p>

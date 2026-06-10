@@ -3,10 +3,22 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { Bell, FolderOpen, Shield, Mail, Clock, CheckCircle2, AlertTriangle, X, Eye, ArrowRight, RefreshCw, Loader2 } from 'lucide-react';
+import {
+  Bell,
+  FolderOpen,
+  Shield,
+  Mail,
+  Clock,
+  CheckCircle2,
+  AlertTriangle,
+  X,
+  Eye,
+  ArrowRight,
+  RefreshCw,
+  Loader2,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-
 
 interface AdminNotification {
   id: string;
@@ -31,7 +43,9 @@ export default function AdminNotificationHub({ onClose }: Props) {
   const router = useRouter();
   const [notifications, setNotifications] = useState<AdminNotification[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'new_submission' | 'compliance_flag' | 'email_failure' | 'verification_timeout'>('all');
+  const [filter, setFilter] = useState<
+    'all' | 'new_submission' | 'compliance_flag' | 'email_failure' | 'verification_timeout'
+  >('all');
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   const buildNotificationsFromLogs = (logs: any[], cases: any[]): AdminNotification[] => {
@@ -54,13 +68,22 @@ export default function AdminNotificationHub({ onClose }: Props) {
       });
 
     logs
-      .filter((l) => l.action === 'COMPLIANCE_FLAG' || l.action === 'COMPLIANCE_BLOCK' || l.metadata?.severity === 'critical' || l.metadata?.severity === 'sensitive')
+      .filter(
+        (l) =>
+          l.action === 'COMPLIANCE_FLAG' ||
+          l.action === 'COMPLIANCE_BLOCK' ||
+          l.metadata?.severity === 'critical' ||
+          l.metadata?.severity === 'sensitive'
+      )
       .slice(0, 10)
       .forEach((l) => {
         notifs.push({
           id: `flag-${l.id}`,
           type: 'compliance_flag',
-          title: l.action === 'COMPLIANCE_BLOCK' ? t('Blocage Compliance', 'Compliance Block Triggered') : t('Alerte Compliance', 'Compliance Flag Raised'),
+          title:
+            l.action === 'COMPLIANCE_BLOCK'
+              ? t('Blocage Compliance', 'Compliance Block Triggered')
+              : t('Alerte Compliance', 'Compliance Flag Raised'),
           description: l.metadata?.detail || `${l.action} - ${l.target}`,
           ref: l.target,
           createdAt: l.created_at,
@@ -98,7 +121,10 @@ export default function AdminNotificationHub({ onClose }: Props) {
           id: `timeout-${d.id}`,
           type: 'verification_timeout',
           title: t('Délai de vérification dépassé', 'Verification Timeout'),
-          description: t(`Dossier ${d.ref} en attente depuis plus de 72h`, `Application ${d.ref} pending for over 72 hours`),
+          description: t(
+            `Dossier ${d.ref} en attente depuis plus de 72h`,
+            `Application ${d.ref} pending for over 72 hours`
+          ),
           ref: d.ref,
           dossierId: d.id,
           createdAt: d.created_at,
@@ -114,8 +140,15 @@ export default function AdminNotificationHub({ onClose }: Props) {
     setLoading(true);
     try {
       const [logsRes, casesRes] = await Promise.all([
-        supabase.from('audit_logs').select('id, action, target, metadata, created_at').order('created_at', { ascending: false }).limit(100),
-        supabase.from('case_files').select('id, ref, status, created_at, updated_at').order('updated_at', { ascending: false }),
+        supabase
+          .from('audit_logs')
+          .select('id, action, target, metadata, created_at')
+          .order('created_at', { ascending: false })
+          .limit(100),
+        supabase
+          .from('case_files')
+          .select('id, ref, status, created_at, updated_at')
+          .order('updated_at', { ascending: false }),
       ]);
 
       const notifs = buildNotificationsFromLogs(logsRes.data || [], casesRes.data || []);
@@ -135,18 +168,30 @@ export default function AdminNotificationHub({ onClose }: Props) {
         fetchNotifications();
         toast.info(t('Nouveau dossier reçu', 'New application received'));
       })
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'audit_logs' }, (payload) => {
-        const log = payload.new as any;
-        if (log.metadata?.severity === 'critical') {
-          toast.error(`${t('Blocage Compliance', 'Compliance BLOCK')}: ${log.metadata?.detail || log.target}`, { duration: 8000 });
-        } else if (log.metadata?.severity === 'sensitive' || log.action === 'COMPLIANCE_FLAG') {
-          toast.warning(`${t('Alerte Compliance', 'Compliance Flag')}: ${log.metadata?.detail || log.target}`, { duration: 6000 });
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'audit_logs' },
+        (payload) => {
+          const log = payload.new as any;
+          if (log.metadata?.severity === 'critical') {
+            toast.error(
+              `${t('Blocage Compliance', 'Compliance BLOCK')}: ${log.metadata?.detail || log.target}`,
+              { duration: 8000 }
+            );
+          } else if (log.metadata?.severity === 'sensitive' || log.action === 'COMPLIANCE_FLAG') {
+            toast.warning(
+              `${t('Alerte Compliance', 'Compliance Flag')}: ${log.metadata?.detail || log.target}`,
+              { duration: 6000 }
+            );
+          }
+          fetchNotifications();
         }
-        fetchNotifications();
-      })
+      )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   // ── Action handlers wired to Supabase ────────────────────────────────────
@@ -176,7 +221,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
       toast.success(t(`Alerte acquittée - ${notif.ref}`, `Flag acknowledged - ${notif.ref}`));
       fetchNotifications();
     } catch (err: any) {
-      toast.error(err.message || t('Erreur lors de l\'acquittement', 'Error acknowledging flag'));
+      toast.error(err.message || t("Erreur lors de l'acquittement", 'Error acknowledging flag'));
     } finally {
       setActionLoading(null);
     }
@@ -197,7 +242,9 @@ export default function AdminNotificationHub({ onClose }: Props) {
           severity: 'info',
         },
       });
-      toast.success(t(`Renvoi email déclenché - ${notif.ref}`, `Email retry triggered - ${notif.ref}`));
+      toast.success(
+        t(`Renvoi email déclenché - ${notif.ref}`, `Email retry triggered - ${notif.ref}`)
+      );
       fetchNotifications();
     } catch (err: any) {
       toast.error(err.message || t('Erreur lors du renvoi', 'Error retrying email'));
@@ -246,7 +293,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
       toast.success(t(`Rappel envoyé - ${notif.ref}`, `Reminder sent - ${notif.ref}`));
       fetchNotifications();
     } catch (err: any) {
-      toast.error(err.message || t('Erreur lors de l\'envoi du rappel', 'Error sending reminder'));
+      toast.error(err.message || t("Erreur lors de l'envoi du rappel", 'Error sending reminder'));
     } finally {
       setActionLoading(null);
     }
@@ -269,7 +316,7 @@ export default function AdminNotificationHub({ onClose }: Props) {
       toast.success(t(`Dossier escaladé - ${notif.ref}`, `Case escalated - ${notif.ref}`));
       fetchNotifications();
     } catch (err: any) {
-      toast.error(err.message || t('Erreur lors de l\'escalade', 'Error escalating case'));
+      toast.error(err.message || t("Erreur lors de l'escalade", 'Error escalating case'));
     } finally {
       setActionLoading(null);
     }
@@ -280,13 +327,34 @@ export default function AdminNotificationHub({ onClose }: Props) {
     setNotifications([]);
   };
 
-  const filteredNotifications = filter === 'all' ? notifications : notifications.filter((n) => n.type === filter);
+  const filteredNotifications =
+    filter === 'all' ? notifications : notifications.filter((n) => n.type === filter);
 
   const typeConfig = {
-    new_submission: { icon: FolderOpen, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-200', label: t('Soumission', 'Submission') },
-    compliance_flag: { icon: Shield, color: 'text-red-600', bg: 'bg-red-50 border-red-200', label: t('Compliance', 'Compliance') },
-    email_failure: { icon: Mail, color: 'text-amber-600', bg: 'bg-amber-50 border-amber-200', label: t('Email', 'Email') },
-    verification_timeout: { icon: Clock, color: 'text-orange-600', bg: 'bg-orange-50 border-orange-200', label: t('Délai', 'Timeout') },
+    new_submission: {
+      icon: FolderOpen,
+      color: 'text-blue-600',
+      bg: 'bg-blue-50 border-blue-200',
+      label: t('Soumission', 'Submission'),
+    },
+    compliance_flag: {
+      icon: Shield,
+      color: 'text-red-600',
+      bg: 'bg-red-50 border-red-200',
+      label: t('Compliance', 'Compliance'),
+    },
+    email_failure: {
+      icon: Mail,
+      color: 'text-amber-600',
+      bg: 'bg-amber-50 border-amber-200',
+      label: t('Email', 'Email'),
+    },
+    verification_timeout: {
+      icon: Clock,
+      color: 'text-orange-600',
+      bg: 'bg-orange-50 border-orange-200',
+      label: t('Délai', 'Timeout'),
+    },
   };
 
   const unreadCount = notifications.length;
@@ -305,16 +373,26 @@ export default function AdminNotificationHub({ onClose }: Props) {
             )}
           </div>
           <div>
-            <h2 className="text-white font-bold text-sm">{t('Centre de notifications', 'Notification Hub')}</h2>
-            <p className="text-white/40 text-[10px]">{unreadCount} {t('éléments en attente', 'pending items')}</p>
+            <h2 className="text-white font-bold text-sm">
+              {t('Centre de notifications', 'Notification Hub')}
+            </h2>
+            <p className="text-white/40 text-[10px]">
+              {unreadCount} {t('éléments en attente', 'pending items')}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={fetchNotifications} className="p-1.5 text-white/40 hover:text-white transition-colors rounded-lg hover:bg-white/10">
+          <button
+            onClick={fetchNotifications}
+            className="p-1.5 text-white/40 hover:text-white transition-colors rounded-lg hover:bg-white/10"
+          >
             <RefreshCw size={14} />
           </button>
           {onClose && (
-            <button onClick={onClose} className="p-1.5 text-white/40 hover:text-white transition-colors rounded-lg hover:bg-white/10">
+            <button
+              onClick={onClose}
+              className="p-1.5 text-white/40 hover:text-white transition-colors rounded-lg hover:bg-white/10"
+            >
               <X size={14} />
             </button>
           )}
@@ -323,26 +401,47 @@ export default function AdminNotificationHub({ onClose }: Props) {
 
       {/* Filter tabs */}
       <div className="flex border-b border-gray-100 bg-gray-50 overflow-x-auto">
-        {([
-          { key: 'all', label: t('Tout', 'All'), count: notifications.length },
-          { key: 'new_submission', label: t('Soumissions', 'Submissions'), count: notifications.filter((n) => n.type === 'new_submission').length },
-          { key: 'compliance_flag', label: t('Compliance', 'Compliance'), count: notifications.filter((n) => n.type === 'compliance_flag').length },
-          { key: 'email_failure', label: t('Email', 'Email'), count: notifications.filter((n) => n.type === 'email_failure').length },
-          { key: 'verification_timeout', label: t('Délais', 'Timeouts'), count: notifications.filter((n) => n.type === 'verification_timeout').length },
-        ] as const).map((tab) => (
+        {(
+          [
+            { key: 'all', label: t('Tout', 'All'), count: notifications.length },
+            {
+              key: 'new_submission',
+              label: t('Soumissions', 'Submissions'),
+              count: notifications.filter((n) => n.type === 'new_submission').length,
+            },
+            {
+              key: 'compliance_flag',
+              label: t('Compliance', 'Compliance'),
+              count: notifications.filter((n) => n.type === 'compliance_flag').length,
+            },
+            {
+              key: 'email_failure',
+              label: t('Email', 'Email'),
+              count: notifications.filter((n) => n.type === 'email_failure').length,
+            },
+            {
+              key: 'verification_timeout',
+              label: t('Délais', 'Timeouts'),
+              count: notifications.filter((n) => n.type === 'verification_timeout').length,
+            },
+          ] as const
+        ).map((tab) => (
           <button
             key={`notif-tab-${tab.key}`}
             onClick={() => setFilter(tab.key)}
             className={`flex-shrink-0 px-3 py-2.5 text-[11px] font-medium transition-colors border-b-2 ${
               filter === tab.key
-                ? 'text-navy border-navy bg-white' : 'text-gray-500 border-transparent hover:text-gray-700'
+                ? 'text-navy border-navy bg-white'
+                : 'text-gray-500 border-transparent hover:text-gray-700'
             }`}
           >
             {tab.label}
             {tab.count > 0 && (
-              <span className={`ml-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
-                filter === tab.key ? 'bg-navy text-white' : 'bg-gray-200 text-gray-600'
-              }`}>
+              <span
+                className={`ml-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                  filter === tab.key ? 'bg-navy text-white' : 'bg-gray-200 text-gray-600'
+                }`}
+              >
                 {tab.count}
               </span>
             )}
@@ -355,13 +454,19 @@ export default function AdminNotificationHub({ onClose }: Props) {
         {loading ? (
           <div className="p-8 text-center">
             <div className="w-6 h-6 border-2 border-navy/20 border-t-navy rounded-full animate-spin mx-auto mb-2" />
-            <p className="text-gray-400 text-xs">{t('Chargement...', 'Loading notifications...')}</p>
+            <p className="text-gray-400 text-xs">
+              {t('Chargement...', 'Loading notifications...')}
+            </p>
           </div>
         ) : filteredNotifications.length === 0 ? (
           <div className="p-8 text-center">
             <CheckCircle2 size={28} className="text-emerald-300 mx-auto mb-2" />
-            <p className="text-gray-400 text-sm font-medium">{t('Tout est en ordre', 'All clear')}</p>
-            <p className="text-gray-300 text-xs mt-1">{t('Aucune notification en attente', 'No pending notifications')}</p>
+            <p className="text-gray-400 text-sm font-medium">
+              {t('Tout est en ordre', 'All clear')}
+            </p>
+            <p className="text-gray-300 text-xs mt-1">
+              {t('Aucune notification en attente', 'No pending notifications')}
+            </p>
           </div>
         ) : (
           <div className="divide-y divide-gray-50">
@@ -370,24 +475,42 @@ export default function AdminNotificationHub({ onClose }: Props) {
               const NotifIcon = config.icon;
               const isActing = actionLoading === notif.id;
               return (
-                <div key={notif.id} className={`p-4 hover:bg-gray-50 transition-colors ${notif.severity === 'critical' ? 'bg-red-50/30' : ''}`}>
+                <div
+                  key={notif.id}
+                  className={`p-4 hover:bg-gray-50 transition-colors ${notif.severity === 'critical' ? 'bg-red-50/30' : ''}`}
+                >
                   <div className="flex items-start gap-3">
-                    <div className={`w-8 h-8 rounded-lg border flex items-center justify-center flex-shrink-0 ${config.bg}`}>
+                    <div
+                      className={`w-8 h-8 rounded-lg border flex items-center justify-center flex-shrink-0 ${config.bg}`}
+                    >
                       <NotifIcon size={14} className={config.color} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <p className="text-xs font-bold text-navy truncate">{notif.title}</p>
                         {notif.severity === 'critical' && (
-                          <span className="text-[9px] font-bold text-red-600 bg-red-100 px-1.5 py-0.5 rounded-full flex-shrink-0">{t('CRITIQUE', 'CRITICAL')}</span>
+                          <span className="text-[9px] font-bold text-red-600 bg-red-100 px-1.5 py-0.5 rounded-full flex-shrink-0">
+                            {t('CRITIQUE', 'CRITICAL')}
+                          </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-gray-500 leading-relaxed mb-2">{notif.description}</p>
+                      <p className="text-[11px] text-gray-500 leading-relaxed mb-2">
+                        {notif.description}
+                      </p>
                       {notif.ref && (
-                        <span className="text-[10px] font-mono text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">{notif.ref}</span>
+                        <span className="text-[10px] font-mono text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
+                          {notif.ref}
+                        </span>
                       )}
                       <p className="text-[10px] text-gray-300 mt-1.5">
-                        {notif.createdAt ? new Date(notif.createdAt).toLocaleString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-'}
+                        {notif.createdAt
+                          ? new Date(notif.createdAt).toLocaleString('fr-FR', {
+                              day: '2-digit',
+                              month: 'short',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })
+                          : '-'}
                       </p>
                     </div>
                   </div>
@@ -400,7 +523,11 @@ export default function AdminNotificationHub({ onClose }: Props) {
                         disabled={isActing}
                         className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-semibold text-navy border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
                       >
-                        {isActing ? <Loader2 size={10} className="animate-spin" /> : <Eye size={10} />}
+                        {isActing ? (
+                          <Loader2 size={10} className="animate-spin" />
+                        ) : (
+                          <Eye size={10} />
+                        )}
                         {t('Examiner', 'Review')}
                       </button>
                     )}
@@ -411,7 +538,11 @@ export default function AdminNotificationHub({ onClose }: Props) {
                           disabled={isActing}
                           className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-semibold text-red-700 border border-red-200 bg-red-50 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
                         >
-                          {isActing ? <Loader2 size={10} className="animate-spin" /> : <AlertTriangle size={10} />}
+                          {isActing ? (
+                            <Loader2 size={10} className="animate-spin" />
+                          ) : (
+                            <AlertTriangle size={10} />
+                          )}
                           {t('Examiner', 'Review')}
                         </button>
                         <button
@@ -419,7 +550,11 @@ export default function AdminNotificationHub({ onClose }: Props) {
                           disabled={isActing}
                           className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-semibold text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
                         >
-                          {isActing ? <Loader2 size={10} className="animate-spin" /> : <CheckCircle2 size={10} />}
+                          {isActing ? (
+                            <Loader2 size={10} className="animate-spin" />
+                          ) : (
+                            <CheckCircle2 size={10} />
+                          )}
                           {t('Acquitter', 'Acknowledge')}
                         </button>
                       </>
@@ -430,7 +565,11 @@ export default function AdminNotificationHub({ onClose }: Props) {
                         disabled={isActing}
                         className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-semibold text-amber-700 border border-amber-200 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors disabled:opacity-50"
                       >
-                        {isActing ? <Loader2 size={10} className="animate-spin" /> : <RefreshCw size={10} />}
+                        {isActing ? (
+                          <Loader2 size={10} className="animate-spin" />
+                        ) : (
+                          <RefreshCw size={10} />
+                        )}
                         {t('Renvoyer', 'Retry')}
                       </button>
                     )}
@@ -441,7 +580,11 @@ export default function AdminNotificationHub({ onClose }: Props) {
                           disabled={isActing}
                           className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-semibold text-orange-700 border border-orange-200 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors disabled:opacity-50"
                         >
-                          {isActing ? <Loader2 size={10} className="animate-spin" /> : <Mail size={10} />}
+                          {isActing ? (
+                            <Loader2 size={10} className="animate-spin" />
+                          ) : (
+                            <Mail size={10} />
+                          )}
                           {t('Relancer', 'Remind')}
                         </button>
                         <button
@@ -449,7 +592,11 @@ export default function AdminNotificationHub({ onClose }: Props) {
                           disabled={isActing}
                           className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-semibold text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
                         >
-                          {isActing ? <Loader2 size={10} className="animate-spin" /> : <ArrowRight size={10} />}
+                          {isActing ? (
+                            <Loader2 size={10} className="animate-spin" />
+                          ) : (
+                            <ArrowRight size={10} />
+                          )}
                           {t('Escalader', 'Escalate')}
                         </button>
                       </>
@@ -464,7 +611,9 @@ export default function AdminNotificationHub({ onClose }: Props) {
 
       {/* Footer */}
       <div className="px-5 py-3 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
-        <p className="text-[10px] text-gray-400">{t('Temps réel · Mise à jour automatique', 'Real-time · Auto-refreshes on new events')}</p>
+        <p className="text-[10px] text-gray-400">
+          {t('Temps réel · Mise à jour automatique', 'Real-time · Auto-refreshes on new events')}
+        </p>
         <button
           onClick={handleMarkAllRead}
           className="text-[10px] font-semibold text-navy hover:text-navy/80 transition-colors"

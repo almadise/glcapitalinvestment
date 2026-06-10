@@ -42,9 +42,10 @@ export default function KPIBentoGrid() {
       const active = allCases.filter((c) => !['CLOTURE', 'REJETE'].includes(c.status));
       const toComplete = allCases.filter((c) => c.status === 'A_COMPLETER');
       const eligible = allCases.filter((c) => c.status === 'ELIGIBLE');
-      const avgCompleteness = active.length > 0
-        ? Math.round(active.reduce((sum, c) => sum + (c.completeness || 0), 0) / active.length)
-        : 0;
+      const avgCompleteness =
+        active.length > 0
+          ? Math.round(active.reduce((sum, c) => sum + (c.completeness || 0), 0) / active.length)
+          : 0;
 
       setKpi({
         dossiersEnCours: active.length,
@@ -66,13 +67,21 @@ export default function KPIBentoGrid() {
     if (!user) return;
     const channel = supabase
       .channel('kpi_case_files')
-      .on('postgres_changes', {
-        event: '*', schema: 'public', table: 'case_files',
-        filter: `user_id=eq.${user.id}`,
-      }, fetchKPIs)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'case_files',
+          filter: `user_id=eq.${user.id}`,
+        },
+        fetchKPIs
+      )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user, fetchKPIs]);
 
   const val = (n: number | undefined) => (loading ? '-' : String(n ?? 0));
@@ -89,7 +98,9 @@ export default function KPIBentoGrid() {
             </div>
             <div className="flex items-center gap-1.5 bg-gold/10 border border-gold/20 rounded-full px-3 py-1">
               <div className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-              <span className="text-gold text-xs font-semibold">{lang === 'fr' ? 'En cours' : 'Active'}</span>
+              <span className="text-gold text-xs font-semibold">
+                {lang === 'fr' ? 'En cours' : 'Active'}
+              </span>
             </div>
           </div>
           <div className="font-mono-data text-5xl font-bold text-white mb-2">
@@ -101,9 +112,11 @@ export default function KPIBentoGrid() {
           <div className="flex items-center gap-1.5">
             <ArrowUpRight size={14} className="text-emerald-400" />
             <span className="text-emerald-400 text-xs font-semibold">
-              {loading ? '-' : lang === 'fr'
-                ? `${kpi?.dossiersTotal ?? 0} soumis au total`
-                : `${kpi?.dossiersTotal ?? 0} total submitted`}
+              {loading
+                ? '-'
+                : lang === 'fr'
+                  ? `${kpi?.dossiersTotal ?? 0} soumis au total`
+                  : `${kpi?.dossiersTotal ?? 0} total submitted`}
             </span>
           </div>
         </div>
@@ -127,23 +140,46 @@ export default function KPIBentoGrid() {
       </div>
 
       {/* Documents en attente */}
-      <div className={`kpi-card ${(kpi?.documentsEnAttente ?? 0) > 0 ? 'border-red-200 bg-red-50/50' : ''}`}>
+      <div
+        className={`kpi-card ${(kpi?.documentsEnAttente ?? 0) > 0 ? 'border-red-200 bg-red-50/50' : ''}`}
+      >
         <div className="flex items-start justify-between mb-3">
-          <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${(kpi?.documentsEnAttente ?? 0) > 0 ? 'bg-red-100 border border-red-200' : 'bg-amber-50 border border-amber-200'}`}>
-            <FileWarning size={16} className={(kpi?.documentsEnAttente ?? 0) > 0 ? 'text-red-600' : 'text-amber-600'} />
+          <div
+            className={`w-9 h-9 rounded-lg flex items-center justify-center ${(kpi?.documentsEnAttente ?? 0) > 0 ? 'bg-red-100 border border-red-200' : 'bg-amber-50 border border-amber-200'}`}
+          >
+            <FileWarning
+              size={16}
+              className={(kpi?.documentsEnAttente ?? 0) > 0 ? 'text-red-600' : 'text-amber-600'}
+            />
           </div>
-          {(kpi?.documentsEnAttente ?? 0) > 0 ? <AlertTriangle size={14} className="text-red-500" /> : null}
+          {(kpi?.documentsEnAttente ?? 0) > 0 ? (
+            <AlertTriangle size={14} className="text-red-500" />
+          ) : null}
         </div>
-        <div className={`font-mono-data text-2xl font-bold mb-1 ${(kpi?.documentsEnAttente ?? 0) > 0 ? 'text-red-700' : 'text-navy'}`}>
+        <div
+          className={`font-mono-data text-2xl font-bold mb-1 ${(kpi?.documentsEnAttente ?? 0) > 0 ? 'text-red-700' : 'text-navy'}`}
+        >
           {val(kpi?.documentsEnAttente)}
         </div>
         <div className="text-slate-600 text-xs font-medium mb-1">
           {lang === 'fr' ? 'Dossiers à compléter' : 'Dossiers to complete'}
         </div>
-        <div className={(kpi?.documentsEnAttente ?? 0) > 0 ? 'text-red-600 text-xs font-semibold' : 'text-emerald-600 text-xs font-semibold'}>
-          {loading ? '-' : (kpi?.documentsEnAttente ?? 0) > 0
-            ? (lang === 'fr' ? 'Documents requis' : 'Documents required')
-            : (lang === 'fr' ? 'À jour' : 'Up to date')}
+        <div
+          className={
+            (kpi?.documentsEnAttente ?? 0) > 0
+              ? 'text-red-600 text-xs font-semibold'
+              : 'text-emerald-600 text-xs font-semibold'
+          }
+        >
+          {loading
+            ? '-'
+            : (kpi?.documentsEnAttente ?? 0) > 0
+              ? lang === 'fr'
+                ? 'Documents requis'
+                : 'Documents required'
+              : lang === 'fr'
+                ? 'À jour'
+                : 'Up to date'}
         </div>
       </div>
 
@@ -153,9 +189,11 @@ export default function KPIBentoGrid() {
           <div className="w-9 h-9 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center">
             <CheckCircle2 size={16} className="text-amber-600" />
           </div>
-          {(kpi?.completudeMoyenne ?? 0) >= 70
-            ? <ArrowUpRight size={14} className="text-emerald-500" />
-            : <ArrowDownRight size={14} className="text-amber-500" />}
+          {(kpi?.completudeMoyenne ?? 0) >= 70 ? (
+            <ArrowUpRight size={14} className="text-emerald-500" />
+          ) : (
+            <ArrowDownRight size={14} className="text-amber-500" />
+          )}
         </div>
         <div className="font-mono-data text-2xl font-bold text-navy mb-1">
           {loading ? '-' : `${kpi?.completudeMoyenne ?? 0}%`}
@@ -167,7 +205,10 @@ export default function KPIBentoGrid() {
           {lang === 'fr' ? 'Dossiers actifs' : 'Active dossiers'}
         </div>
         <div className="mt-2.5 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-          <div className="h-full bg-amber-400 rounded-full transition-all duration-500" style={{ width: `${kpi?.completudeMoyenne ?? 0}%` }} />
+          <div
+            className="h-full bg-amber-400 rounded-full transition-all duration-500"
+            style={{ width: `${kpi?.completudeMoyenne ?? 0}%` }}
+          />
         </div>
       </div>
 

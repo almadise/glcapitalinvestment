@@ -4,7 +4,27 @@ import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import AdminLayout from '../components/AdminLayout';
-import { Building2, Search, Loader2, X, ChevronDown, Globe, RefreshCw, BookOpen, Send, Clock, FileText, Filter, CheckCircle2, XCircle, AlertTriangle, MapPin, Users, ArrowRight, Eye,  } from 'lucide-react';
+import {
+  Building2,
+  Search,
+  Loader2,
+  X,
+  ChevronDown,
+  Globe,
+  RefreshCw,
+  BookOpen,
+  Send,
+  Clock,
+  FileText,
+  Filter,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  MapPin,
+  Users,
+  ArrowRight,
+  Eye,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { caseFileLabel } from '@/lib/caseFileLabel';
 
@@ -55,22 +75,74 @@ interface ValidationResult {
   errors: string[];
 }
 
-const PARTNER_TYPES: Record<string, { labelFr: string; labelEn: string; color: string; bg: string }> = {
+const PARTNER_TYPES: Record<
+  string,
+  { labelFr: string; labelEn: string; color: string; bg: string }
+> = {
   banque: { labelFr: 'Banque', labelEn: 'Bank', color: 'text-blue-700', bg: 'bg-blue-100' },
   fonds: { labelFr: 'Fonds', labelEn: 'Fund', color: 'text-emerald-700', bg: 'bg-emerald-100' },
-  courtier_instrument: { labelFr: 'Courtier instrument', labelEn: 'Instrument Broker', color: 'text-amber-700', bg: 'bg-amber-100' },
+  courtier_instrument: {
+    labelFr: 'Courtier instrument',
+    labelEn: 'Instrument Broker',
+    color: 'text-amber-700',
+    bg: 'bg-amber-100',
+  },
   avocat: { labelFr: 'Avocat', labelEn: 'Lawyer', color: 'text-purple-700', bg: 'bg-purple-100' },
-  consultant: { labelFr: 'Consultant', labelEn: 'Consultant', color: 'text-indigo-700', bg: 'bg-indigo-100' },
+  consultant: {
+    labelFr: 'Consultant',
+    labelEn: 'Consultant',
+    color: 'text-indigo-700',
+    bg: 'bg-indigo-100',
+  },
   autre: { labelFr: 'Autre', labelEn: 'Other', color: 'text-slate-700', bg: 'bg-slate-100' },
 };
 
-const SUBMISSION_STATUS: Record<string, { labelFr: string; labelEn: string; color: string; bg: string; icon: React.ElementType }> = {
-  soumis: { labelFr: 'Soumis', labelEn: 'Submitted', color: 'text-indigo-700', bg: 'bg-indigo-100', icon: Send },
-  en_attente: { labelFr: 'En attente', labelEn: 'Pending', color: 'text-amber-700', bg: 'bg-amber-100', icon: Clock },
-  accepte: { labelFr: 'Accepté', labelEn: 'Accepted', color: 'text-emerald-700', bg: 'bg-emerald-100', icon: CheckCircle2 },
-  refuse: { labelFr: 'Refusé', labelEn: 'Refused', color: 'text-red-700', bg: 'bg-red-100', icon: XCircle },
-  en_negociation: { labelFr: 'En négociation', labelEn: 'In Negotiation', color: 'text-purple-700', bg: 'bg-purple-100', icon: ArrowRight },
-  cloture: { labelFr: 'Clôturé', labelEn: 'Closed', color: 'text-slate-700', bg: 'bg-slate-100', icon: CheckCircle2 },
+const SUBMISSION_STATUS: Record<
+  string,
+  { labelFr: string; labelEn: string; color: string; bg: string; icon: React.ElementType }
+> = {
+  soumis: {
+    labelFr: 'Soumis',
+    labelEn: 'Submitted',
+    color: 'text-indigo-700',
+    bg: 'bg-indigo-100',
+    icon: Send,
+  },
+  en_attente: {
+    labelFr: 'En attente',
+    labelEn: 'Pending',
+    color: 'text-amber-700',
+    bg: 'bg-amber-100',
+    icon: Clock,
+  },
+  accepte: {
+    labelFr: 'Accepté',
+    labelEn: 'Accepted',
+    color: 'text-emerald-700',
+    bg: 'bg-emerald-100',
+    icon: CheckCircle2,
+  },
+  refuse: {
+    labelFr: 'Refusé',
+    labelEn: 'Refused',
+    color: 'text-red-700',
+    bg: 'bg-red-100',
+    icon: XCircle,
+  },
+  en_negociation: {
+    labelFr: 'En négociation',
+    labelEn: 'In Negotiation',
+    color: 'text-purple-700',
+    bg: 'bg-purple-100',
+    icon: ArrowRight,
+  },
+  cloture: {
+    labelFr: 'Clôturé',
+    labelEn: 'Closed',
+    color: 'text-slate-700',
+    bg: 'bg-slate-100',
+    icon: CheckCircle2,
+  },
 };
 
 function validateAssignment(partner: Partner, caseFile: CaseFile): ValidationResult {
@@ -98,10 +170,19 @@ function validateAssignment(partner: Partner, caseFile: CaseFile): ValidationRes
 
   // Partner type vs case type
   const caseTypeLower = (caseFile.type || '').toLowerCase();
-  if (partner.type === 'courtier_instrument' && !caseTypeLower.includes('instrument') && !caseTypeLower.includes('sblc') && !caseTypeLower.includes('garantie')) {
+  if (
+    partner.type === 'courtier_instrument' &&
+    !caseTypeLower.includes('instrument') &&
+    !caseTypeLower.includes('sblc') &&
+    !caseTypeLower.includes('garantie')
+  ) {
     warnings.push('Partner type "Instrument Broker" may not match this case type');
   }
-  if (partner.type === 'avocat' && !caseTypeLower.includes('conseil') && !caseTypeLower.includes('legal')) {
+  if (
+    partner.type === 'avocat' &&
+    !caseTypeLower.includes('conseil') &&
+    !caseTypeLower.includes('legal')
+  ) {
     warnings.push('Partner type "Lawyer" is unusual for this case type');
   }
 
@@ -109,7 +190,12 @@ function validateAssignment(partner: Partner, caseFile: CaseFile): ValidationRes
   const criteriaText = partner.criteria_text || partner.criteria || '';
   if (criteriaText) {
     const critLower = criteriaText.toLowerCase();
-    if (caseFile.sector && !critLower.includes(caseFile.sector.toLowerCase()) && !critLower.includes('tous') && !critLower.includes('all')) {
+    if (
+      caseFile.sector &&
+      !critLower.includes(caseFile.sector.toLowerCase()) &&
+      !critLower.includes('tous') &&
+      !critLower.includes('all')
+    ) {
       warnings.push(`Partner criteria may not cover sector "${caseFile.sector}"`);
     }
   }
@@ -186,7 +272,9 @@ export default function PartnerAssignmentsPage() {
     try {
       const { data, error } = await supabase
         .from('case_files')
-        .select('id, ref, project_name, type, status, project_country, sector, amount, contact_name, contact_email, created_at')
+        .select(
+          'id, ref, project_name, type, status, project_country, sector, amount, contact_name, contact_email, created_at'
+        )
         .order('created_at', { ascending: false });
       if (error) throw error;
       const rows = (data || []).map((row: Record<string, unknown>) => {
@@ -240,7 +328,10 @@ export default function PartnerAssignmentsPage() {
     }
   }, [partners, cases]);
 
-  useEffect(() => { fetchPartners(); fetchCases(); }, [fetchPartners, fetchCases]);
+  useEffect(() => {
+    fetchPartners();
+    fetchCases();
+  }, [fetchPartners, fetchCases]);
   useEffect(() => {
     if (activeTab === 'journal' && partners.length >= 0 && cases.length >= 0) {
       fetchSubmissions();
@@ -262,7 +353,12 @@ export default function PartnerAssignmentsPage() {
       return;
     }
     if (validation && !validation.valid) {
-      toast.error(t('Validation échouée - corrigez les erreurs avant de soumettre', 'Validation failed - fix errors before submitting'));
+      toast.error(
+        t(
+          'Validation échouée - corrigez les erreurs avant de soumettre',
+          'Validation failed - fix errors before submitting'
+        )
+      );
       return;
     }
     setAssigning(true);
@@ -297,7 +393,7 @@ export default function PartnerAssignmentsPage() {
       setAssignStatus('soumis');
       setValidation(null);
     } catch (err: any) {
-      toast.error(err.message || t('Erreur lors de l\'affectation', 'Assignment error'));
+      toast.error(err.message || t("Erreur lors de l'affectation", 'Assignment error'));
     } finally {
       setAssigning(false);
     }
@@ -370,7 +466,11 @@ export default function PartnerAssignmentsPage() {
 
   const formatDate = (d: string) =>
     new Date(d).toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', {
-      day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
 
   const allRegions = Array.from(new Set(partners.flatMap((p) => p.zones || []))).sort();
@@ -387,11 +487,18 @@ export default function PartnerAssignmentsPage() {
             </h1>
           </div>
           <p className="text-slate-500 text-sm">
-            {t('Gérer les affectations dossier–partenaire avec validation de critères et journal de suivi', 'Manage case–partner assignments with criteria validation and tracking journal')}
+            {t(
+              'Gérer les affectations dossier–partenaire avec validation de critères et journal de suivi',
+              'Manage case–partner assignments with criteria validation and tracking journal'
+            )}
           </p>
         </div>
         <button
-          onClick={() => { fetchPartners(); fetchCases(); if (activeTab === 'journal') fetchSubmissions(); }}
+          onClick={() => {
+            fetchPartners();
+            fetchCases();
+            if (activeTab === 'journal') fetchSubmissions();
+          }}
           className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50"
         >
           <RefreshCw size={14} />
@@ -403,7 +510,10 @@ export default function PartnerAssignmentsPage() {
         <Building2 size={14} className="flex-shrink-0" />
         <span>
           <strong>{t('Confidentiel :', 'Confidential:')}</strong>{' '}
-          {t('Les affectations partenaires sont strictement réservées au back-office. Le client ne voit que "soumis à une institution agréée".', 'Partner assignments are strictly back-office only. Clients only see "submitted to an approved institution".')}
+          {t(
+            'Les affectations partenaires sont strictement réservées au back-office. Le client ne voit que "soumis à une institution agréée".',
+            'Partner assignments are strictly back-office only. Clients only see "submitted to an approved institution".'
+          )}
         </span>
       </div>
 
@@ -432,7 +542,9 @@ export default function PartnerAssignmentsPage() {
           <div className="bg-white rounded-xl border border-slate-200 flex flex-col">
             <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex items-center gap-2">
               <Building2 size={15} className="text-navy" />
-              <span className="text-sm font-semibold text-navy">{t('1. Sélectionner un partenaire', '1. Select a Partner')}</span>
+              <span className="text-sm font-semibold text-navy">
+                {t('1. Sélectionner un partenaire', '1. Select a Partner')}
+              </span>
               {selectedPartner && (
                 <span className="ml-auto text-xs bg-gold/10 text-gold border border-gold/20 px-2 py-0.5 rounded-full font-semibold truncate max-w-[120px]">
                   {selectedPartner.name}
@@ -443,7 +555,10 @@ export default function PartnerAssignmentsPage() {
             {/* Partner filters */}
             <div className="p-3 border-b border-slate-100 space-y-2">
               <div className="relative">
-                <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search
+                  size={13}
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"
+                />
                 <input
                   value={partnerSearch}
                   onChange={(e) => setPartnerSearch(e.target.value)}
@@ -453,7 +568,10 @@ export default function PartnerAssignmentsPage() {
               </div>
               <div className="flex gap-2">
                 <div className="relative flex-1">
-                  <Filter size={11} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Filter
+                    size={11}
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
                   <select
                     value={partnerTypeFilter}
                     onChange={(e) => setPartnerTypeFilter(e.target.value)}
@@ -461,22 +579,37 @@ export default function PartnerAssignmentsPage() {
                   >
                     <option value="all">{t('Tous types', 'All types')}</option>
                     {Object.entries(PARTNER_TYPES).map(([k, v]) => (
-                      <option key={k} value={k}>{lang === 'fr' ? v.labelFr : v.labelEn}</option>
+                      <option key={k} value={k}>
+                        {lang === 'fr' ? v.labelFr : v.labelEn}
+                      </option>
                     ))}
                   </select>
-                  <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <ChevronDown
+                    size={11}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                  />
                 </div>
                 <div className="relative flex-1">
-                  <MapPin size={11} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <MapPin
+                    size={11}
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
                   <select
                     value={regionFilter}
                     onChange={(e) => setRegionFilter(e.target.value)}
                     className="w-full appearance-none pl-7 pr-6 py-1.5 border border-slate-200 rounded-lg text-xs bg-white focus:outline-none"
                   >
                     <option value="">{t('Toutes régions', 'All regions')}</option>
-                    {allRegions.map((r) => <option key={r} value={r}>{r}</option>)}
+                    {allRegions.map((r) => (
+                      <option key={r} value={r}>
+                        {r}
+                      </option>
+                    ))}
                   </select>
-                  <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <ChevronDown
+                    size={11}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                  />
                 </div>
               </div>
             </div>
@@ -484,36 +617,46 @@ export default function PartnerAssignmentsPage() {
             {/* Partner list */}
             <div className="flex-1 overflow-y-auto max-h-80 p-2 space-y-1.5">
               {partnersLoading ? (
-                <div className="flex items-center justify-center h-24"><Loader2 size={22} className="animate-spin text-gold" /></div>
+                <div className="flex items-center justify-center h-24">
+                  <Loader2 size={22} className="animate-spin text-gold" />
+                </div>
               ) : filteredPartners.length === 0 ? (
-                <div className="text-center py-8 text-slate-400 text-sm">{t('Aucun partenaire actif trouvé', 'No active partners found')}</div>
-              ) : filteredPartners.map((p) => {
-                const typeCfg = PARTNER_TYPES[p.type] || PARTNER_TYPES.autre;
-                const isSelected = selectedPartner?.id === p.id;
-                return (
-                  <button
-                    key={p.id}
-                    onClick={() => setSelectedPartner(isSelected ? null : p)}
-                    className={`w-full text-left px-3 py-2.5 rounded-lg border transition-all ${isSelected ? 'border-gold bg-gold/5 shadow-sm' : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50'}`}
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-semibold text-navy text-sm">{p.name}</span>
-                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${typeCfg.bg} ${typeCfg.color}`}>
-                        {lang === 'fr' ? typeCfg.labelFr : typeCfg.labelEn}
-                      </span>
-                    </div>
-                    {p.zones && p.zones.length > 0 && (
-                      <div className="flex items-center gap-1 text-[11px] text-slate-500">
-                        <Globe size={10} />
-                        <span className="truncate">{p.zones.join(', ')}</span>
+                <div className="text-center py-8 text-slate-400 text-sm">
+                  {t('Aucun partenaire actif trouvé', 'No active partners found')}
+                </div>
+              ) : (
+                filteredPartners.map((p) => {
+                  const typeCfg = PARTNER_TYPES[p.type] || PARTNER_TYPES.autre;
+                  const isSelected = selectedPartner?.id === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => setSelectedPartner(isSelected ? null : p)}
+                      className={`w-full text-left px-3 py-2.5 rounded-lg border transition-all ${isSelected ? 'border-gold bg-gold/5 shadow-sm' : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50'}`}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-semibold text-navy text-sm">{p.name}</span>
+                        <span
+                          className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${typeCfg.bg} ${typeCfg.color}`}
+                        >
+                          {lang === 'fr' ? typeCfg.labelFr : typeCfg.labelEn}
+                        </span>
                       </div>
-                    )}
-                    {(p.criteria_text || p.criteria) && (
-                      <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">{p.criteria_text || p.criteria}</p>
-                    )}
-                  </button>
-                );
-              })}
+                      {p.zones && p.zones.length > 0 && (
+                        <div className="flex items-center gap-1 text-[11px] text-slate-500">
+                          <Globe size={10} />
+                          <span className="truncate">{p.zones.join(', ')}</span>
+                        </div>
+                      )}
+                      {(p.criteria_text || p.criteria) && (
+                        <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
+                          {p.criteria_text || p.criteria}
+                        </p>
+                      )}
+                    </button>
+                  );
+                })
+              )}
             </div>
           </div>
 
@@ -521,7 +664,9 @@ export default function PartnerAssignmentsPage() {
           <div className="bg-white rounded-xl border border-slate-200 flex flex-col">
             <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex items-center gap-2">
               <FileText size={15} className="text-navy" />
-              <span className="text-sm font-semibold text-navy">{t('2. Sélectionner un dossier', '2. Select a Case')}</span>
+              <span className="text-sm font-semibold text-navy">
+                {t('2. Sélectionner un dossier', '2. Select a Case')}
+              </span>
               {selectedCase && (
                 <span className="ml-auto text-xs bg-navy/10 text-navy border border-navy/20 px-2 py-0.5 rounded-full font-semibold font-mono truncate max-w-[120px]">
                   {selectedCase.ref}
@@ -532,7 +677,10 @@ export default function PartnerAssignmentsPage() {
             {/* Case filters */}
             <div className="p-3 border-b border-slate-100 space-y-2">
               <div className="relative">
-                <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search
+                  size={13}
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"
+                />
                 <input
                   value={caseSearch}
                   onChange={(e) => setCaseSearch(e.target.value)}
@@ -541,7 +689,10 @@ export default function PartnerAssignmentsPage() {
                 />
               </div>
               <div className="relative">
-                <Filter size={11} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Filter
+                  size={11}
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"
+                />
                 <select
                   value={caseStatusFilter}
                   onChange={(e) => setCaseStatusFilter(e.target.value)}
@@ -553,38 +704,58 @@ export default function PartnerAssignmentsPage() {
                   <option value="ELIGIBLE">ÉLIGIBLE</option>
                   <option value="EN_REVUE_COMPLIANCE">EN REVUE COMPLIANCE</option>
                 </select>
-                <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <ChevronDown
+                  size={11}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                />
               </div>
             </div>
 
             {/* Case list */}
             <div className="flex-1 overflow-y-auto max-h-80 p-2 space-y-1.5">
               {casesLoading ? (
-                <div className="flex items-center justify-center h-24"><Loader2 size={22} className="animate-spin text-gold" /></div>
+                <div className="flex items-center justify-center h-24">
+                  <Loader2 size={22} className="animate-spin text-gold" />
+                </div>
               ) : filteredCases.length === 0 ? (
-                <div className="text-center py-8 text-slate-400 text-sm">{t('Aucun dossier trouvé', 'No cases found')}</div>
-              ) : filteredCases.map((c) => {
-                const isSelected = selectedCase?.id === c.id;
-                return (
-                  <button
-                    key={c.id}
-                    onClick={() => setSelectedCase(isSelected ? null : c)}
-                    className={`w-full text-left px-3 py-2.5 rounded-lg border transition-all ${isSelected ? 'border-navy bg-navy/5 shadow-sm' : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50'}`}
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-xs text-gold font-semibold">{c.ref}</span>
-                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">{c.status}</span>
-                    </div>
-                    <p className="font-semibold text-navy text-sm truncate">{caseFileLabel(c) || c.type}</p>
-                    <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
-                      {c.country && <span className="flex items-center gap-0.5"><MapPin size={9} />{c.country}</span>}
-                      {c.sector && <span>· {c.sector}</span>}
-                      {c.amount && <span>· {c.amount}</span>}
-                    </div>
-                    {c.client_name && <p className="text-[11px] text-slate-400 mt-0.5">{c.client_name}</p>}
-                  </button>
-                );
-              })}
+                <div className="text-center py-8 text-slate-400 text-sm">
+                  {t('Aucun dossier trouvé', 'No cases found')}
+                </div>
+              ) : (
+                filteredCases.map((c) => {
+                  const isSelected = selectedCase?.id === c.id;
+                  return (
+                    <button
+                      key={c.id}
+                      onClick={() => setSelectedCase(isSelected ? null : c)}
+                      className={`w-full text-left px-3 py-2.5 rounded-lg border transition-all ${isSelected ? 'border-navy bg-navy/5 shadow-sm' : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50'}`}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-mono text-xs text-gold font-semibold">{c.ref}</span>
+                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                          {c.status}
+                        </span>
+                      </div>
+                      <p className="font-semibold text-navy text-sm truncate">
+                        {caseFileLabel(c) || c.type}
+                      </p>
+                      <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
+                        {c.country && (
+                          <span className="flex items-center gap-0.5">
+                            <MapPin size={9} />
+                            {c.country}
+                          </span>
+                        )}
+                        {c.sector && <span>· {c.sector}</span>}
+                        {c.amount && <span>· {c.amount}</span>}
+                      </div>
+                      {c.client_name && (
+                        <p className="text-[11px] text-slate-400 mt-0.5">{c.client_name}</p>
+                      )}
+                    </button>
+                  );
+                })
+              )}
             </div>
           </div>
 
@@ -593,37 +764,69 @@ export default function PartnerAssignmentsPage() {
             <div className="xl:col-span-2 bg-white rounded-xl border border-slate-200">
               <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex items-center gap-2">
                 <CheckCircle2 size={15} className="text-navy" />
-                <span className="text-sm font-semibold text-navy">{t('3. Validation & Soumission', '3. Validation & Submission')}</span>
+                <span className="text-sm font-semibold text-navy">
+                  {t('3. Validation & Soumission', '3. Validation & Submission')}
+                </span>
               </div>
               <div className="p-4 space-y-4">
                 {/* Selection summary */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className={`p-3 rounded-lg border ${selectedPartner ? 'border-gold/30 bg-gold/5' : 'border-dashed border-slate-200 bg-slate-50'}`}>
-                    <p className="text-xs font-semibold text-slate-500 mb-1">{t('Partenaire sélectionné', 'Selected Partner')}</p>
+                  <div
+                    className={`p-3 rounded-lg border ${selectedPartner ? 'border-gold/30 bg-gold/5' : 'border-dashed border-slate-200 bg-slate-50'}`}
+                  >
+                    <p className="text-xs font-semibold text-slate-500 mb-1">
+                      {t('Partenaire sélectionné', 'Selected Partner')}
+                    </p>
                     {selectedPartner ? (
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-bold text-navy text-sm">{selectedPartner.name}</p>
-                          <p className="text-xs text-slate-500">{lang === 'fr' ? PARTNER_TYPES[selectedPartner.type]?.labelFr : PARTNER_TYPES[selectedPartner.type]?.labelEn}</p>
+                          <p className="text-xs text-slate-500">
+                            {lang === 'fr'
+                              ? PARTNER_TYPES[selectedPartner.type]?.labelFr
+                              : PARTNER_TYPES[selectedPartner.type]?.labelEn}
+                          </p>
                         </div>
-                        <button onClick={() => setSelectedPartner(null)} className="text-slate-400 hover:text-red-500 p-1"><X size={14} /></button>
+                        <button
+                          onClick={() => setSelectedPartner(null)}
+                          className="text-slate-400 hover:text-red-500 p-1"
+                        >
+                          <X size={14} />
+                        </button>
                       </div>
                     ) : (
-                      <p className="text-sm text-slate-400 italic">{t('Aucun partenaire sélectionné', 'No partner selected')}</p>
+                      <p className="text-sm text-slate-400 italic">
+                        {t('Aucun partenaire sélectionné', 'No partner selected')}
+                      </p>
                     )}
                   </div>
-                  <div className={`p-3 rounded-lg border ${selectedCase ? 'border-navy/30 bg-navy/5' : 'border-dashed border-slate-200 bg-slate-50'}`}>
-                    <p className="text-xs font-semibold text-slate-500 mb-1">{t('Dossier sélectionné', 'Selected Case')}</p>
+                  <div
+                    className={`p-3 rounded-lg border ${selectedCase ? 'border-navy/30 bg-navy/5' : 'border-dashed border-slate-200 bg-slate-50'}`}
+                  >
+                    <p className="text-xs font-semibold text-slate-500 mb-1">
+                      {t('Dossier sélectionné', 'Selected Case')}
+                    </p>
                     {selectedCase ? (
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-bold text-navy text-sm">{caseFileLabel(selectedCase) || selectedCase.type}</p>
-                          <p className="text-xs text-slate-500 font-mono">{selectedCase.ref} · {selectedCase.status}</p>
+                          <p className="font-bold text-navy text-sm">
+                            {caseFileLabel(selectedCase) || selectedCase.type}
+                          </p>
+                          <p className="text-xs text-slate-500 font-mono">
+                            {selectedCase.ref} · {selectedCase.status}
+                          </p>
                         </div>
-                        <button onClick={() => setSelectedCase(null)} className="text-slate-400 hover:text-red-500 p-1"><X size={14} /></button>
+                        <button
+                          onClick={() => setSelectedCase(null)}
+                          className="text-slate-400 hover:text-red-500 p-1"
+                        >
+                          <X size={14} />
+                        </button>
                       </div>
                     ) : (
-                      <p className="text-sm text-slate-400 italic">{t('Aucun dossier sélectionné', 'No case selected')}</p>
+                      <p className="text-sm text-slate-400 italic">
+                        {t('Aucun dossier sélectionné', 'No case selected')}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -638,7 +841,8 @@ export default function PartnerAssignmentsPage() {
                         </p>
                         {validation.errors.map((e, i) => (
                           <p key={i} className="text-xs text-red-600 flex items-start gap-1.5">
-                            <span className="mt-0.5 flex-shrink-0">✗</span>{e}
+                            <span className="mt-0.5 flex-shrink-0">✗</span>
+                            {e}
                           </p>
                         ))}
                       </div>
@@ -650,7 +854,8 @@ export default function PartnerAssignmentsPage() {
                         </p>
                         {validation.warnings.map((w, i) => (
                           <p key={i} className="text-xs text-amber-700 flex items-start gap-1.5">
-                            <span className="mt-0.5 flex-shrink-0">⚠</span>{w}
+                            <span className="mt-0.5 flex-shrink-0">⚠</span>
+                            {w}
                           </p>
                         ))}
                       </div>
@@ -658,7 +863,12 @@ export default function PartnerAssignmentsPage() {
                     {validation.valid && validation.warnings.length === 0 && (
                       <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 flex items-center gap-2">
                         <CheckCircle2 size={14} className="text-emerald-600" />
-                        <p className="text-xs font-semibold text-emerald-700">{t('Validation réussie - affectation autorisée', 'Validation passed - assignment authorized')}</p>
+                        <p className="text-xs font-semibold text-emerald-700">
+                          {t(
+                            'Validation réussie - affectation autorisée',
+                            'Validation passed - assignment authorized'
+                          )}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -668,7 +878,9 @@ export default function PartnerAssignmentsPage() {
                 {selectedPartner && selectedCase && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-600 mb-1">{t('Statut de soumission', 'Submission Status')}</label>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">
+                        {t('Statut de soumission', 'Submission Status')}
+                      </label>
                       <div className="relative">
                         <select
                           value={assignStatus}
@@ -676,14 +888,21 @@ export default function PartnerAssignmentsPage() {
                           className="w-full appearance-none px-3 pr-8 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gold/20"
                         >
                           {Object.entries(SUBMISSION_STATUS).map(([k, v]) => (
-                            <option key={k} value={k}>{lang === 'fr' ? v.labelFr : v.labelEn}</option>
+                            <option key={k} value={k}>
+                              {lang === 'fr' ? v.labelFr : v.labelEn}
+                            </option>
                           ))}
                         </select>
-                        <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                        <ChevronDown
+                          size={13}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                        />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-600 mb-1">{t('Note interne', 'Internal Note')}</label>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">
+                        {t('Note interne', 'Internal Note')}
+                      </label>
                       <input
                         value={assignNote}
                         onChange={(e) => setAssignNote(e.target.value)}
@@ -698,15 +917,22 @@ export default function PartnerAssignmentsPage() {
                   <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-100">
                     <div className="flex-1 text-xs text-slate-400 flex items-center gap-1">
                       <FileText size={11} />
-                      {t('Cette entrée sera enregistrée dans le journal confidentiel', 'This entry will be recorded in the confidential journal')}
+                      {t(
+                        'Cette entrée sera enregistrée dans le journal confidentiel',
+                        'This entry will be recorded in the confidential journal'
+                      )}
                     </div>
                     <button
                       onClick={handleAssign}
                       disabled={assigning || (validation !== null && !validation.valid)}
                       className="flex items-center gap-2 px-5 py-2 bg-navy text-white rounded-lg text-sm font-semibold hover:bg-navy/90 disabled:opacity-50 transition-all"
                     >
-                      {assigning ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
-                      {t('Enregistrer l\'affectation', 'Record Assignment')}
+                      {assigning ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <Send size={14} />
+                      )}
+                      {t("Enregistrer l'affectation", 'Record Assignment')}
                     </button>
                   </div>
                 )}
@@ -722,7 +948,10 @@ export default function PartnerAssignmentsPage() {
           {/* Journal filters */}
           <div className="bg-white rounded-xl border border-slate-200 p-3 flex flex-wrap gap-3">
             <div className="relative flex-1 min-w-48">
-              <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search
+                size={13}
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"
+              />
               <input
                 value={journalSearch}
                 onChange={(e) => setJournalSearch(e.target.value)}
@@ -738,10 +967,15 @@ export default function PartnerAssignmentsPage() {
               >
                 <option value="all">{t('Tous statuts', 'All statuses')}</option>
                 {Object.entries(SUBMISSION_STATUS).map(([k, v]) => (
-                  <option key={k} value={k}>{lang === 'fr' ? v.labelFr : v.labelEn}</option>
+                  <option key={k} value={k}>
+                    {lang === 'fr' ? v.labelFr : v.labelEn}
+                  </option>
                 ))}
               </select>
-              <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <ChevronDown
+                size={11}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+              />
             </div>
             <button
               onClick={fetchSubmissions}
@@ -757,64 +991,107 @@ export default function PartnerAssignmentsPage() {
             <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <BookOpen size={15} className="text-navy" />
-                <span className="text-sm font-semibold text-navy">{t('Journal de soumission partenaires', 'Partner Submission Journal')}</span>
+                <span className="text-sm font-semibold text-navy">
+                  {t('Journal de soumission partenaires', 'Partner Submission Journal')}
+                </span>
               </div>
-              <span className="text-xs text-slate-400">{filteredSubmissions.length} {t('entrée(s)', 'entry/entries')}</span>
+              <span className="text-xs text-slate-400">
+                {filteredSubmissions.length} {t('entrée(s)', 'entry/entries')}
+              </span>
             </div>
             {submissionsLoading ? (
-              <div className="flex items-center justify-center h-40"><Loader2 size={28} className="animate-spin text-gold" /></div>
+              <div className="flex items-center justify-center h-40">
+                <Loader2 size={28} className="animate-spin text-gold" />
+              </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead className="bg-slate-50 border-b border-slate-200">
                     <tr>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">{t('Partenaire', 'Partner')}</th>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">{t('Dossier', 'Case')}</th>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">{t('Statut', 'Status')}</th>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">{t('Soumis par', 'Submitted by')}</th>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">{t('Note', 'Note')}</th>
-                      <th className="text-left px-4 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">{t('Date', 'Date')}</th>
+                      <th className="text-left px-4 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">
+                        {t('Partenaire', 'Partner')}
+                      </th>
+                      <th className="text-left px-4 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">
+                        {t('Dossier', 'Case')}
+                      </th>
+                      <th className="text-left px-4 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">
+                        {t('Statut', 'Status')}
+                      </th>
+                      <th className="text-left px-4 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">
+                        {t('Soumis par', 'Submitted by')}
+                      </th>
+                      <th className="text-left px-4 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">
+                        {t('Note', 'Note')}
+                      </th>
+                      <th className="text-left px-4 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">
+                        {t('Date', 'Date')}
+                      </th>
                       <th className="px-4 py-3"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {filteredSubmissions.length === 0 ? (
-                      <tr><td colSpan={7} className="text-center py-12 text-slate-400">{t('Aucune soumission enregistrée', 'No submissions recorded')}</td></tr>
-                    ) : filteredSubmissions.map((s) => {
-                      const statusCfg = SUBMISSION_STATUS[s.status] || SUBMISSION_STATUS.soumis;
-                      const StatusIcon = statusCfg.icon;
-                      return (
-                        <tr key={s.id} className="hover:bg-slate-50 transition-colors">
-                          <td className="px-4 py-3">
-                            <div className="font-semibold text-navy text-sm">{s.partner_name}</div>
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="font-mono text-xs text-gold font-semibold">{s.case_ref}</div>
-                            <div className="text-xs text-slate-500 truncate max-w-[120px]">{s.case_title}</div>
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${statusCfg.bg} ${statusCfg.color}`}>
-                              <StatusIcon size={10} />
-                              {lang === 'fr' ? statusCfg.labelFr : statusCfg.labelEn}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-xs text-slate-600">{s.submitted_by_email || '-'}</td>
-                          <td className="px-4 py-3 text-xs text-slate-500 max-w-[140px] truncate">{s.note || '-'}</td>
-                          <td className="px-4 py-3 text-xs text-slate-400 whitespace-nowrap">
-                            <div className="flex items-center gap-1"><Clock size={10} />{formatDate(s.created_at)}</div>
-                          </td>
-                          <td className="px-4 py-3">
-                            <button
-                              onClick={() => { setDetailEntry(s); setNewEntryStatus(s.status); setResponseNote(s.response_note || ''); }}
-                              className="p-1.5 text-slate-400 hover:text-navy hover:bg-slate-100 rounded-lg transition-colors"
-                              title={t('Voir / modifier', 'View / edit')}
-                            >
-                              <Eye size={13} />
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                      <tr>
+                        <td colSpan={7} className="text-center py-12 text-slate-400">
+                          {t('Aucune soumission enregistrée', 'No submissions recorded')}
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredSubmissions.map((s) => {
+                        const statusCfg = SUBMISSION_STATUS[s.status] || SUBMISSION_STATUS.soumis;
+                        const StatusIcon = statusCfg.icon;
+                        return (
+                          <tr key={s.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-4 py-3">
+                              <div className="font-semibold text-navy text-sm">
+                                {s.partner_name}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="font-mono text-xs text-gold font-semibold">
+                                {s.case_ref}
+                              </div>
+                              <div className="text-xs text-slate-500 truncate max-w-[120px]">
+                                {s.case_title}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <span
+                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${statusCfg.bg} ${statusCfg.color}`}
+                              >
+                                <StatusIcon size={10} />
+                                {lang === 'fr' ? statusCfg.labelFr : statusCfg.labelEn}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-xs text-slate-600">
+                              {s.submitted_by_email || '-'}
+                            </td>
+                            <td className="px-4 py-3 text-xs text-slate-500 max-w-[140px] truncate">
+                              {s.note || '-'}
+                            </td>
+                            <td className="px-4 py-3 text-xs text-slate-400 whitespace-nowrap">
+                              <div className="flex items-center gap-1">
+                                <Clock size={10} />
+                                {formatDate(s.created_at)}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <button
+                                onClick={() => {
+                                  setDetailEntry(s);
+                                  setNewEntryStatus(s.status);
+                                  setResponseNote(s.response_note || '');
+                                }}
+                                className="p-1.5 text-slate-400 hover:text-navy hover:bg-slate-100 rounded-lg transition-colors"
+                                title={t('Voir / modifier', 'View / edit')}
+                              >
+                                <Eye size={13} />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -831,9 +1108,16 @@ export default function PartnerAssignmentsPage() {
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
               <div className="flex items-center gap-2">
                 <BookOpen size={16} className="text-navy" />
-                <h2 className="font-bold text-navy">{t('Détail de soumission', 'Submission Detail')}</h2>
+                <h2 className="font-bold text-navy">
+                  {t('Détail de soumission', 'Submission Detail')}
+                </h2>
               </div>
-              <button onClick={() => setDetailEntry(null)} className="text-slate-400 hover:text-navy p-1 rounded-lg"><X size={18} /></button>
+              <button
+                onClick={() => setDetailEntry(null)}
+                className="text-slate-400 hover:text-navy p-1 rounded-lg"
+              >
+                <X size={18} />
+              </button>
             </div>
             <div className="px-6 py-4 space-y-4">
               <div className="grid grid-cols-2 gap-3 text-sm">
@@ -843,18 +1127,26 @@ export default function PartnerAssignmentsPage() {
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 mb-0.5">{t('Dossier', 'Case')}</p>
-                  <p className="font-mono text-xs text-gold font-semibold">{detailEntry.case_ref}</p>
+                  <p className="font-mono text-xs text-gold font-semibold">
+                    {detailEntry.case_ref}
+                  </p>
                   <p className="text-xs text-slate-600">{detailEntry.case_title}</p>
                 </div>
               </div>
               {detailEntry.note && (
                 <div>
-                  <p className="text-xs text-slate-500 mb-0.5">{t('Note initiale', 'Initial Note')}</p>
-                  <p className="text-sm text-slate-700 bg-slate-50 rounded-lg p-2">{detailEntry.note}</p>
+                  <p className="text-xs text-slate-500 mb-0.5">
+                    {t('Note initiale', 'Initial Note')}
+                  </p>
+                  <p className="text-sm text-slate-700 bg-slate-50 rounded-lg p-2">
+                    {detailEntry.note}
+                  </p>
                 </div>
               )}
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">{t('Mettre à jour le statut', 'Update Status')}</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">
+                  {t('Mettre à jour le statut', 'Update Status')}
+                </label>
                 <div className="relative">
                   <select
                     value={newEntryStatus}
@@ -862,31 +1154,50 @@ export default function PartnerAssignmentsPage() {
                     className="w-full appearance-none px-3 pr-8 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none"
                   >
                     {Object.entries(SUBMISSION_STATUS).map(([k, v]) => (
-                      <option key={k} value={k}>{lang === 'fr' ? v.labelFr : v.labelEn}</option>
+                      <option key={k} value={k}>
+                        {lang === 'fr' ? v.labelFr : v.labelEn}
+                      </option>
                     ))}
                   </select>
-                  <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <ChevronDown
+                    size={13}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                  />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">{t('Note de réponse', 'Response Note')}</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">
+                  {t('Note de réponse', 'Response Note')}
+                </label>
                 <textarea
                   value={responseNote}
                   onChange={(e) => setResponseNote(e.target.value)}
                   rows={3}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none resize-none"
-                  placeholder={t('Retour du partenaire, conditions...', 'Partner feedback, conditions...')}
+                  placeholder={t(
+                    'Retour du partenaire, conditions...',
+                    'Partner feedback, conditions...'
+                  )}
                 />
               </div>
             </div>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200">
-              <button onClick={() => setDetailEntry(null)} className="px-4 py-2 text-slate-600 hover:text-navy text-sm font-medium">{t('Annuler', 'Cancel')}</button>
+              <button
+                onClick={() => setDetailEntry(null)}
+                className="px-4 py-2 text-slate-600 hover:text-navy text-sm font-medium"
+              >
+                {t('Annuler', 'Cancel')}
+              </button>
               <button
                 onClick={handleUpdateEntryStatus}
                 disabled={updatingStatus}
                 className="flex items-center gap-2 px-4 py-2 bg-navy text-white rounded-lg text-sm font-semibold hover:bg-navy/90 disabled:opacity-50"
               >
-                {updatingStatus ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
+                {updatingStatus ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <CheckCircle2 size={14} />
+                )}
                 {t('Mettre à jour', 'Update')}
               </button>
             </div>

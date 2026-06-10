@@ -22,7 +22,9 @@ export default function ForgotPasswordPage() {
   const t = {
     title: lang === 'fr' ? 'Mot de passe oublié' : 'Forgot Password',
     subtitle:
-      lang === 'fr' ?'Entrez votre adresse email et nous vous enverrons un lien de réinitialisation.' :'Enter your email address and we will send you a reset link.',
+      lang === 'fr'
+        ? 'Entrez votre adresse email et nous vous enverrons un lien de réinitialisation.'
+        : 'Enter your email address and we will send you a reset link.',
     emailLabel: lang === 'fr' ? 'Adresse email' : 'Email address',
     emailPlaceholder: 'vous@exemple.com',
     submit: lang === 'fr' ? 'Envoyer le lien' : 'Send reset link',
@@ -34,17 +36,25 @@ export default function ForgotPasswordPage() {
         ? `Nous avons envoyé un lien de réinitialisation à`
         : `We've sent a password reset link to`,
     successHint:
-      lang === 'fr'? 'Le lien est valable 60 minutes. Pensez à vérifier vos spams si vous ne le trouvez pas.': 'The link is valid for 60 minutes. Check your spam folder if you don\'t see it.',
+      lang === 'fr'
+        ? 'Le lien est valable 60 minutes. Pensez à vérifier vos spams si vous ne le trouvez pas.'
+        : "The link is valid for 60 minutes. Check your spam folder if you don't see it.",
     resend: lang === 'fr' ? 'Renvoyer le lien' : 'Resend link',
     resending: lang === 'fr' ? 'Renvoi...' : 'Resending...',
     resendIn: lang === 'fr' ? 'Renvoyer dans' : 'Resend in',
     resendSuccess: lang === 'fr' ? 'Lien renvoyé !' : 'Link resent!',
     errorGeneric:
-      lang === 'fr' ?'Une erreur est survenue. Veuillez réessayer.' :'An error occurred. Please try again.',
+      lang === 'fr'
+        ? 'Une erreur est survenue. Veuillez réessayer.'
+        : 'An error occurred. Please try again.',
     invalidEmail:
-      lang === 'fr' ?'Veuillez entrer une adresse email valide.' :'Please enter a valid email address.',
+      lang === 'fr'
+        ? 'Veuillez entrer une adresse email valide.'
+        : 'Please enter a valid email address.',
     wrongDomain:
-      lang === 'fr' ?'Le domaine email semble invalide. Vérifiez votre saisie.' :'The email domain appears invalid. Please check your entry.',
+      lang === 'fr'
+        ? 'Le domaine email semble invalide. Vérifiez votre saisie.'
+        : 'The email domain appears invalid. Please check your entry.',
   };
 
   // Countdown timer for resend cooldown
@@ -141,8 +151,12 @@ export default function ForgotPasswordPage() {
         <div className="flex items-center justify-center gap-3 mb-8">
           <AppLogo size={40} />
           <div>
-            <span className="font-display text-white font-bold text-lg block leading-tight">GL Capital</span>
-            <span className="text-gold text-[10px] font-medium tracking-widest uppercase">Investment SA</span>
+            <span className="font-display text-white font-bold text-lg block leading-tight">
+              GL Capital
+            </span>
+            <span className="text-gold text-[10px] font-medium tracking-widest uppercase">
+              Investment SA
+            </span>
           </div>
         </div>
 
@@ -224,7 +238,10 @@ export default function ForgotPasswordPage() {
                     {t.emailLabel}
                   </label>
                   <div className="relative">
-                    <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Mail
+                      size={16}
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                    />
                     <input
                       type="email"
                       value={email}
@@ -239,7 +256,8 @@ export default function ForgotPasswordPage() {
                       placeholder={t.emailPlaceholder}
                       className={`w-full pl-10 pr-4 py-3 rounded-xl border text-navy text-sm placeholder-slate-400 focus:outline-none focus:ring-1 transition-colors ${
                         emailError
-                          ? 'border-red-300 focus:border-red-400 focus:ring-red-200' :'border-slate-200 focus:border-gold focus:ring-gold/30'
+                          ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                          : 'border-slate-200 focus:border-gold focus:ring-gold/30'
                       }`}
                     />
                   </div>

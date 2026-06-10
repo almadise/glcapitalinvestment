@@ -27,7 +27,12 @@ interface Stats {
 export default function AnalystDashboardPage() {
   const { user } = useAuth();
   const { lang, t } = useLanguage();
-  const [stats, setStats] = useState<Stats>({ totalCases: 0, underReview: 0, eligible: 0, rejected: 0 });
+  const [stats, setStats] = useState<Stats>({
+    totalCases: 0,
+    underReview: 0,
+    eligible: 0,
+    rejected: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   const refreshStats = useCallback(async () => {
@@ -35,9 +40,18 @@ export default function AnalystDashboardPage() {
     const supabase = createClient();
     const [total, review, eligible, rejected] = await Promise.all([
       supabase.from('case_files').select('id', { count: 'exact', head: true }),
-      supabase.from('case_files').select('id', { count: 'exact', head: true }).eq('status', 'EN_ANALYSE'),
-      supabase.from('case_files').select('id', { count: 'exact', head: true }).eq('status', 'ELIGIBLE'),
-      supabase.from('case_files').select('id', { count: 'exact', head: true }).eq('status', 'REJETE'),
+      supabase
+        .from('case_files')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'EN_ANALYSE'),
+      supabase
+        .from('case_files')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'ELIGIBLE'),
+      supabase
+        .from('case_files')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'REJETE'),
     ]);
     setStats({
       totalCases: total.count || 0,
@@ -59,16 +73,59 @@ export default function AnalystDashboardPage() {
   });
 
   const kpis = [
-    { label: lang === 'fr' ? 'Total dossiers' : 'Total Cases', value: stats.totalCases, icon: ClipboardList, color: 'text-blue-600', bg: 'bg-blue-50', href: '/admin/case-management' },
-    { label: lang === 'fr' ? 'En cours d\'analyse' : 'Under Review', value: stats.underReview, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', href: '/admin/case-management' },
-    { label: lang === 'fr' ? 'Éligibles' : 'Eligible', value: stats.eligible, icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50', href: '/admin/case-management' },
-    { label: lang === 'fr' ? 'Rejetés' : 'Rejected', value: stats.rejected, icon: TrendingUp, color: 'text-red-500', bg: 'bg-red-50', href: '/admin/case-management' },
+    {
+      label: lang === 'fr' ? 'Total dossiers' : 'Total Cases',
+      value: stats.totalCases,
+      icon: ClipboardList,
+      color: 'text-blue-600',
+      bg: 'bg-blue-50',
+      href: '/admin/case-management',
+    },
+    {
+      label: lang === 'fr' ? "En cours d'analyse" : 'Under Review',
+      value: stats.underReview,
+      icon: Clock,
+      color: 'text-amber-600',
+      bg: 'bg-amber-50',
+      href: '/admin/case-management',
+    },
+    {
+      label: lang === 'fr' ? 'Éligibles' : 'Eligible',
+      value: stats.eligible,
+      icon: CheckCircle2,
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-50',
+      href: '/admin/case-management',
+    },
+    {
+      label: lang === 'fr' ? 'Rejetés' : 'Rejected',
+      value: stats.rejected,
+      icon: TrendingUp,
+      color: 'text-red-500',
+      bg: 'bg-red-50',
+      href: '/admin/case-management',
+    },
   ];
 
   const quickLinks = [
-    { label: lang === 'fr' ? 'Dossiers à analyser' : 'Cases to Analyze', href: '/admin/case-management', icon: ClipboardList, desc: lang === 'fr' ? 'Évaluer et mettre à jour les dossiers' : 'Evaluate and update cases' },
-    { label: lang === 'fr' ? 'Analytique' : 'Analytics', href: '/admin/analytics', icon: BarChart3, desc: lang === 'fr' ? 'Statistiques et tendances' : 'Statistics and trends' },
-    { label: lang === 'fr' ? 'Rapports' : 'Reports', href: '/analyst-dashboard/reports', icon: FileSearch, desc: lang === 'fr' ? 'Générer des rapports d\'analyse' : 'Generate analysis reports' },
+    {
+      label: lang === 'fr' ? 'Dossiers à analyser' : 'Cases to Analyze',
+      href: '/admin/case-management',
+      icon: ClipboardList,
+      desc: lang === 'fr' ? 'Évaluer et mettre à jour les dossiers' : 'Evaluate and update cases',
+    },
+    {
+      label: lang === 'fr' ? 'Analytique' : 'Analytics',
+      href: '/admin/analytics',
+      icon: BarChart3,
+      desc: lang === 'fr' ? 'Statistiques et tendances' : 'Statistics and trends',
+    },
+    {
+      label: lang === 'fr' ? 'Rapports' : 'Reports',
+      href: '/analyst-dashboard/reports',
+      icon: FileSearch,
+      desc: lang === 'fr' ? "Générer des rapports d'analyse" : 'Generate analysis reports',
+    },
   ];
 
   return (
@@ -81,7 +138,7 @@ export default function AnalystDashboardPage() {
           </h1>
         </div>
         <p className="text-slate-500 text-sm">
-          {t('Vue d\'ensemble des dossiers à analyser.', 'Overview of cases pending analysis.')}
+          {t("Vue d'ensemble des dossiers à analyser.", 'Overview of cases pending analysis.')}
         </p>
       </div>
 
@@ -92,8 +149,14 @@ export default function AnalystDashboardPage() {
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           {kpis.map((kpi) => (
-            <Link key={kpi.label} href={kpi.href} className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 hover:border-blue-200 hover:shadow-md transition-all group">
-              <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg ${kpi.bg} flex items-center justify-center mb-2 sm:mb-3`}>
+            <Link
+              key={kpi.label}
+              href={kpi.href}
+              className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 hover:border-blue-200 hover:shadow-md transition-all group"
+            >
+              <div
+                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg ${kpi.bg} flex items-center justify-center mb-2 sm:mb-3`}
+              >
                 <kpi.icon size={18} className={kpi.color} />
               </div>
               <div className="text-xl sm:text-2xl font-bold text-navy">{kpi.value}</div>
@@ -109,7 +172,11 @@ export default function AnalystDashboardPage() {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {quickLinks.map((link) => (
-            <Link key={link.label} href={link.href} className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3 sm:gap-4 hover:border-blue-200 hover:shadow-md transition-all group">
+            <Link
+              key={link.label}
+              href={link.href}
+              className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3 sm:gap-4 hover:border-blue-200 hover:shadow-md transition-all group"
+            >
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
                 <link.icon size={17} className="text-blue-600" />
               </div>
@@ -117,7 +184,10 @@ export default function AnalystDashboardPage() {
                 <div className="font-semibold text-navy text-sm">{link.label}</div>
                 <div className="text-xs text-slate-500 truncate">{link.desc}</div>
               </div>
-              <ArrowRight size={16} className="text-slate-400 group-hover:text-blue-600 transition-colors flex-shrink-0" />
+              <ArrowRight
+                size={16}
+                className="text-slate-400 group-hover:text-blue-600 transition-colors flex-shrink-0"
+              />
             </Link>
           ))}
         </div>

@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createServiceRoleClient } from '@/lib/supabase/service';
 import { escapeHtml } from '@/lib/apiSecurity';
-import { RESEND_FROM_FALLBACK } from '@/lib/companyContact';
+import { RESEND_FROM_FALLBACK, getPublicSiteUrl } from '@/lib/companyContact';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+const SITE_URL = getPublicSiteUrl();
 const EMAIL_FROM = process.env.RESEND_FROM_EMAIL?.trim() || RESEND_FROM_FALLBACK;
 
 function isAuthorizedCron(req: NextRequest): boolean {
@@ -64,7 +64,10 @@ function buildReminderHtml(clientName: string, caseTitle: string, caseRef: strin
 
 export async function GET(req: NextRequest) {
   if (!isAuthorizedCron(req)) {
-    return NextResponse.json({ success: false, error: 'Unauthorized cron access' }, { status: 401 });
+    return NextResponse.json(
+      { success: false, error: 'Unauthorized cron access' },
+      { status: 401 }
+    );
   }
 
   const resendApiKey = process.env.RESEND_API_KEY;
@@ -103,7 +106,8 @@ export async function GET(req: NextRequest) {
     }
 
     const metadata = (row.metadata || {}) as Record<string, unknown>;
-    const lastReminderRaw = typeof metadata.last_reminder_at === 'string' ? metadata.last_reminder_at : '';
+    const lastReminderRaw =
+      typeof metadata.last_reminder_at === 'string' ? metadata.last_reminder_at : '';
     if (lastReminderRaw) {
       const lastReminderDate = new Date(lastReminderRaw);
       const diffHours = (now.getTime() - lastReminderDate.getTime()) / (1000 * 60 * 60);

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { requireInternalApiAccess } from '@/lib/apiSecurity';
-import { CONTACT_EMAIL_FALLBACK, RESEND_FROM_FALLBACK } from '@/lib/companyContact';
+import { CONTACT_EMAIL_FALLBACK, RESEND_FROM_FALLBACK, getPublicSiteUrl } from '@/lib/companyContact';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+const SITE_URL = getPublicSiteUrl();
 const EMAIL_FROM = process.env.RESEND_FROM_EMAIL?.trim() || RESEND_FROM_FALLBACK;
 
 type NotificationType = 'compliance_flag' | 'antivirus_complete' | 'antivirus_failed';

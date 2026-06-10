@@ -6,6 +6,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import CookieBanner from '@/components/CookieBanner';
+import { OFFICIAL_WEBSITE_URL } from '@/lib/companyContact';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -19,14 +20,14 @@ export const metadata: Metadata = {
   },
   description:
     'GL Capital accompagne la structuration et la présentation de dossiers de financement. Plateforme institutionnelle sécurisée pour entreprises et porteurs de projets.',
-  metadataBase: new URL('https://glcapital9393.builtwithrocket.new'),
+  metadataBase: new URL(OFFICIAL_WEBSITE_URL),
   openGraph: {
     type: 'website',
     siteName: 'GL Capital Investment SA',
     title: 'GL Capital Investment SA - Structuration & Financement de Dossiers',
     description:
       'GL Capital accompagne la structuration et la présentation de dossiers de financement. Plateforme institutionnelle sécurisée pour entreprises et porteurs de projets.',
-    url: 'https://glcapital9393.builtwithrocket.new',
+    url: OFFICIAL_WEBSITE_URL,
     images: [
       {
         url: '/assets/images/gl-capital-financial-district.png',
@@ -52,17 +53,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr" suppressHydrationWarning>
       <body>
         <LanguageProvider>
           <AuthProvider>
-            <ErrorBoundary>
-              {children}
-            </ErrorBoundary>
+            <ErrorBoundary>{children}</ErrorBoundary>
           </AuthProvider>
           <CookieBanner />
         </LanguageProvider>

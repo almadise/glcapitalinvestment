@@ -28,17 +28,23 @@ export function useNotificationCount() {
     // Unique channel name avoids collisions when the hook is mounted in multiple components.
     const channelName = `notification-count-${user.id}-${Math.random().toString(36).slice(2, 9)}`;
     const channel = supabase.channel(channelName);
-    channel.on('postgres_changes', {
+    channel.on(
+      'postgres_changes',
+      {
         event: '*',
         schema: 'public',
         table: 'notifications',
         filter: `user_id=eq.${user.id}`,
-      }, () => {
+      },
+      () => {
         fetchCount();
-      });
+      }
+    );
     channel.subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user, supabase]);
 
   return unreadCount;

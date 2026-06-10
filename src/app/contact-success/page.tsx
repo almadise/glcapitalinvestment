@@ -18,91 +18,94 @@ import { useLanguage } from '@/context/LanguageContext';
 export default function ContactSuccessPage() {
   const { lang } = useLanguage();
 
-  const nextSteps = lang === 'fr'
-    ? [
-        {
-          number: '01',
-          icon: Clock,
-          title: 'Accusé de réception',
-          description: 'Vous recevrez un email de confirmation sous 48h ouvrées.',
-        },
-        {
-          number: '02',
-          icon: Search,
-          title: 'Analyse de pré-éligibilité',
-          description: 'Nos experts examinent votre dossier selon nos critères institutionnels.',
-        },
-        {
-          number: '03',
-          icon: Video,
-          title: 'Appel de qualification',
-          description: 'Si votre dossier est retenu, un appel en visioconférence sera planifié.',
-        },
-        {
-          number: '04',
-          icon: FolderOpen,
-          title: 'Dossier complet requis',
-          description: 'Nous vous demanderons les pièces justificatives complètes.',
-        },
-        {
-          number: '05',
-          icon: Handshake,
-          title: 'Introduction institutionnelle',
-          description: 'Présentation formelle à nos partenaires bancaires et institutionnels.',
-        },
-      ]
-    : [
-        {
-          number: '01',
-          icon: Clock,
-          title: 'Acknowledgement',
-          description: 'You will receive a confirmation email within 48 business hours.',
-        },
-        {
-          number: '02',
-          icon: Search,
-          title: 'Pre-eligibility analysis',
-          description: 'Our experts review your application against our institutional criteria.',
-        },
-        {
-          number: '03',
-          icon: Video,
-          title: 'Qualification call',
-          description: 'If your application is retained, a video conference call will be scheduled.',
-        },
-        {
-          number: '04',
-          icon: FolderOpen,
-          title: 'Full application package requested',
-          description: 'We will request the complete set of supporting documents.',
-        },
-        {
-          number: '05',
-          icon: Handshake,
-          title: 'Institutional introduction',
-          description: 'Formal presentation to our banking and institutional partners.',
-        },
-      ];
+  const nextSteps =
+    lang === 'fr'
+      ? [
+          {
+            number: '01',
+            icon: Clock,
+            title: 'Accusé de réception',
+            description: 'Vous recevrez un email de confirmation sous 48h ouvrées.',
+          },
+          {
+            number: '02',
+            icon: Search,
+            title: 'Analyse de pré-éligibilité',
+            description: 'Nos experts examinent votre dossier selon nos critères institutionnels.',
+          },
+          {
+            number: '03',
+            icon: Video,
+            title: 'Appel de qualification',
+            description: 'Si votre dossier est retenu, un appel en visioconférence sera planifié.',
+          },
+          {
+            number: '04',
+            icon: FolderOpen,
+            title: 'Dossier complet requis',
+            description: 'Nous vous demanderons les pièces justificatives complètes.',
+          },
+          {
+            number: '05',
+            icon: Handshake,
+            title: 'Introduction institutionnelle',
+            description: 'Présentation formelle à nos partenaires bancaires et institutionnels.',
+          },
+        ]
+      : [
+          {
+            number: '01',
+            icon: Clock,
+            title: 'Acknowledgement',
+            description: 'You will receive a confirmation email within 48 business hours.',
+          },
+          {
+            number: '02',
+            icon: Search,
+            title: 'Pre-eligibility analysis',
+            description: 'Our experts review your application against our institutional criteria.',
+          },
+          {
+            number: '03',
+            icon: Video,
+            title: 'Qualification call',
+            description:
+              'If your application is retained, a video conference call will be scheduled.',
+          },
+          {
+            number: '04',
+            icon: FolderOpen,
+            title: 'Full application package requested',
+            description: 'We will request the complete set of supporting documents.',
+          },
+          {
+            number: '05',
+            icon: Handshake,
+            title: 'Institutional introduction',
+            description: 'Formal presentation to our banking and institutional partners.',
+          },
+        ];
 
-  const documents = lang === 'fr'
-    ? [
-        'LOI sur papier à en-tête',
-        'Executive Summary du projet',
-        "Certificat d'immatriculation",
-        'Justificatif de domicile',
-        'Passeport du dirigeant en couleur',
-        'États financiers des 2 dernières années',
-        'Relevés bancaires des 6 derniers mois',
-      ]
-    : [
-        'LOI on letterhead',
-        'Executive Summary',
-        'Certificate of incorporation',
-        'Proof of address',
-        'Director passport (colour)',
-        '2 years financial statements',
-        '6 months bank statements',
-      ];
+  const documents =
+    lang === 'fr'
+      ? [
+          'LOI sur papier à en-tête',
+          'Executive Summary du projet',
+          "Certificat d'immatriculation",
+          'Justificatif de domicile',
+          'Passeport du dirigeant en couleur',
+          'États financiers des 2 dernières années',
+          'Relevés bancaires des 6 derniers mois',
+        ]
+      : [
+          'LOI on letterhead',
+          'Executive Summary',
+          'Certificate of incorporation',
+          'Proof of address',
+          'Director passport (colour)',
+          '2 years financial statements',
+          '6 months bank statements',
+        ];
 
   return (
     <div className="min-h-screen bg-navy-dark relative overflow-hidden">
@@ -112,7 +115,6 @@ export default function ContactSuccessPage() {
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-gold/3 blur-3xl" />
       </div>
       <div className="relative z-10 max-w-screen-lg mx-auto px-6 lg:px-10 py-16 lg:py-24">
-
         {/* Logo */}
         <div className="flex justify-center mb-14">
           <Image
@@ -137,17 +139,23 @@ export default function ContactSuccessPage() {
           </div>
 
           <h1 className="font-display text-3xl lg:text-4xl font-bold text-white mb-5 leading-snug">
-            {lang === 'fr' ?'Votre dossier a bien été reçu.' :'Your application has been received.'}
+            {lang === 'fr'
+              ? 'Votre dossier a bien été reçu.'
+              : 'Your application has been received.'}
           </h1>
 
           <p className="text-slate-300 text-base lg:text-lg leading-relaxed max-w-2xl mx-auto mb-4">
-            {lang === 'fr' ?'Merci pour votre demande. Notre équipe de spécialistes va analyser votre dossier selon nos critères de pré-éligibilité institutionnelle et vous contactera dans les meilleurs délais.' :'Thank you for your submission. Our team of specialists will review your application against our institutional pre-eligibility criteria and will contact you as soon as possible.'}
+            {lang === 'fr'
+              ? 'Merci pour votre demande. Notre équipe de spécialistes va analyser votre dossier selon nos critères de pré-éligibilité institutionnelle et vous contactera dans les meilleurs délais.'
+              : 'Thank you for your submission. Our team of specialists will review your application against our institutional pre-eligibility criteria and will contact you as soon as possible.'}
           </p>
 
           <div className="flex items-center justify-center gap-2 text-slate-400 text-sm">
             <Mail size={14} className="text-gold" />
             <span>
-              {lang === 'fr' ?'Un accusé de réception vous sera envoyé sous 48h ouvrées.' :'An acknowledgement will be sent to you within 48 business hours.'}
+              {lang === 'fr'
+                ? 'Un accusé de réception vous sera envoyé sous 48h ouvrées.'
+                : 'An acknowledgement will be sent to you within 48 business hours.'}
             </span>
           </div>
         </div>
@@ -164,7 +172,9 @@ export default function ContactSuccessPage() {
               {lang === 'fr' ? 'Ce qui se passe maintenant' : 'What happens next'}
             </h2>
             <p className="text-slate-400 text-sm max-w-xl mx-auto">
-              {lang === 'fr' ?'Notre processus est structuré pour garantir une analyse rigoureuse de chaque dossier.' :'Our process is structured to ensure a rigorous analysis of every application.'}
+              {lang === 'fr'
+                ? 'Notre processus est structuré pour garantir une analyse rigoureuse de chaque dossier.'
+                : 'Our process is structured to ensure a rigorous analysis of every application.'}
             </p>
           </div>
 
@@ -210,7 +220,9 @@ export default function ContactSuccessPage() {
                 {lang === 'fr' ? 'Préparez vos documents' : 'Prepare your documents'}
               </h3>
               <p className="text-slate-400 text-sm">
-                {lang === 'fr' ?'Si votre dossier est retenu, les pièces suivantes vous seront demandées :' :'If your application is retained, the following documents will be requested:'}
+                {lang === 'fr'
+                  ? 'Si votre dossier est retenu, les pièces suivantes vous seront demandées :'
+                  : 'If your application is retained, the following documents will be requested:'}
               </p>
             </div>
           </div>

@@ -5,22 +5,122 @@ import { usePathname } from 'next/navigation';
 import AppLogo from '@/components/ui/AppLogo';
 import { useLanguage } from '@/context/LanguageContext';
 import {
-  LayoutDashboard, FolderOpen, Users, Shield, Settings, LogOut, ChevronLeft, ChevronRight, Bell, AlertTriangle, BookOpen, Network, ClipboardList, Home, MessageSquare, BarChart3, Mail,
+  LayoutDashboard,
+  FolderOpen,
+  Users,
+  Shield,
+  Settings,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Bell,
+  AlertTriangle,
+  BookOpen,
+  Network,
+  ClipboardList,
+  Home,
+  MessageSquare,
+  BarChart3,
+  Mail,
 } from 'lucide-react';
 
 const adminNavItems = [
-  { href: '/back-office-admin-panel', icon: LayoutDashboard, labelFr: 'Tableau de bord', labelEn: 'Dashboard', badge: null, roles: ['admin', 'analyst', 'compliance', 'gestionnaire_contenu'] },
-  { href: '/back-office-admin-panel#dossiers', icon: FolderOpen, labelFr: 'Dossiers', labelEn: 'Files', badge: '14', roles: ['admin', 'analyst', 'compliance'] },
-  { href: '/back-office-admin-panel#compliance', icon: Shield, labelFr: 'Conformité', labelEn: 'Compliance', badge: '5', roles: ['admin', 'compliance'] },
-  { href: '/back-office-admin-panel#partners', icon: Network, labelFr: 'Partenaires', labelEn: 'Partners', badge: null, roles: ['admin', 'compliance'] },
-  { href: '/back-office-admin-panel/users', icon: Users, labelFr: 'Utilisateurs', labelEn: 'Users', badge: null, roles: ['admin'] },
-  { href: '/back-office-admin-panel#content', icon: BookOpen, labelFr: 'Contenu', labelEn: 'Content', badge: null, roles: ['admin', 'gestionnaire_contenu'] },
-  { href: '/back-office-admin-panel#notes', icon: MessageSquare, labelFr: 'Notes internes', labelEn: 'Internal Notes', badge: null, roles: ['admin', 'analyst', 'compliance'] },
-  { href: '/back-office-admin-panel/audit-logs', icon: ClipboardList, labelFr: 'Journal d\'audit', labelEn: 'Audit Log', badge: null, roles: ['admin', 'compliance'] },
-  { href: '/back-office-admin-panel/metrics', icon: BarChart3, labelFr: 'Métriques', labelEn: 'Metrics', badge: null, roles: ['admin'] },
-  { href: '/back-office-admin-panel/email-preview', icon: Mail, labelFr: 'Aperçu emails & Supabase', labelEn: 'Email preview & Supabase', badge: null, roles: ['admin'] },
-  { href: '/notifications', icon: Bell, labelFr: 'Notifications', labelEn: 'Notifications', badge: null, roles: ['admin', 'analyst', 'compliance', 'gestionnaire_contenu'] },
-  { href: '/back-office-admin-panel#settings', icon: Settings, labelFr: 'Paramètres', labelEn: 'Settings', badge: null, roles: ['admin'] },
+  {
+    href: '/back-office-admin-panel',
+    icon: LayoutDashboard,
+    labelFr: 'Tableau de bord',
+    labelEn: 'Dashboard',
+    badge: null,
+    roles: ['admin', 'analyst', 'compliance', 'gestionnaire_contenu'],
+  },
+  {
+    href: '/back-office-admin-panel#dossiers',
+    icon: FolderOpen,
+    labelFr: 'Dossiers',
+    labelEn: 'Files',
+    badge: '14',
+    roles: ['admin', 'analyst', 'compliance'],
+  },
+  {
+    href: '/back-office-admin-panel#compliance',
+    icon: Shield,
+    labelFr: 'Conformité',
+    labelEn: 'Compliance',
+    badge: '5',
+    roles: ['admin', 'compliance'],
+  },
+  {
+    href: '/back-office-admin-panel#partners',
+    icon: Network,
+    labelFr: 'Partenaires',
+    labelEn: 'Partners',
+    badge: null,
+    roles: ['admin', 'compliance'],
+  },
+  {
+    href: '/back-office-admin-panel/users',
+    icon: Users,
+    labelFr: 'Utilisateurs',
+    labelEn: 'Users',
+    badge: null,
+    roles: ['admin'],
+  },
+  {
+    href: '/back-office-admin-panel#content',
+    icon: BookOpen,
+    labelFr: 'Contenu',
+    labelEn: 'Content',
+    badge: null,
+    roles: ['admin', 'gestionnaire_contenu'],
+  },
+  {
+    href: '/back-office-admin-panel#notes',
+    icon: MessageSquare,
+    labelFr: 'Notes internes',
+    labelEn: 'Internal Notes',
+    badge: null,
+    roles: ['admin', 'analyst', 'compliance'],
+  },
+  {
+    href: '/back-office-admin-panel/audit-logs',
+    icon: ClipboardList,
+    labelFr: "Journal d'audit",
+    labelEn: 'Audit Log',
+    badge: null,
+    roles: ['admin', 'compliance'],
+  },
+  {
+    href: '/back-office-admin-panel/metrics',
+    icon: BarChart3,
+    labelFr: 'Métriques',
+    labelEn: 'Metrics',
+    badge: null,
+    roles: ['admin'],
+  },
+  {
+    href: '/back-office-admin-panel/email-preview',
+    icon: Mail,
+    labelFr: 'Aperçu emails & Supabase',
+    labelEn: 'Email preview & Supabase',
+    badge: null,
+    roles: ['admin'],
+  },
+  {
+    href: '/notifications',
+    icon: Bell,
+    labelFr: 'Notifications',
+    labelEn: 'Notifications',
+    badge: null,
+    roles: ['admin', 'analyst', 'compliance', 'gestionnaire_contenu'],
+  },
+  {
+    href: '/back-office-admin-panel#settings',
+    icon: Settings,
+    labelFr: 'Paramètres',
+    labelEn: 'Settings',
+    badge: null,
+    roles: ['admin'],
+  },
 ];
 
 interface BackOfficeLayoutProps {
@@ -64,7 +164,9 @@ export default function BackOfficeLayout({
           collapsed ? 'w-16' : 'w-64'
         }`}
       >
-        <div className={`flex items-center gap-3 px-4 py-5 border-b border-navy-800 ${collapsed ? 'justify-center' : ''}`}>
+        <div
+          className={`flex items-center gap-3 px-4 py-5 border-b border-navy-800 ${collapsed ? 'justify-center' : ''}`}
+        >
           <AppLogo size={32} />
           {!collapsed && (
             <div>
@@ -78,7 +180,9 @@ export default function BackOfficeLayout({
 
         {!collapsed && (
           <div className="px-4 py-3 border-b border-navy-800">
-            <span className={`text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider ${roleColors[role]}`}>
+            <span
+              className={`text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider ${roleColors[role]}`}
+            >
               {roleLabel}
             </span>
           </div>
@@ -97,7 +201,8 @@ export default function BackOfficeLayout({
                 title={collapsed ? label : undefined}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 relative ${
                   isActive
-                    ? 'bg-gold-500/15 text-gold-400 border border-gold-500/20' :'text-white/50 hover:text-white hover:bg-white/5'
+                    ? 'bg-gold-500/15 text-gold-400 border border-gold-500/20'
+                    : 'text-white/50 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <item.icon size={17} className="flex-shrink-0" />
@@ -119,20 +224,31 @@ export default function BackOfficeLayout({
           {/* Return to public site */}
           <Link
             href="/home-page"
-            title={collapsed ? (lang === 'fr' ? 'Retour au site public' : 'Back to public site') : undefined}
+            title={
+              collapsed
+                ? lang === 'fr'
+                  ? 'Retour au site public'
+                  : 'Back to public site'
+                : undefined
+            }
             className={`flex items-center gap-2 px-3 py-2 text-white/40 hover:text-white/70 rounded-lg hover:bg-white/5 transition-colors text-sm ${
               collapsed ? 'justify-center' : ''
             }`}
           >
             <Home size={15} />
-            {!collapsed && <span>{lang === 'fr' ? 'Retour au site public' : 'Back to public site'}</span>}
+            {!collapsed && (
+              <span>{lang === 'fr' ? 'Retour au site public' : 'Back to public site'}</span>
+            )}
           </Link>
 
           {!collapsed && (
             <div className="flex items-center gap-2 px-2 py-2 rounded-lg bg-navy-900">
               <div className="w-7 h-7 rounded-full bg-gold-500/20 flex items-center justify-center flex-shrink-0">
                 <span className="text-gold-400 text-[10px] font-bold">
-                  {userName.split(' ').map((n) => n[0]).join('')}
+                  {userName
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')}
                 </span>
               </div>
               <div className="min-w-0">
@@ -163,7 +279,10 @@ export default function BackOfficeLayout({
       <div className={`flex-1 transition-all duration-300 ${collapsed ? 'ml-16' : 'ml-64'}`}>
         <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/home-page" className="text-xs text-gray-400 hover:text-gray-600 font-mono transition-colors flex items-center gap-1">
+            <Link
+              href="/home-page"
+              className="text-xs text-gray-400 hover:text-gray-600 font-mono transition-colors flex items-center gap-1"
+            >
               <Home size={12} />
               {lang === 'fr' ? '← Site public' : '← Public Site'}
             </Link>
@@ -177,11 +296,16 @@ export default function BackOfficeLayout({
             </button>
             <button className="relative p-2 text-gray-500 hover:text-navy-900 transition-colors rounded-lg hover:bg-gray-100">
               <AlertTriangle size={17} />
-              <span className="absolute -top-0.5 -right-0.5 text-[9px] bg-amber-500 text-white font-bold px-1 rounded-full">3</span>
+              <span className="absolute -top-0.5 -right-0.5 text-[9px] bg-amber-500 text-white font-bold px-1 rounded-full">
+                3
+              </span>
             </button>
             <div className="w-8 h-8 rounded-full bg-navy-900 flex items-center justify-center">
               <span className="text-white text-xs font-bold">
-                {userName.split(' ').map((n) => n[0]).join('')}
+                {userName
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')}
               </span>
             </div>
           </div>

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { escapeHtml, requireInternalApiAccess } from '@/lib/apiSecurity';
-import { RESEND_FROM_FALLBACK } from '@/lib/companyContact';
+import { RESEND_FROM_FALLBACK, getPublicSiteUrl } from '@/lib/companyContact';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+const SITE_URL = getPublicSiteUrl();
 const EMAIL_FROM = process.env.RESEND_FROM_EMAIL?.trim() || RESEND_FROM_FALLBACK;
 
 type ReminderType = 'incomplete' | 'pending_docs' | 'no_action';
@@ -25,9 +25,21 @@ function buildReminderHtml(params: {
   const safeCaseTitle = escapeHtml(caseTitle);
   const safeCaseId = escapeHtml(caseId);
 
-  const contentByType: Record<ReminderType, { subject: string; badge: string; headline: string; body: string; ctaLabel: string; ctaLink: string }> = {
+  const contentByType: Record<
+    ReminderType,
+    {
+      subject: string;
+      badge: string;
+      headline: string;
+      body: string;
+      ctaLabel: string;
+      ctaLink: string;
+    }
+  > = {
     incomplete: {
-      subject: isFr ? `Action requise – Dossier incomplet : ${safeCaseTitle}` : `Action required – Incomplete file: ${safeCaseTitle}`,
+      subject: isFr
+        ? `Action requise – Dossier incomplet : ${safeCaseTitle}`
+        : `Action required – Incomplete file: ${safeCaseTitle}`,
       badge: isFr ? '⚠️ Dossier incomplet' : '⚠️ Incomplete file',
       headline: isFr ? 'Des documents sont manquants' : 'Documents are missing',
       body: isFr
@@ -37,9 +49,13 @@ function buildReminderHtml(params: {
       ctaLink: docsLink,
     },
     pending_docs: {
-      subject: isFr ? `Rappel – Documents en attente : ${safeCaseTitle}` : `Reminder – Pending documents: ${safeCaseTitle}`,
+      subject: isFr
+        ? `Rappel – Documents en attente : ${safeCaseTitle}`
+        : `Reminder – Pending documents: ${safeCaseTitle}`,
       badge: isFr ? '📋 Documents requis' : '📋 Documents required',
-      headline: isFr ? 'Votre dossier attend vos documents' : 'Your file is waiting for your documents',
+      headline: isFr
+        ? 'Votre dossier attend vos documents'
+        : 'Your file is waiting for your documents',
       body: isFr
         ? `Nous attendons toujours les documents requis pour votre dossier "${safeCaseTitle}". Leur réception permettra de relancer immédiatement l'instruction de votre dossier.`
         : `We are still waiting for the required documents for your file "${safeCaseTitle}". Their receipt will immediately resume the processing of your file.`,
@@ -47,7 +63,9 @@ function buildReminderHtml(params: {
       ctaLink: docsLink,
     },
     no_action: {
-      subject: isFr ? `Rappel de suivi – ${safeCaseTitle}` : `Follow-up reminder – ${safeCaseTitle}`,
+      subject: isFr
+        ? `Rappel de suivi – ${safeCaseTitle}`
+        : `Follow-up reminder – ${safeCaseTitle}`,
       badge: isFr ? '🔔 Mise à jour dossier' : '🔔 File update',
       headline: isFr ? 'Un point sur votre dossier' : 'An update on your file',
       body: isFr
@@ -140,25 +158,48 @@ export async function POST(req: NextRequest) {
   } = body;
 
   if (!clientEmail || !clientName || !caseTitle || !caseId) {
-    return NextResponse.json({ success: false, error: 'Missing required fields: clientEmail, clientName, caseTitle, caseId' }, { status: 400 });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Missing required fields: clientEmail, clientName, caseTitle, caseId',
+      },
+      { status: 400 }
+    );
   }
 
   const normalizedEmail = clientEmail.trim().toLowerCase();
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail);
   if (!isValidEmail) {
-    return NextResponse.json({ success: false, error: 'Invalid clientEmail format' }, { status: 400 });
+    return NextResponse.json(
+      { success: false, error: 'Invalid clientEmail format' },
+      { status: 400 }
+    );
   }
 
   if (!['incomplete', 'pending_docs', 'no_action'].includes(reminderType)) {
     return NextResponse.json({ success: false, error: 'Invalid reminderType' }, { status: 400 });
   }
 
-  const html = buildReminderHtml({ clientName, caseTitle, caseId, reminderType, customMessage, lang });
+  const html = buildReminderHtml({
+    clientName,
+    caseTitle,
+    caseId,
+    reminderType,
+    customMessage,
+    lang,
+  });
 
   const subjectMap: Record<ReminderType, string> = {
-    incomplete: lang === 'fr' ? `Action requise – Dossier incomplet : ${caseTitle}` : `Action required – Incomplete file: ${caseTitle}`,
-    pending_docs: lang === 'fr' ? `Rappel – Documents en attente : ${caseTitle}` : `Reminder – Pending documents: ${caseTitle}`,
-    no_action: lang === 'fr' ? `Rappel de suivi – ${caseTitle}` : `Follow-up reminder – ${caseTitle}`,
+    incomplete:
+      lang === 'fr'
+        ? `Action requise – Dossier incomplet : ${caseTitle}`
+        : `Action required – Incomplete file: ${caseTitle}`,
+    pending_docs:
+      lang === 'fr'
+        ? `Rappel – Documents en attente : ${caseTitle}`
+        : `Reminder – Pending documents: ${caseTitle}`,
+    no_action:
+      lang === 'fr' ? `Rappel de suivi – ${caseTitle}` : `Follow-up reminder – ${caseTitle}`,
   };
 
   const resend = new Resend(apiKey);
@@ -172,6 +213,9 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ success: true, reminderType, caseId });
   } catch (err: any) {
-    return NextResponse.json({ success: false, error: err?.message || 'Send failed' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: err?.message || 'Send failed' },
+      { status: 500 }
+    );
   }
 }

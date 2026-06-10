@@ -65,11 +65,13 @@ export default function DossierTable() {
       // Query case_files table with correct columns
       const { data, error } = await supabase
         .from('case_files')
-        .select(`
+        .select(
+          `
           id, ref, type, status, amount, completeness, created_at, updated_at,
           org_id, assigned_analyst_id,
           analyst:user_profiles!case_files_assigned_analyst_id_fkey(full_name)
-        `)
+        `
+        )
         .eq('user_id', user.id)
         .order('updated_at', { ascending: false });
 
@@ -86,8 +88,20 @@ export default function DossierTable() {
           montant: d.amount || '-',
           completude: d.completeness || 0,
           analyste: d.analyst?.full_name || t('Non assigné', 'Unassigned'),
-          dateCreation: d.created_at ? new Date(d.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-',
-          derniereMaj: d.updated_at ? new Date(d.updated_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-',
+          dateCreation: d.created_at
+            ? new Date(d.created_at).toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })
+            : '-',
+          derniereMaj: d.updated_at
+            ? new Date(d.updated_at).toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })
+            : '-',
         }));
         setDossiers(mapped);
       }
@@ -105,13 +119,21 @@ export default function DossierTable() {
     if (!user) return;
     const channel = supabase
       .channel('dossier_table_realtime')
-      .on('postgres_changes', {
-        event: '*', schema: 'public', table: 'case_files',
-        filter: `user_id=eq.${user.id}`,
-      }, fetchDossiers)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'case_files',
+          filter: `user_id=eq.${user.id}`,
+        },
+        fetchDossiers
+      )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user, fetchDossiers]);
 
   const filtered = dossiers.filter((d) => {
@@ -151,7 +173,10 @@ export default function DossierTable() {
         [lang === 'fr' ? 'Référence' : 'Reference', dossier.ref],
         [lang === 'fr' ? 'Organisation' : 'Organisation', dossier.organisation],
         [lang === 'fr' ? 'Type' : 'Type', dossier.type],
-        [lang === 'fr' ? 'Statut' : 'Status', statusConfig[dossier.statut]?.label || dossier.statut],
+        [
+          lang === 'fr' ? 'Statut' : 'Status',
+          statusConfig[dossier.statut]?.label || dossier.statut,
+        ],
         [lang === 'fr' ? 'Montant' : 'Amount', dossier.montant],
         [lang === 'fr' ? 'Complétude' : 'Completeness', `${dossier.completude}%`],
         [lang === 'fr' ? 'Analyste' : 'Analyst', dossier.analyste],
@@ -170,16 +195,24 @@ export default function DossierTable() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      toast.success(lang === 'fr' ? `Export CSV - ${dossier.ref}` : `CSV exported - ${dossier.ref}`);
+      toast.success(
+        lang === 'fr' ? `Export CSV - ${dossier.ref}` : `CSV exported - ${dossier.ref}`
+      );
     } catch {
-      toast.error(lang === 'fr' ? "Erreur lors de l'export du fichier." : 'Error while exporting file.');
+      toast.error(
+        lang === 'fr' ? "Erreur lors de l'export du fichier." : 'Error while exporting file.'
+      );
     }
     setExportingId(null);
   };
 
   const SortIcon = ({ col }: { col: SortKey }) => {
     if (sortKey !== col) return <ChevronUp size={12} className="text-slate-300" />;
-    return sortDir === 'asc' ? <ChevronUp size={12} className="text-navy" /> : <ChevronDown size={12} className="text-navy" />;
+    return sortDir === 'asc' ? (
+      <ChevronUp size={12} className="text-navy" />
+    ) : (
+      <ChevronDown size={12} className="text-navy" />
+    );
   };
 
   const tableHeaders = [
@@ -203,14 +236,20 @@ export default function DossierTable() {
           </h3>
           <p className="text-slate-500 text-xs mt-0.5">
             {loading
-              ? (lang === 'fr' ? 'Chargement...' : 'Loading...')
+              ? lang === 'fr'
+                ? 'Chargement...'
+                : 'Loading...'
               : lang === 'fr'
                 ? `${filtered.length} dossier(s) - ${dossiers.length} au total`
                 : `${filtered.length} file(s) - ${dossiers.length} total`}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <button onClick={fetchDossiers} className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-500 transition-colors" title={lang === 'fr' ? 'Actualiser' : 'Refresh'}>
+          <button
+            onClick={fetchDossiers}
+            className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-500 transition-colors"
+            title={lang === 'fr' ? 'Actualiser' : 'Refresh'}
+          >
             <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
           </button>
           <div className="flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-2 min-w-[200px]">
@@ -218,7 +257,10 @@ export default function DossierTable() {
             <input
               type="text"
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               placeholder={lang === 'fr' ? 'Référence, société…' : 'Reference, company…'}
               className="bg-transparent text-xs text-slate-700 placeholder:text-slate-400 outline-none w-full"
             />
@@ -227,12 +269,17 @@ export default function DossierTable() {
             <Filter size={12} className="text-slate-400" />
             <select
               value={statusFilter}
-              onChange={(e) => { setStatusFilter(e.target.value as DossierStatus | 'ALL'); setPage(1); }}
+              onChange={(e) => {
+                setStatusFilter(e.target.value as DossierStatus | 'ALL');
+                setPage(1);
+              }}
               className="bg-transparent text-xs text-slate-700 outline-none cursor-pointer"
             >
               <option value="ALL">{lang === 'fr' ? 'Tous statuts' : 'All statuses'}</option>
               {Object.entries(statusConfig).map(([k, v]) => (
-                <option key={`filter-status-${k}`} value={k}>{v.label}</option>
+                <option key={`filter-status-${k}`} value={k}>
+                  {v.label}
+                </option>
               ))}
             </select>
           </div>
@@ -278,7 +325,9 @@ export default function DossierTable() {
                           {lang === 'fr' ? 'Aucun dossier trouvé' : 'No files found'}
                         </p>
                         <p className="text-xs text-slate-400 mt-1">
-                          {lang === 'fr' ? 'Modifiez vos filtres ou soumettez un nouveau dossier.' :'Adjust your filters or submit a new file.'}
+                          {lang === 'fr'
+                            ? 'Modifiez vos filtres ou soumettez un nouveau dossier.'
+                            : 'Adjust your filters or submit a new file.'}
                         </p>
                       </div>
                     </div>
@@ -288,22 +337,32 @@ export default function DossierTable() {
                 paginated.map((dossier) => (
                   <tr key={dossier.id} className="hover:bg-slate-50/80 transition-colors group">
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="font-mono-data text-xs font-semibold text-navy bg-navy/5 px-2 py-1 rounded-md">{dossier.ref}</span>
+                      <span className="font-mono-data text-xs font-semibold text-navy bg-navy/5 px-2 py-1 rounded-md">
+                        {dossier.ref}
+                      </span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="text-xs font-medium text-slate-700">{dossier.organisation}</span>
+                      <span className="text-xs font-medium text-slate-700">
+                        {dossier.organisation}
+                      </span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-1 rounded-md">{dossier.type}</span>
+                      <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-1 rounded-md">
+                        {dossier.type}
+                      </span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className={`status-badge border ${statusConfig[dossier.statut]?.classes || ''}`}>
+                      <span
+                        className={`status-badge border ${statusConfig[dossier.statut]?.classes || ''}`}
+                      >
                         <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
                         {statusConfig[dossier.statut]?.label || dossier.statut}
                       </span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="font-mono-data text-xs font-semibold text-navy">{dossier.montant}</span>
+                      <span className="font-mono-data text-xs font-semibold text-navy">
+                        {dossier.montant}
+                      </span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center gap-2">
@@ -313,21 +372,30 @@ export default function DossierTable() {
                             style={{ width: `${dossier.completude}%` }}
                           />
                         </div>
-                        <span className="font-mono-data text-xs text-slate-600">{dossier.completude}%</span>
+                        <span className="font-mono-data text-xs text-slate-600">
+                          {dossier.completude}%
+                        </span>
                       </div>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <span className="text-xs text-slate-600">{dossier.analyste}</span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="font-mono-data text-xs text-slate-500">{dossier.dateCreation}</span>
+                      <span className="font-mono-data text-xs text-slate-500">
+                        {dossier.dateCreation}
+                      </span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="font-mono-data text-xs text-slate-500">{dossier.derniereMaj}</span>
+                      <span className="font-mono-data text-xs text-slate-500">
+                        {dossier.derniereMaj}
+                      </span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button title={lang === 'fr' ? 'Voir le dossier' : 'View file'} className="p-1.5 rounded-lg hover:bg-navy/10 text-slate-500 hover:text-navy transition-colors">
+                        <button
+                          title={lang === 'fr' ? 'Voir le dossier' : 'View file'}
+                          className="p-1.5 rounded-lg hover:bg-navy/10 text-slate-500 hover:text-navy transition-colors"
+                        >
                           <Eye size={14} />
                         </button>
                         <button
@@ -336,9 +404,16 @@ export default function DossierTable() {
                           disabled={exportingId === dossier.id}
                           className="p-1.5 rounded-lg hover:bg-gold/10 text-slate-500 hover:text-gold-dark transition-colors disabled:opacity-50"
                         >
-                          {exportingId === dossier.id ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+                          {exportingId === dossier.id ? (
+                            <Loader2 size={14} className="animate-spin" />
+                          ) : (
+                            <Download size={14} />
+                          )}
                         </button>
-                        <button title={lang === 'fr' ? "Plus d'options" : 'More options'} className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-700 transition-colors">
+                        <button
+                          title={lang === 'fr' ? "Plus d'options" : 'More options'}
+                          className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-700 transition-colors"
+                        >
                           <MoreHorizontal size={14} />
                         </button>
                       </div>
@@ -353,18 +428,34 @@ export default function DossierTable() {
 
       <div className="px-5 py-3.5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="text-xs text-slate-500">
-          {loading ? '-' : lang === 'fr'
-            ? `Affichage ${Math.min((page - 1) * perPage + 1, sorted.length)}–${Math.min(page * perPage, sorted.length)} sur ${sorted.length}`
-            : `Showing ${Math.min((page - 1) * perPage + 1, sorted.length)}–${Math.min(page * perPage, sorted.length)} of ${sorted.length}`}
+          {loading
+            ? '-'
+            : lang === 'fr'
+              ? `Affichage ${Math.min((page - 1) * perPage + 1, sorted.length)}–${Math.min(page * perPage, sorted.length)} sur ${sorted.length}`
+              : `Showing ${Math.min((page - 1) * perPage + 1, sorted.length)}–${Math.min(page * perPage, sorted.length)} of ${sorted.length}`}
         </div>
         <div className="flex items-center gap-1.5">
-          <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page === 1} className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+          <button
+            onClick={() => setPage(Math.max(1, page - 1))}
+            disabled={page === 1}
+            className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
             <ChevronLeft size={14} className="text-slate-600" />
           </button>
           {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
-            <button key={`page-${p}`} onClick={() => setPage(p)} className={`w-8 h-8 rounded-lg text-xs font-semibold transition-colors ${p === page ? 'bg-navy text-white' : 'border border-slate-200 text-slate-600 hover:bg-slate-100'}`}>{p}</button>
+            <button
+              key={`page-${p}`}
+              onClick={() => setPage(p)}
+              className={`w-8 h-8 rounded-lg text-xs font-semibold transition-colors ${p === page ? 'bg-navy text-white' : 'border border-slate-200 text-slate-600 hover:bg-slate-100'}`}
+            >
+              {p}
+            </button>
           ))}
-          <button onClick={() => setPage(Math.min(totalPages, page + 1))} disabled={page === totalPages} className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+          <button
+            onClick={() => setPage(Math.min(totalPages, page + 1))}
+            disabled={page === totalPages}
+            className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
             <ChevronRight size={14} className="text-slate-600" />
           </button>
         </div>

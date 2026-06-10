@@ -50,7 +50,13 @@ type EnrichedDocument = DocumentRecord & {
 };
 
 const REVIEW_CASE_STATUSES: CaseStatus[] = ['RECU', 'EN_ANALYSE', 'EN_REVUE_COMPLIANCE'];
-const VALIDATED_CASE_STATUSES: CaseStatus[] = ['ELIGIBLE', 'SOUMIS_PARTENAIRE', 'RETOUR_PARTENAIRE', 'EN_NEGOCIATION', 'CLOTURE'];
+const VALIDATED_CASE_STATUSES: CaseStatus[] = [
+  'ELIGIBLE',
+  'SOUMIS_PARTENAIRE',
+  'RETOUR_PARTENAIRE',
+  'EN_NEGOCIATION',
+  'CLOTURE',
+];
 
 const ALLOWED_TYPES = [
   'application/pdf',
@@ -158,7 +164,9 @@ function DocumentsContent() {
       const { data, error: fetchError } = await query;
       if (fetchError) throw fetchError;
       const baseDocs: DocumentRecord[] = data || [];
-      const caseIds = Array.from(new Set(baseDocs.map((doc) => doc.case_id).filter(Boolean))) as string[];
+      const caseIds = Array.from(
+        new Set(baseDocs.map((doc) => doc.case_id).filter(Boolean))
+      ) as string[];
 
       const caseInfo = new Map<string, { status: CaseStatus; ref: string | null }>();
       if (caseIds.length > 0) {
@@ -198,11 +206,19 @@ function DocumentsContent() {
     setUploadSuccess(null);
 
     if (!ALLOWED_TYPES.includes(file.type)) {
-      setUploadError(lang === 'fr' ? 'Type de fichier non autorisé. Formats acceptés : PDF, DOCX, XLSX.' : 'File type not allowed. Accepted formats: PDF, DOCX, XLSX.');
+      setUploadError(
+        lang === 'fr'
+          ? 'Type de fichier non autorisé. Formats acceptés : PDF, DOCX, XLSX.'
+          : 'File type not allowed. Accepted formats: PDF, DOCX, XLSX.'
+      );
       return;
     }
     if (file.size > MAX_SIZE_BYTES) {
-      setUploadError(lang === 'fr' ? 'Fichier trop volumineux. Taille maximale : 10 Mo.' : 'File too large. Maximum size: 10MB.');
+      setUploadError(
+        lang === 'fr'
+          ? 'Fichier trop volumineux. Taille maximale : 10 Mo.'
+          : 'File too large. Maximum size: 10MB.'
+      );
       return;
     }
 
@@ -231,7 +247,11 @@ function DocumentsContent() {
 
       if (dbError) throw dbError;
 
-      setUploadSuccess(lang === 'fr' ? `"${file.name}" téléversé avec succès.` : `"${file.name}" uploaded successfully.`);
+      setUploadSuccess(
+        lang === 'fr'
+          ? `"${file.name}" téléversé avec succès.`
+          : `"${file.name}" uploaded successfully.`
+      );
       await fetchDocuments();
     } catch (err: any) {
       setUploadError(err.message || 'Erreur lors du téléversement.');
@@ -266,12 +286,16 @@ function DocumentsContent() {
 
   const formatDate = (dateStr: string) =>
     new Date(dateStr).toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', {
-      day: '2-digit', month: 'short', year: 'numeric',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
     });
 
   const formatSize = (name: string) => name.split('.').pop()?.toUpperCase() || 'FILE';
   const filteredDocuments =
-    stateFilter === 'ALL' ? documents : documents.filter((doc) => doc.workflowState === stateFilter);
+    stateFilter === 'ALL'
+      ? documents
+      : documents.filter((doc) => doc.workflowState === stateFilter);
   const workflowCount = {
     A_CORRIGER: documents.filter((d) => d.workflowState === 'A_CORRIGER').length,
     EN_REVUE: documents.filter((d) => d.workflowState === 'EN_REVUE').length,
@@ -287,19 +311,28 @@ function DocumentsContent() {
         </h1>
         <p className="text-slate-500 text-sm mt-1">
           {caseId
-            ? (lang === 'fr' ? 'Documents liés à ce dossier' : 'Documents linked to this case file')
-            : (lang === 'fr' ? 'Tous vos documents téléversés' : 'All your uploaded documents')}
+            ? lang === 'fr'
+              ? 'Documents liés à ce dossier'
+              : 'Documents linked to this case file'
+            : lang === 'fr'
+              ? 'Tous vos documents téléversés'
+              : 'All your uploaded documents'}
         </p>
       </div>
 
       {/* Upload zone */}
       <div
-        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragOver(true);
+        }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         onClick={() => !uploading && fileInputRef.current?.click()}
         className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all mb-6 ${
-          dragOver ? 'border-navy bg-navy/5' : 'border-slate-200 hover:border-navy/40 hover:bg-slate-50'
+          dragOver
+            ? 'border-navy bg-navy/5'
+            : 'border-slate-200 hover:border-navy/40 hover:bg-slate-50'
         } ${uploading ? 'pointer-events-none opacity-60' : ''}`}
       >
         <input
@@ -323,7 +356,9 @@ function DocumentsContent() {
             </div>
             <div>
               <p className="font-semibold text-navy text-sm">
-                {lang === 'fr' ? 'Glissez un fichier ici ou cliquez pour parcourir' : 'Drag a file here or click to browse'}
+                {lang === 'fr'
+                  ? 'Glissez un fichier ici ou cliquez pour parcourir'
+                  : 'Drag a file here or click to browse'}
               </p>
               <p className="text-slate-400 text-xs mt-1">
                 {lang === 'fr' ? 'PDF, DOCX, XLSX - max 10 Mo' : 'PDF, DOCX, XLSX - max 10MB'}
@@ -383,40 +418,60 @@ function DocumentsContent() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
             <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-              <p className="text-[11px] text-amber-700">{lang === 'fr' ? 'Corrections demandées' : 'Corrections requested'}</p>
-              <p className="text-lg font-semibold text-amber-800 font-mono-data">{workflowCount.A_CORRIGER}</p>
+              <p className="text-[11px] text-amber-700">
+                {lang === 'fr' ? 'Corrections demandées' : 'Corrections requested'}
+              </p>
+              <p className="text-lg font-semibold text-amber-800 font-mono-data">
+                {workflowCount.A_CORRIGER}
+              </p>
             </div>
             <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3">
-              <p className="text-[11px] text-blue-700">{lang === 'fr' ? 'En revue' : 'In review'}</p>
-              <p className="text-lg font-semibold text-blue-800 font-mono-data">{workflowCount.EN_REVUE}</p>
+              <p className="text-[11px] text-blue-700">
+                {lang === 'fr' ? 'En revue' : 'In review'}
+              </p>
+              <p className="text-lg font-semibold text-blue-800 font-mono-data">
+                {workflowCount.EN_REVUE}
+              </p>
             </div>
             <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
-              <p className="text-[11px] text-emerald-700">{lang === 'fr' ? 'Validés' : 'Validated'}</p>
-              <p className="text-lg font-semibold text-emerald-800 font-mono-data">{workflowCount.VALIDE}</p>
+              <p className="text-[11px] text-emerald-700">
+                {lang === 'fr' ? 'Validés' : 'Validated'}
+              </p>
+              <p className="text-lg font-semibold text-emerald-800 font-mono-data">
+                {workflowCount.VALIDE}
+              </p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2 mb-4">
-            <span className="text-xs text-slate-500">{lang === 'fr' ? 'Filtrer par statut:' : 'Filter by status:'}</span>
+            <span className="text-xs text-slate-500">
+              {lang === 'fr' ? 'Filtrer par statut:' : 'Filter by status:'}
+            </span>
             <button
               onClick={() => setStateFilter('ALL')}
               className={`text-xs font-semibold px-2.5 py-1.5 rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30 ${
-                stateFilter === 'ALL' ? 'bg-navy text-white border-navy' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                stateFilter === 'ALL'
+                  ? 'bg-navy text-white border-navy'
+                  : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
             >
               {lang === 'fr' ? 'Tous' : 'All'}
             </button>
-            {(['A_CORRIGER', 'EN_REVUE', 'VALIDE', 'A_FOURNIR'] as DocumentWorkflowState[]).map((state) => (
-              <button
-                key={state}
-                onClick={() => setStateFilter(state)}
-                className={`text-xs font-semibold px-2.5 py-1.5 rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30 ${
-                  stateFilter === state ? 'bg-navy text-white border-navy' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                }`}
-              >
-                {lang === 'fr' ? WORKFLOW_META[state].fr : WORKFLOW_META[state].en}
-              </button>
-            ))}
+            {(['A_CORRIGER', 'EN_REVUE', 'VALIDE', 'A_FOURNIR'] as DocumentWorkflowState[]).map(
+              (state) => (
+                <button
+                  key={state}
+                  onClick={() => setStateFilter(state)}
+                  className={`text-xs font-semibold px-2.5 py-1.5 rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30 ${
+                    stateFilter === state
+                      ? 'bg-navy text-white border-navy'
+                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  {lang === 'fr' ? WORKFLOW_META[state].fr : WORKFLOW_META[state].en}
+                </button>
+              )
+            )}
           </div>
 
           <div className="space-y-2">
@@ -426,63 +481,68 @@ function DocumentsContent() {
               const workflowHint = lang === 'fr' ? workflowMeta.hintFr : workflowMeta.hintEn;
               const workflowCta = lang === 'fr' ? workflowMeta.ctaFr : workflowMeta.ctaEn;
               return (
-            <div
-              key={doc.id}
-              className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-slate-300 transition-all"
-            >
-              <div className="w-9 h-9 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0">
-                <File size={16} className="text-navy" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-navy truncate">{doc.file_name}</p>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  {formatSize(doc.file_name)} · {formatDate(doc.uploaded_at)}
-                </p>
-                <div className="mt-1.5 flex items-center gap-2 flex-wrap">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${workflowMeta.className}`}>
-                    {workflowLabel}
-                  </span>
-                  {doc.caseRef ? (
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border bg-slate-50 text-slate-600 border-slate-200">
-                      {doc.caseRef}
-                    </span>
-                  ) : null}
+                <div
+                  key={doc.id}
+                  className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-slate-300 transition-all"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0">
+                    <File size={16} className="text-navy" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-navy truncate">{doc.file_name}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      {formatSize(doc.file_name)} · {formatDate(doc.uploaded_at)}
+                    </p>
+                    <div className="mt-1.5 flex items-center gap-2 flex-wrap">
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${workflowMeta.className}`}
+                      >
+                        {workflowLabel}
+                      </span>
+                      {doc.caseRef ? (
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full border bg-slate-50 text-slate-600 border-slate-200">
+                          {doc.caseRef}
+                        </span>
+                      ) : null}
+                    </div>
+                    <p className="text-[11px] text-slate-500 mt-1">{workflowHint}</p>
+                  </div>
+                  <div className="flex items-center gap-1 w-full sm:w-auto justify-end sm:justify-start flex-shrink-0 pt-1 sm:pt-0">
+                    <Link
+                      href={workflowMeta.href}
+                      className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-3 py-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors mr-auto sm:mr-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30"
+                      title={workflowCta}
+                    >
+                      {workflowCta}
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setViewerDoc(doc);
+                        setViewerOpen(true);
+                      }}
+                      className="p-2.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-navy transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30"
+                      title={lang === 'fr' ? 'Aperçu' : 'Preview'}
+                    >
+                      <Eye size={15} />
+                    </button>
+                    <a
+                      href={doc.file_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-navy transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30"
+                      title={lang === 'fr' ? 'Télécharger' : 'Download'}
+                    >
+                      <Download size={15} />
+                    </a>
+                    <button
+                      onClick={() => handleDelete(doc)}
+                      className="p-2.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200"
+                      title={lang === 'fr' ? 'Supprimer' : 'Delete'}
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
                 </div>
-                <p className="text-[11px] text-slate-500 mt-1">{workflowHint}</p>
-              </div>
-              <div className="flex items-center gap-1 w-full sm:w-auto justify-end sm:justify-start flex-shrink-0 pt-1 sm:pt-0">
-                <Link
-                  href={workflowMeta.href}
-                  className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-3 py-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors mr-auto sm:mr-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30"
-                  title={workflowCta}
-                >
-                  {workflowCta}
-                </Link>
-                <button
-                  onClick={() => { setViewerDoc(doc); setViewerOpen(true); }}
-                  className="p-2.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-navy transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30"
-                  title={lang === 'fr' ? 'Aperçu' : 'Preview'}
-                >
-                  <Eye size={15} />
-                </button>
-                <a
-                  href={doc.file_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-navy transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30"
-                  title={lang === 'fr' ? 'Télécharger' : 'Download'}
-                >
-                  <Download size={15} />
-                </a>
-                <button
-                  onClick={() => handleDelete(doc)}
-                  className="p-2.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200"
-                  title={lang === 'fr' ? 'Supprimer' : 'Delete'}
-                >
-                  <Trash2 size={15} />
-                </button>
-              </div>
-            </div>
               );
             })}
           </div>
@@ -500,7 +560,10 @@ function DocumentsContent() {
       {viewerDoc && (
         <DocumentViewerModal
           isOpen={viewerOpen}
-          onClose={() => { setViewerOpen(false); setViewerDoc(null); }}
+          onClose={() => {
+            setViewerOpen(false);
+            setViewerDoc(null);
+          }}
           fileUrl={viewerDoc.file_url}
           fileName={viewerDoc.file_name}
           uploadedAt={viewerDoc.uploaded_at}
@@ -513,11 +576,13 @@ function DocumentsContent() {
 export default function DocumentsPage() {
   return (
     <DashboardLayout>
-      <Suspense fallback={
-        <div className="flex items-center justify-center py-16">
-          <Loader2 size={28} className="animate-spin text-navy" />
-        </div>
-      }>
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center py-16">
+            <Loader2 size={28} className="animate-spin text-navy" />
+          </div>
+        }
+      >
         <DocumentsContent />
       </Suspense>
     </DashboardLayout>

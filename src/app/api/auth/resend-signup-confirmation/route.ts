@@ -3,9 +3,9 @@ import { checkRateLimit, getClientIp, RATE_LIMITS } from '@/lib/rateLimit';
 import { createServiceRoleClient } from '@/lib/supabase/service';
 import { Resend } from 'resend';
 import { ensureTrustedUrl } from '@/lib/apiSecurity';
-import { RESEND_FROM_FALLBACK } from '@/lib/companyContact';
+import { RESEND_FROM_FALLBACK, getPublicSiteUrl } from '@/lib/companyContact';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+const SITE_URL = getPublicSiteUrl();
 const EMAIL_FROM = process.env.RESEND_FROM_EMAIL?.trim() || RESEND_FROM_FALLBACK;
 
 function getResendErrorMessage(result: unknown): string | null {

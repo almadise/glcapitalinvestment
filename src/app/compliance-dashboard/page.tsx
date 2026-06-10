@@ -27,7 +27,12 @@ interface Stats {
 export default function ComplianceDashboardPage() {
   const { user } = useAuth();
   const { lang, t } = useLanguage();
-  const [stats, setStats] = useState<Stats>({ submissions: 0, totalCases: 0, eligibleCases: 0, pendingReview: 0 });
+  const [stats, setStats] = useState<Stats>({
+    submissions: 0,
+    totalCases: 0,
+    eligibleCases: 0,
+    pendingReview: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   const refreshStats = useCallback(async () => {
@@ -36,8 +41,14 @@ export default function ComplianceDashboardPage() {
     const [sub, total, eligible, pending] = await Promise.all([
       supabase.from('contact_submissions').select('id', { count: 'exact', head: true }),
       supabase.from('case_files').select('id', { count: 'exact', head: true }),
-      supabase.from('case_files').select('id', { count: 'exact', head: true }).eq('status', 'ELIGIBLE'),
-      supabase.from('case_files').select('id', { count: 'exact', head: true }).eq('status', 'EN_ANALYSE'),
+      supabase
+        .from('case_files')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'ELIGIBLE'),
+      supabase
+        .from('case_files')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'EN_ANALYSE'),
     ]);
     setStats({
       submissions: sub.count || 0,
@@ -59,15 +70,53 @@ export default function ComplianceDashboardPage() {
   });
 
   const kpis = [
-    { label: lang === 'fr' ? 'Soumissions à examiner' : 'Submissions to Review', value: stats.submissions, icon: Inbox, color: 'text-gold', bg: 'bg-gold/10', href: '/admin/contact-submissions' },
-    { label: lang === 'fr' ? 'Total dossiers' : 'Total Cases', value: stats.totalCases, icon: ClipboardList, color: 'text-blue-600', bg: 'bg-blue-50', href: '/admin/case-management' },
-    { label: lang === 'fr' ? 'Dossiers éligibles' : 'Eligible Cases', value: stats.eligibleCases, icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50', href: '/admin/case-management' },
-    { label: lang === 'fr' ? 'En cours d\'analyse' : 'Under Review', value: stats.pendingReview, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', href: '/admin/case-management' },
+    {
+      label: lang === 'fr' ? 'Soumissions à examiner' : 'Submissions to Review',
+      value: stats.submissions,
+      icon: Inbox,
+      color: 'text-gold',
+      bg: 'bg-gold/10',
+      href: '/admin/contact-submissions',
+    },
+    {
+      label: lang === 'fr' ? 'Total dossiers' : 'Total Cases',
+      value: stats.totalCases,
+      icon: ClipboardList,
+      color: 'text-blue-600',
+      bg: 'bg-blue-50',
+      href: '/admin/case-management',
+    },
+    {
+      label: lang === 'fr' ? 'Dossiers éligibles' : 'Eligible Cases',
+      value: stats.eligibleCases,
+      icon: CheckCircle2,
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-50',
+      href: '/admin/case-management',
+    },
+    {
+      label: lang === 'fr' ? "En cours d'analyse" : 'Under Review',
+      value: stats.pendingReview,
+      icon: Clock,
+      color: 'text-amber-600',
+      bg: 'bg-amber-50',
+      href: '/admin/case-management',
+    },
   ];
 
   const quickLinks = [
-    { label: lang === 'fr' ? 'Soumissions contact' : 'Contact Submissions', href: '/admin/contact-submissions', icon: Inbox, desc: lang === 'fr' ? 'Examiner les nouvelles demandes' : 'Review new requests' },
-    { label: lang === 'fr' ? 'Dossiers clients' : 'Client Cases', href: '/admin/case-management', icon: ClipboardList, desc: lang === 'fr' ? 'Valider et suivre les dossiers' : 'Validate and track cases' },
+    {
+      label: lang === 'fr' ? 'Soumissions contact' : 'Contact Submissions',
+      href: '/admin/contact-submissions',
+      icon: Inbox,
+      desc: lang === 'fr' ? 'Examiner les nouvelles demandes' : 'Review new requests',
+    },
+    {
+      label: lang === 'fr' ? 'Dossiers clients' : 'Client Cases',
+      href: '/admin/case-management',
+      icon: ClipboardList,
+      desc: lang === 'fr' ? 'Valider et suivre les dossiers' : 'Validate and track cases',
+    },
   ];
 
   return (
@@ -80,7 +129,10 @@ export default function ComplianceDashboardPage() {
           </h1>
         </div>
         <p className="text-slate-500 text-sm">
-          {t('Suivi des soumissions et conformité des dossiers.', 'Track submissions and case compliance.')}
+          {t(
+            'Suivi des soumissions et conformité des dossiers.',
+            'Track submissions and case compliance.'
+          )}
         </p>
       </div>
 
@@ -91,8 +143,14 @@ export default function ComplianceDashboardPage() {
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           {kpis.map((kpi) => (
-            <Link key={kpi.label} href={kpi.href} className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 hover:border-emerald-200 hover:shadow-md transition-all group">
-              <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg ${kpi.bg} flex items-center justify-center mb-2 sm:mb-3`}>
+            <Link
+              key={kpi.label}
+              href={kpi.href}
+              className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 hover:border-emerald-200 hover:shadow-md transition-all group"
+            >
+              <div
+                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg ${kpi.bg} flex items-center justify-center mb-2 sm:mb-3`}
+              >
                 <kpi.icon size={18} className={kpi.color} />
               </div>
               <div className="text-xl sm:text-2xl font-bold text-navy">{kpi.value}</div>
@@ -110,7 +168,9 @@ export default function ComplianceDashboardPage() {
             {lang === 'fr' ? 'Accès limité au rôle Conformité' : 'Compliance Role Access'}
           </div>
           <div className="text-emerald-700 text-xs mt-0.5">
-            {lang === 'fr' ?'Vous pouvez consulter et valider les soumissions et dossiers. La gestion des utilisateurs est réservée aux administrateurs.' :'You can review and validate submissions and cases. User management is reserved for administrators.'}
+            {lang === 'fr'
+              ? 'Vous pouvez consulter et valider les soumissions et dossiers. La gestion des utilisateurs est réservée aux administrateurs.'
+              : 'You can review and validate submissions and cases. User management is reserved for administrators.'}
           </div>
         </div>
       </div>
@@ -121,7 +181,11 @@ export default function ComplianceDashboardPage() {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {quickLinks.map((link) => (
-            <Link key={link.label} href={link.href} className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3 sm:gap-4 hover:border-emerald-200 hover:shadow-md transition-all group">
+            <Link
+              key={link.label}
+              href={link.href}
+              className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3 sm:gap-4 hover:border-emerald-200 hover:shadow-md transition-all group"
+            >
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0">
                 <link.icon size={17} className="text-emerald-600" />
               </div>
@@ -129,7 +193,10 @@ export default function ComplianceDashboardPage() {
                 <div className="font-semibold text-navy text-sm">{link.label}</div>
                 <div className="text-xs text-slate-500 truncate">{link.desc}</div>
               </div>
-              <ArrowRight size={16} className="text-slate-400 group-hover:text-emerald-600 transition-colors flex-shrink-0" />
+              <ArrowRight
+                size={16}
+                className="text-slate-400 group-hover:text-emerald-600 transition-colors flex-shrink-0"
+              />
             </Link>
           ))}
         </div>

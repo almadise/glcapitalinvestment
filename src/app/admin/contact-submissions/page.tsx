@@ -71,7 +71,10 @@ export default function AdminContactSubmissionsPage() {
 
   const t = {
     title: lang === 'fr' ? 'Soumissions de contact' : 'Contact Submissions',
-    subtitle: lang === 'fr' ? 'Gérez toutes les demandes reçues via le formulaire de contact' : 'Manage all requests received via the contact form',
+    subtitle:
+      lang === 'fr'
+        ? 'Gérez toutes les demandes reçues via le formulaire de contact'
+        : 'Manage all requests received via the contact form',
     search: lang === 'fr' ? 'Rechercher (nom, société, email…)' : 'Search (name, company, email…)',
     filterPays: lang === 'fr' ? 'Filtrer par pays' : 'Filter by country',
     filterMontant: lang === 'fr' ? 'Filtrer par montant' : 'Filter by amount',
@@ -89,7 +92,10 @@ export default function AdminContactSubmissionsPage() {
     colActions: lang === 'fr' ? 'Actions' : 'Actions',
     view: lang === 'fr' ? 'Voir' : 'View',
     noData: lang === 'fr' ? 'Aucune soumission trouvée' : 'No submissions found',
-    noDataSub: lang === 'fr' ? 'Modifiez vos filtres ou attendez de nouvelles soumissions.' : 'Adjust your filters or wait for new submissions.',
+    noDataSub:
+      lang === 'fr'
+        ? 'Modifiez vos filtres ou attendez de nouvelles soumissions.'
+        : 'Adjust your filters or wait for new submissions.',
     total: lang === 'fr' ? 'résultats' : 'results',
     page: lang === 'fr' ? 'Page' : 'Page',
     of: lang === 'fr' ? 'sur' : 'of',
@@ -97,7 +103,10 @@ export default function AdminContactSubmissionsPage() {
     close: lang === 'fr' ? 'Fermer' : 'Close',
     message: lang === 'fr' ? 'Message' : 'Message',
     backDashboard: lang === 'fr' ? 'Tableau de bord' : 'Dashboard',
-    unauthorized: lang === 'fr' ? 'Accès non autorisé. Veuillez vous connecter.' : 'Unauthorized. Please sign in.',
+    unauthorized:
+      lang === 'fr'
+        ? 'Accès non autorisé. Veuillez vous connecter.'
+        : 'Unauthorized. Please sign in.',
   };
 
   const fetchSubmissions = useCallback(async () => {
@@ -106,9 +115,7 @@ export default function AdminContactSubmissionsPage() {
     setError(null);
     try {
       const supabase = createClient();
-      let query = supabase
-        .from('contact_submissions')
-        .select('*', { count: 'exact' });
+      let query = supabase.from('contact_submissions').select('*', { count: 'exact' });
 
       if (search.trim()) {
         query = query.or(
@@ -156,19 +163,27 @@ export default function AdminContactSubmissionsPage() {
   useEffect(() => {
     if (!user) return;
     const supabase = createClient();
-    supabase.from('contact_submissions').select('pays').then(({ data }) => {
-      const unique = [...new Set((data || []).map((r: any) => r.pays).filter(Boolean))].sort();
-      setPaysList(unique);
-    });
-    supabase.from('contact_submissions').select('montant_projet').then(({ data }) => {
-      const unique = [...new Set((data || []).map((r: any) => r.montant_projet).filter(Boolean))].sort();
-      setMontantList(unique);
-    });
+    supabase
+      .from('contact_submissions')
+      .select('pays')
+      .then(({ data }) => {
+        const unique = [...new Set((data || []).map((r: any) => r.pays).filter(Boolean))].sort();
+        setPaysList(unique);
+      });
+    supabase
+      .from('contact_submissions')
+      .select('montant_projet')
+      .then(({ data }) => {
+        const unique = [
+          ...new Set((data || []).map((r: any) => r.montant_projet).filter(Boolean)),
+        ].sort();
+        setMontantList(unique);
+      });
   }, [user, totalCount]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
     } else {
       setSortField(field);
       setSortDir('desc');
@@ -176,9 +191,18 @@ export default function AdminContactSubmissionsPage() {
     setPage(1);
   };
 
-  const handleSearchChange = (v: string) => { setSearch(v); setPage(1); };
-  const handleFilterPays = (v: string) => { setFilterPays(v); setPage(1); };
-  const handleFilterMontant = (v: string) => { setFilterMontant(v); setPage(1); };
+  const handleSearchChange = (v: string) => {
+    setSearch(v);
+    setPage(1);
+  };
+  const handleFilterPays = (v: string) => {
+    setFilterPays(v);
+    setPage(1);
+  };
+  const handleFilterMontant = (v: string) => {
+    setFilterMontant(v);
+    setPage(1);
+  };
 
   const handleExportCSV = async () => {
     if (!user) return;
@@ -198,7 +222,17 @@ export default function AdminContactSubmissionsPage() {
       const { data } = await query;
       if (!data || data.length === 0) return;
 
-      const headers = ['ID', 'Date', 'Nom complet', 'Société', 'Email', 'Téléphone', 'Pays', 'Montant projet', 'Message'];
+      const headers = [
+        'ID',
+        'Date',
+        'Nom complet',
+        'Société',
+        'Email',
+        'Téléphone',
+        'Pays',
+        'Montant projet',
+        'Message',
+      ];
       const rows = data.map((r: ContactSubmission) => [
         r.id,
         new Date(r.created_at).toLocaleString('fr-FR'),
@@ -211,7 +245,7 @@ export default function AdminContactSubmissionsPage() {
         `"${(r.message || '').replace(/"/g, '""')}"`,
       ]);
 
-      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
       const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -228,14 +262,25 @@ export default function AdminContactSubmissionsPage() {
 
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return <ChevronUp size={12} className="text-slate-400 opacity-40" />;
-    return sortDir === 'asc'
-      ? <ChevronUp size={12} className="text-gold" />
-      : <ChevronDown size={12} className="text-gold" />;
+    return sortDir === 'asc' ? (
+      <ChevronUp size={12} className="text-gold" />
+    ) : (
+      <ChevronDown size={12} className="text-gold" />
+    );
   };
 
   const formatDate = (iso: string) => {
-    try { return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
-    catch { return iso; }
+    try {
+      return new Date(iso).toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch {
+      return iso;
+    }
   };
 
   if (authLoading) {
@@ -285,45 +330,66 @@ export default function AdminContactSubmissionsPage() {
             <input
               type="text"
               value={search}
-              onChange={e => handleSearchChange(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder={t.search}
               className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-navy text-sm placeholder-slate-400 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition-all"
             />
             {search && (
-              <button onClick={() => handleSearchChange('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-navy">
+              <button
+                onClick={() => handleSearchChange('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-navy"
+              >
                 <X size={13} />
               </button>
             )}
           </div>
           <div className="relative">
-            <Globe size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <Globe
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+            />
             <select
               value={filterPays}
-              onChange={e => handleFilterPays(e.target.value)}
+              onChange={(e) => handleFilterPays(e.target.value)}
               className="bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-8 py-2 text-navy text-sm focus:outline-none focus:border-gold/50 appearance-none cursor-pointer min-w-[150px]"
             >
               <option value="">{t.allCountries}</option>
-              {paysList.map(p => <option key={p} value={p}>{p}</option>)}
+              {paysList.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
             </select>
           </div>
           <div className="relative">
-            <DollarSign size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <DollarSign
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+            />
             <select
               value={filterMontant}
-              onChange={e => handleFilterMontant(e.target.value)}
+              onChange={(e) => handleFilterMontant(e.target.value)}
               className="bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-8 py-2 text-navy text-sm focus:outline-none focus:border-gold/50 appearance-none cursor-pointer min-w-[150px]"
             >
               <option value="">{t.allAmounts}</option>
-              {montantList.map(m => <option key={m} value={m}>{m}</option>)}
+              {montantList.map((m) => (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              ))}
             </select>
           </div>
         </div>
 
         {/* Stats bar */}
         <div className="flex items-center justify-between text-sm text-slate-400">
-          <span>{totalCount} {t.total}</span>
+          <span>
+            {totalCount} {t.total}
+          </span>
           {totalPages > 1 && (
-            <span>{t.page} {page} {t.of} {totalPages}</span>
+            <span>
+              {t.page} {page} {t.of} {totalPages}
+            </span>
           )}
         </div>
 
@@ -352,16 +418,18 @@ export default function AdminContactSubmissionsPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-slate-200 bg-slate-50">
-                    {([
-                      { label: t.colDate, field: 'created_at' as SortField },
-                      { label: t.colName, field: 'nom_complet' as SortField },
-                      { label: t.colCompany, field: 'societe' as SortField },
-                      { label: t.colEmail, field: null },
-                      { label: t.colPhone, field: null },
-                      { label: t.colCountry, field: 'pays' as SortField },
-                      { label: t.colAmount, field: 'montant_projet' as SortField },
-                      { label: t.colActions, field: null },
-                    ] as { label: string; field: SortField | null }[]).map((col, i) => (
+                    {(
+                      [
+                        { label: t.colDate, field: 'created_at' as SortField },
+                        { label: t.colName, field: 'nom_complet' as SortField },
+                        { label: t.colCompany, field: 'societe' as SortField },
+                        { label: t.colEmail, field: null },
+                        { label: t.colPhone, field: null },
+                        { label: t.colCountry, field: 'pays' as SortField },
+                        { label: t.colAmount, field: 'montant_projet' as SortField },
+                        { label: t.colActions, field: null },
+                      ] as { label: string; field: SortField | null }[]
+                    ).map((col, i) => (
                       <th
                         key={i}
                         className={`px-3 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap ${col.field ? 'cursor-pointer hover:text-navy select-none' : ''}`}
@@ -376,15 +444,26 @@ export default function AdminContactSubmissionsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {submissions.map(row => (
+                  {submissions.map((row) => (
                     <tr key={row.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-3 py-3 text-slate-500 text-xs whitespace-nowrap">{formatDate(row.created_at)}</td>
-                      <td className="px-3 py-3 text-navy font-medium whitespace-nowrap">{row.nom_complet}</td>
+                      <td className="px-3 py-3 text-slate-500 text-xs whitespace-nowrap">
+                        {formatDate(row.created_at)}
+                      </td>
+                      <td className="px-3 py-3 text-navy font-medium whitespace-nowrap">
+                        {row.nom_complet}
+                      </td>
                       <td className="px-3 py-3 text-slate-600 whitespace-nowrap">{row.societe}</td>
                       <td className="px-3 py-3 text-slate-600 whitespace-nowrap">
-                        <a href={`mailto:${row.email}`} className="text-gold hover:text-gold/80 transition-colors">{row.email}</a>
+                        <a
+                          href={`mailto:${row.email}`}
+                          className="text-gold hover:text-gold/80 transition-colors"
+                        >
+                          {row.email}
+                        </a>
                       </td>
-                      <td className="px-3 py-3 text-slate-500 whitespace-nowrap text-xs">{row.telephone || '-'}</td>
+                      <td className="px-3 py-3 text-slate-500 whitespace-nowrap text-xs">
+                        {row.telephone || '-'}
+                      </td>
                       <td className="px-3 py-3 text-slate-600 whitespace-nowrap">{row.pays}</td>
                       <td className="px-3 py-3 whitespace-nowrap">
                         <span className="inline-flex items-center gap-1 bg-gold/10 border border-gold/20 text-gold text-xs font-semibold px-2 py-0.5 rounded-full">
@@ -412,18 +491,22 @@ export default function AdminContactSubmissionsPage() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between text-sm text-slate-500">
-            <span>{totalCount} {t.total}</span>
+            <span>
+              {totalCount} {t.total}
+            </span>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
                 className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronLeft size={14} />
               </button>
-              <span className="text-xs">{t.page} {page} {t.of} {totalPages}</span>
+              <span className="text-xs">
+                {t.page} {page} {t.of} {totalPages}
+              </span>
               <button
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
                 className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
@@ -440,22 +523,57 @@ export default function AdminContactSubmissionsPage() {
           <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 flex-shrink-0">
               <h3 className="text-navy font-bold font-display">{t.detailTitle}</h3>
-              <button onClick={() => setSelectedRow(null)} className="text-slate-400 hover:text-navy p-1 rounded-lg transition-colors">
+              <button
+                onClick={() => setSelectedRow(null)}
+                className="text-slate-400 hover:text-navy p-1 rounded-lg transition-colors"
+              >
                 <X size={18} />
               </button>
             </div>
             <div className="px-6 py-5 space-y-4 overflow-y-auto flex-1">
               <div className="grid grid-cols-2 gap-4">
-                <DetailField icon={<Calendar size={11} />} label={t.colDate} value={formatDate(selectedRow.created_at)} />
-                <DetailField icon={<Globe size={11} />} label={t.colCountry} value={selectedRow.pays} />
-                <DetailField icon={<Mail size={11} />} label={t.colName} value={selectedRow.nom_complet} />
-                <DetailField icon={<Building2 size={11} />} label={t.colCompany} value={selectedRow.societe} />
-                <DetailField icon={<Mail size={11} />} label={t.colEmail} value={selectedRow.email} link={`mailto:${selectedRow.email}`} />
-                <DetailField icon={<Phone size={11} />} label={t.colPhone} value={selectedRow.telephone || '-'} />
-                <DetailField icon={<DollarSign size={11} />} label={t.colAmount} value={selectedRow.montant_projet} highlight />
+                <DetailField
+                  icon={<Calendar size={11} />}
+                  label={t.colDate}
+                  value={formatDate(selectedRow.created_at)}
+                />
+                <DetailField
+                  icon={<Globe size={11} />}
+                  label={t.colCountry}
+                  value={selectedRow.pays}
+                />
+                <DetailField
+                  icon={<Mail size={11} />}
+                  label={t.colName}
+                  value={selectedRow.nom_complet}
+                />
+                <DetailField
+                  icon={<Building2 size={11} />}
+                  label={t.colCompany}
+                  value={selectedRow.societe}
+                />
+                <DetailField
+                  icon={<Mail size={11} />}
+                  label={t.colEmail}
+                  value={selectedRow.email}
+                  link={`mailto:${selectedRow.email}`}
+                />
+                <DetailField
+                  icon={<Phone size={11} />}
+                  label={t.colPhone}
+                  value={selectedRow.telephone || '-'}
+                />
+                <DetailField
+                  icon={<DollarSign size={11} />}
+                  label={t.colAmount}
+                  value={selectedRow.montant_projet}
+                  highlight
+                />
               </div>
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{t.message}</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                  {t.message}
+                </p>
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-slate-700 text-sm leading-relaxed whitespace-pre-wrap">
                   {selectedRow.message}
                 </div>
@@ -496,9 +614,13 @@ function DetailField({
         {label}
       </p>
       {link ? (
-        <a href={link} className="text-gold hover:text-gold/80 text-sm transition-colors break-all">{value}</a>
+        <a href={link} className="text-gold hover:text-gold/80 text-sm transition-colors break-all">
+          {value}
+        </a>
       ) : (
-        <p className={`text-sm break-words ${highlight ? 'text-gold font-semibold' : 'text-navy'}`}>{value}</p>
+        <p className={`text-sm break-words ${highlight ? 'text-gold font-semibold' : 'text-navy'}`}>
+          {value}
+        </p>
       )}
     </div>
   );

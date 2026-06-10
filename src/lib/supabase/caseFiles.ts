@@ -12,7 +12,9 @@ interface InsertCaseFileResult<T = unknown> {
 }
 
 function getMissingColumn(errorMessage: string): string | null {
-  const match = errorMessage.match(/column ["']?([a-zA-Z0-9_]+)["']? of relation ["']?case_files["']? does not exist/i);
+  const match = errorMessage.match(
+    /column ["']?([a-zA-Z0-9_]+)["']? of relation ["']?case_files["']? does not exist/i
+  );
   return match?.[1] ?? null;
 }
 
@@ -28,7 +30,8 @@ export async function insertCaseFileWithSchemaFallback<T = unknown>({
 
   for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
     const query = supabase.from('case_files').insert(workingPayload);
-    const selectExpr = Array.isArray(selectColumns) && selectColumns.length > 0 ? selectColumns.join(',') : '*';
+    const selectExpr =
+      Array.isArray(selectColumns) && selectColumns.length > 0 ? selectColumns.join(',') : '*';
     const withSelect = query.select(selectExpr);
 
     const result = single ? await withSelect.single() : await (withSelect as any);

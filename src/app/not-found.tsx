@@ -49,10 +49,14 @@ export default function NotFound() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 rounded-full px-4 py-1.5 mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
-            <span className="text-red-700 text-xs font-semibold tracking-wide uppercase">{t('Erreur 404', 'Error 404')}</span>
+            <span className="text-red-700 text-xs font-semibold tracking-wide uppercase">
+              {t('Erreur 404', 'Error 404')}
+            </span>
           </div>
 
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-navy mb-3">{t('Page introuvable', 'Page Not Found')}</h1>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-navy mb-3">
+            {t('Page introuvable', 'Page Not Found')}
+          </h1>
           <p className="text-slate-500 text-base leading-relaxed mb-8 max-w-sm mx-auto">
             {t(
               "La page que vous recherchez n'existe pas ou a été déplacée.",
@@ -87,7 +91,9 @@ export default function NotFound() {
 
           {/* Useful links */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">{t('Liens utiles', 'Useful links')}</p>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">
+              {t('Liens utiles', 'Useful links')}
+            </p>
             <div className="flex flex-wrap gap-2 justify-center">
               {[
                 { href: '/client-dashboard', label: t('Tableau de bord', 'Dashboard') },
@@ -111,7 +117,9 @@ export default function NotFound() {
       <footer className="bg-white border-t border-slate-200 px-4 py-4 text-center">
         <p className="text-xs text-slate-400">
           © {new Date()?.getFullYear()} GL Capital Investment SA -{' '}
-          <a href={`mailto:${OFFICIAL_PUBLIC_EMAIL}`} className="hover:text-navy transition-colors">{OFFICIAL_PUBLIC_EMAIL}</a>
+          <a href={`mailto:${OFFICIAL_PUBLIC_EMAIL}`} className="hover:text-navy transition-colors">
+            {OFFICIAL_PUBLIC_EMAIL}
+          </a>
         </p>
       </footer>
     </div>

@@ -1,7 +1,14 @@
 'use client';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { MessageSquare, ArrowRight, Loader2, Bell, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import {
+  MessageSquare,
+  ArrowRight,
+  Loader2,
+  Bell,
+  AlertTriangle,
+  CheckCircle2,
+} from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { createClient } from '@/lib/supabase/client';
@@ -99,7 +106,9 @@ export default function ClientMessagesPage() {
                       {lang === 'fr' ? 'Actions en attente' : 'Pending actions'}
                     </p>
                   </div>
-                  <p className="text-xl font-bold text-amber-800 font-mono-data">{pendingActions}</p>
+                  <p className="text-xl font-bold text-amber-800 font-mono-data">
+                    {pendingActions}
+                  </p>
                   <p className="text-[11px] text-amber-700 mt-1">
                     {lang === 'fr' ? 'Notifications a traiter' : 'Notifications to handle'}
                   </p>
@@ -111,7 +120,9 @@ export default function ClientMessagesPage() {
                       {lang === 'fr' ? 'Conversations actives' : 'Active conversations'}
                     </p>
                   </div>
-                  <p className="text-xl font-bold text-emerald-800 font-mono-data">{caseThreads.length}</p>
+                  <p className="text-xl font-bold text-emerald-800 font-mono-data">
+                    {caseThreads.length}
+                  </p>
                   <p className="text-[11px] text-emerald-700 mt-1">
                     {lang === 'fr' ? 'Dossiers disponibles' : 'Available dossiers'}
                   </p>
@@ -121,17 +132,22 @@ export default function ClientMessagesPage() {
               {caseThreads.length > 0 ? (
                 <div className="text-left mb-6 space-y-2">
                   <p className="text-xs text-slate-500 mb-1">
-                    {lang === 'fr' ? 'Acces rapide aux dossiers recents' : 'Quick access to recent dossiers'}
+                    {lang === 'fr'
+                      ? 'Acces rapide aux dossiers recents'
+                      : 'Quick access to recent dossiers'}
                   </p>
                   {caseThreads.map((thread) => (
                     <Link
                       key={thread.id}
                       href={`/client-dashboard/case-files/${thread.id}`}
-                    className="flex items-center justify-between rounded-xl border border-slate-200 px-3.5 py-3 hover:border-slate-300 hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30"
+                      className="flex items-center justify-between rounded-xl border border-slate-200 px-3.5 py-3 hover:border-slate-300 hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/30"
                     >
                       <div>
                         <p className="text-sm font-semibold text-navy">
-                          {thread.ref || (lang === 'fr' ? 'Dossier sans reference' : 'Dossier without reference')}
+                          {thread.ref ||
+                            (lang === 'fr'
+                              ? 'Dossier sans reference'
+                              : 'Dossier without reference')}
                         </p>
                         <p className="text-xs text-slate-500 mt-0.5 truncate max-w-[220px] sm:max-w-none">
                           {thread.ref || (lang === 'fr' ? 'Projet en cours' : 'Ongoing project')}
@@ -144,7 +160,9 @@ export default function ClientMessagesPage() {
               ) : (
                 <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 text-left mb-6">
                   <p className="text-sm font-semibold text-slate-700">
-                    {lang === 'fr' ? 'Aucune conversation active pour le moment' : 'No active conversation yet'}
+                    {lang === 'fr'
+                      ? 'Aucune conversation active pour le moment'
+                      : 'No active conversation yet'}
                   </p>
                   <p className="text-xs text-slate-500 mt-1">
                     {lang === 'fr'
@@ -170,15 +188,23 @@ export default function ClientMessagesPage() {
                     {actionNotifications.map((n) => (
                       <Link
                         key={n.id}
-                        href={n.case_id ? `/client-dashboard/case-files/${n.case_id}` : '/client-dashboard/notifications'}
+                        href={
+                          n.case_id
+                            ? `/client-dashboard/case-files/${n.case_id}`
+                            : '/client-dashboard/notifications'
+                        }
                         className="block rounded-xl border border-slate-200 p-3 hover:bg-slate-50 hover:border-slate-300 transition-colors"
                       >
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-sm font-semibold text-navy truncate">{n.title}</p>
                           <span className="text-[10px] px-2 py-0.5 rounded-full border bg-amber-50 text-amber-700 border-amber-200">
                             {n.type === 'ACTION_REQUIRED' || n.type === 'DOCUMENT_REQUEST'
-                              ? (lang === 'fr' ? 'Action' : 'Action')
-                              : (lang === 'fr' ? 'Info' : 'Info')}
+                              ? lang === 'fr'
+                                ? 'Action'
+                                : 'Action'
+                              : lang === 'fr'
+                                ? 'Info'
+                                : 'Info'}
                           </span>
                         </div>
                         <p className="text-xs text-slate-500 mt-1 line-clamp-2">{n.message}</p>
@@ -187,7 +213,9 @@ export default function ClientMessagesPage() {
                   </div>
                 ) : (
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500">
-                    {lang === 'fr' ? 'Aucune notification en attente.' : 'No pending notifications.'}
+                    {lang === 'fr'
+                      ? 'Aucune notification en attente.'
+                      : 'No pending notifications.'}
                   </div>
                 )}
               </div>

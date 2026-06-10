@@ -122,7 +122,7 @@ serve(async (req) => {
             Connectez-vous à votre espace client pour consulter les détails et les prochaines étapes.
           </p>
           <div style="text-align: center; margin: 32px 0;">
-            <a href="${data?.portalUrl || "https://glcapital8049.builtwithrocket.new/client-portal-dashboard"}" style="background: #C9A84C; color: #060F1E; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">
+            <a href="${data?.portalUrl || "https://www.glcapitalinvestment.com/client-portal-dashboard"}" style="background: #C9A84C; color: #060F1E; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">
               Accéder à mon espace →
             </a>
           </div>

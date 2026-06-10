@@ -2,7 +2,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { Search, X, ChevronDown, Save, Bookmark, Trash2, Check, Loader2, SlidersHorizontal,  } from 'lucide-react';
+import {
+  Search,
+  X,
+  ChevronDown,
+  Save,
+  Bookmark,
+  Trash2,
+  Check,
+  Loader2,
+  SlidersHorizontal,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 export interface FilterState {
@@ -90,8 +100,11 @@ export default function AdvancedFilters({
         .eq('dashboard', dashboard)
         .order('created_at', { ascending: false });
       setPresets((data || []).map((p: any) => ({ id: p.id, name: p.name, filters: p.filters })));
-    } catch {}
-    finally { setLoadingPresets(false); }
+    } catch (_) {
+      /* empty */
+    } finally {
+      setLoadingPresets(false);
+    }
   }, [user, dashboard]);
 
   useEffect(() => {
@@ -102,12 +115,16 @@ export default function AdvancedFilters({
     if (!user || !presetName.trim()) return;
     setSavingPreset(true);
     try {
-      const { data, error } = await supabase.from('filter_presets').insert({
-        user_id: user.id,
-        name: presetName.trim(),
-        dashboard,
-        filters,
-      }).select().single();
+      const { data, error } = await supabase
+        .from('filter_presets')
+        .insert({
+          user_id: user.id,
+          name: presetName.trim(),
+          dashboard,
+          filters,
+        })
+        .select()
+        .single();
       if (error) throw error;
       setPresets((prev) => [{ id: data.id, name: data.name, filters: data.filters }, ...prev]);
       setPresetName('');
@@ -125,7 +142,9 @@ export default function AdvancedFilters({
       await supabase.from('filter_presets').delete().eq('id', id);
       setPresets((prev) => prev.filter((p) => p.id !== id));
       toast.success('Filtre supprimé');
-    } catch {}
+    } catch (_) {
+      /* empty */
+    }
   };
 
   const applyPreset = (preset: FilterPreset) => {
@@ -154,7 +173,10 @@ export default function AdvancedFilters({
             className={`w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none ${focusRing}`}
           />
           {filters.search && (
-            <button onClick={() => onChange({ ...filters, search: '' })} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+            <button
+              onClick={() => onChange({ ...filters, search: '' })}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            >
               <X size={13} />
             </button>
           )}
@@ -168,9 +190,16 @@ export default function AdvancedFilters({
             className={`appearance-none pl-3 pr-8 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none ${focusRing} bg-white w-full sm:w-auto`}
           >
             <option value="ALL">Tous les statuts</option>
-            {statusOptions.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+            {statusOptions.map((s) => (
+              <option key={s.value} value={s.value}>
+                {s.label}
+              </option>
+            ))}
           </select>
-          <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <ChevronDown
+            size={13}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+          />
         </div>
 
         {/* Advanced toggle */}
@@ -181,7 +210,9 @@ export default function AdvancedFilters({
           <SlidersHorizontal size={14} />
           Filtres
           {activeFilterCount > 0 && (
-            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${showAdvanced || activeFilterCount > 1 ? 'bg-white text-navy' : 'bg-navy text-white'}`}>
+            <span
+              className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${showAdvanced || activeFilterCount > 1 ? 'bg-white text-navy' : 'bg-navy text-white'}`}
+            >
               {activeFilterCount}
             </span>
           )}
@@ -200,20 +231,39 @@ export default function AdvancedFilters({
             <div className="absolute right-0 top-full mt-1 w-64 bg-white border border-slate-200 rounded-xl shadow-lg z-20 p-2">
               <div className="flex items-center justify-between px-2 py-1 mb-1">
                 <span className="text-xs font-semibold text-slate-600">Filtres sauvegardés</span>
-                <button onClick={() => { setShowSaveForm(true); setShowPresets(false); }} className="text-xs text-navy hover:underline flex items-center gap-1">
+                <button
+                  onClick={() => {
+                    setShowSaveForm(true);
+                    setShowPresets(false);
+                  }}
+                  className="text-xs text-navy hover:underline flex items-center gap-1"
+                >
                   <Save size={11} /> Sauvegarder actuel
                 </button>
               </div>
               {loadingPresets ? (
-                <div className="flex justify-center py-3"><Loader2 size={16} className="animate-spin text-slate-400" /></div>
+                <div className="flex justify-center py-3">
+                  <Loader2 size={16} className="animate-spin text-slate-400" />
+                </div>
               ) : presets.length === 0 ? (
                 <p className="text-xs text-slate-400 text-center py-3">Aucun preset sauvegardé</p>
               ) : (
                 <div className="space-y-1">
                   {presets.map((p) => (
-                    <div key={p.id} className="flex items-center gap-2 px-2 py-1.5 hover:bg-slate-50 rounded-lg group">
-                      <button onClick={() => applyPreset(p)} className="flex-1 text-left text-sm text-slate-700 truncate">{p.name}</button>
-                      <button onClick={() => deletePreset(p.id)} className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-opacity">
+                    <div
+                      key={p.id}
+                      className="flex items-center gap-2 px-2 py-1.5 hover:bg-slate-50 rounded-lg group"
+                    >
+                      <button
+                        onClick={() => applyPreset(p)}
+                        className="flex-1 text-left text-sm text-slate-700 truncate"
+                      >
+                        {p.name}
+                      </button>
+                      <button
+                        onClick={() => deletePreset(p.id)}
+                        className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-opacity"
+                      >
                         <Trash2 size={12} />
                       </button>
                     </div>
@@ -235,11 +285,21 @@ export default function AdvancedFilters({
             className="flex-1 px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-navy/20"
             onKeyDown={(e) => e.key === 'Enter' && savePreset()}
           />
-          <button onClick={savePreset} disabled={savingPreset || !presetName.trim()} className="flex items-center gap-1 px-3 py-1.5 bg-navy text-white rounded-lg text-sm font-medium disabled:opacity-50">
+          <button
+            onClick={savePreset}
+            disabled={savingPreset || !presetName.trim()}
+            className="flex items-center gap-1 px-3 py-1.5 bg-navy text-white rounded-lg text-sm font-medium disabled:opacity-50"
+          >
             {savingPreset ? <Loader2 size={13} className="animate-spin" /> : <Check size={13} />}
             Sauvegarder
           </button>
-          <button onClick={() => { setShowSaveForm(false); setPresetName(''); }} className="p-1.5 text-slate-400 hover:text-slate-600">
+          <button
+            onClick={() => {
+              setShowSaveForm(false);
+              setPresetName('');
+            }}
+            className="p-1.5 text-slate-400 hover:text-slate-600"
+          >
             <X size={14} />
           </button>
         </div>
@@ -279,9 +339,16 @@ export default function AdvancedFilters({
                   className="appearance-none w-full pl-3 pr-8 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-navy/20 bg-white"
                 >
                   <option value="">Tous les partenaires</option>
-                  {partnerOptions.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  {partnerOptions.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
                 </select>
-                <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <ChevronDown
+                  size={13}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                />
               </div>
             </div>
           )}
@@ -316,7 +383,10 @@ export default function AdvancedFilters({
           {resultCount} résultat{resultCount !== 1 ? 's' : ''} sur {totalCount}
         </span>
         {hasActiveFilters && (
-          <button onClick={clearFilters} className="flex items-center gap-1 text-xs text-slate-500 hover:text-red-600 transition-colors">
+          <button
+            onClick={clearFilters}
+            className="flex items-center gap-1 text-xs text-slate-500 hover:text-red-600 transition-colors"
+          >
             <X size={12} /> Réinitialiser les filtres
           </button>
         )}

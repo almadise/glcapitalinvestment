@@ -1,7 +1,14 @@
 import { createClient } from '@/lib/supabase/client';
 
 export type AuditAction =
-  | 'STATUS_CHANGE' |'DOCUMENT_UPLOAD' |'NOTE_CREATED' |'NOTE_EDITED' |'EXPORT_CSV' |'EXPORT_PDF' |'CASE_CREATED' |'CASE_VIEWED';
+  | 'STATUS_CHANGE'
+  | 'DOCUMENT_UPLOAD'
+  | 'NOTE_CREATED'
+  | 'NOTE_EDITED'
+  | 'EXPORT_CSV'
+  | 'EXPORT_PDF'
+  | 'CASE_CREATED'
+  | 'CASE_VIEWED';
 
 interface LogAuditParams {
   action: AuditAction;

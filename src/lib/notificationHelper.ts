@@ -1,6 +1,12 @@
+import { getPublicSiteUrl } from '@/lib/companyContact';
 import { createClient } from '@/lib/supabase/client';
 
-type NotificationType = 'STATUS_UPDATE' | 'ACTION_REQUIRED' | 'COMPLIANCE_DECISION' | 'DOCUMENT_REQUEST' | 'GENERAL';
+type NotificationType =
+  | 'STATUS_UPDATE'
+  | 'ACTION_REQUIRED'
+  | 'COMPLIANCE_DECISION'
+  | 'DOCUMENT_REQUEST'
+  | 'GENERAL';
 
 interface CreateNotificationParams {
   userId: string;
@@ -42,7 +48,8 @@ export async function createNotification(params: CreateNotificationParams): Prom
 
     // Send real email notification via Resend if recipient email provided
     if (params.recipientEmail) {
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital9393.builtwithrocket.new';
+      const siteUrl =
+        getPublicSiteUrl();
       fetch('/api/send-notification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

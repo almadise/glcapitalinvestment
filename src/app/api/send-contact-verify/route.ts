@@ -4,6 +4,7 @@ import { createServiceRoleClient } from '../../../lib/supabase/service';
 import { checkRateLimit, getClientIp, RATE_LIMITS } from '../../../lib/rateLimit';
 import { resolveDevOrSandboxRecipient } from '@/lib/resendRecipients';
 import {
+  getPublicSiteUrl,
   OFFICIAL_PUBLIC_EMAIL,
   RESEND_FROM_FALLBACK,
   TRANSACTIONAL_EMAIL_FOOTER_LINE,
@@ -87,7 +88,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Erreur base de données' }, { status: 500 });
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital8049.builtwithrocket.new';
+  const siteUrl = getPublicSiteUrl();
   const verifyUrl = `${siteUrl}/contact/verify?token=${encodeURIComponent(token)}`;
 
   const html = `
@@ -147,7 +148,11 @@ export async function POST(req: NextRequest) {
 
   const resend = new Resend(apiKey);
   const isProduction = process.env.NODE_ENV === 'production';
-  const { to: recipientEmail, redirected, configError } = resolveDevOrSandboxRecipient({
+  const {
+    to: recipientEmail,
+    redirected,
+    configError,
+  } = resolveDevOrSandboxRecipient({
     productionRecipient: email,
     fromAddress: EMAIL_FROM,
     isProduction,
@@ -166,7 +171,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const replyTo =
-      process.env.RESEND_REPLY_TO?.trim() || process.env.CONTACT_EMAIL?.trim() || OFFICIAL_PUBLIC_EMAIL;
+      process.env.RESEND_REPLY_TO?.trim() ||
+      process.env.CONTACT_EMAIL?.trim() ||
+      OFFICIAL_PUBLIC_EMAIL;
 
     const { error: sendError } = await resend.emails.send({
       from: EMAIL_FROM,

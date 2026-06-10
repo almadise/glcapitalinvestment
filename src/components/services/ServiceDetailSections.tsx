@@ -126,9 +126,7 @@ export function ServiceHero({
           {pick(lang, subtitle)}
         </p>
         {secondarySubtitle && (
-          <p className="text-slate-400 text-sm mt-4 max-w-3xl">
-            {pick(lang, secondarySubtitle)}
-          </p>
+          <p className="text-slate-400 text-sm mt-4 max-w-3xl">{pick(lang, secondarySubtitle)}</p>
         )}
       </div>
     </section>

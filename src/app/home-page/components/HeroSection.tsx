@@ -25,7 +25,7 @@ export default function HeroSection() {
   const sampleCaseCard = {
     projectFr: 'SPV infrastructure solaire',
     projectEn: 'Solar Infrastructure SPV',
-    regionFr: 'Afrique de l\'Ouest - 42 M€',
+    regionFr: "Afrique de l'Ouest - 42 M€",
     regionEn: 'West Africa - €42M',
   };
 

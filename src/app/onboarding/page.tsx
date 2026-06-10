@@ -4,7 +4,17 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { createClient } from '@/lib/supabase/client';
 import AppLogo from '@/components/ui/AppLogo';
-import { User, Building2, Briefcase, Globe, Phone, ArrowRight, Loader2, CheckCircle2, AlertCircle,  } from 'lucide-react';
+import {
+  User,
+  Building2,
+  Briefcase,
+  Globe,
+  Phone,
+  ArrowRight,
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+} from 'lucide-react';
 
 const ROLE_OPTIONS = [
   { value: 'client', labelFr: 'Client / Porteur de projet', labelEn: 'Client / Project Owner' },
@@ -15,9 +25,26 @@ const ROLE_OPTIONS = [
 ];
 
 const COUNTRY_OPTIONS = [
-  'France', 'Belgique', 'Suisse', 'Luxembourg', 'Maroc', 'Sénégal', 'Côte d\'Ivoire',
-  'Cameroun', 'Gabon', 'Congo', 'RDC', 'Tunisie', 'Algérie', 'Mauritanie',
-  'Royaume-Uni', 'États-Unis', 'Canada', 'Émirats Arabes Unis', 'Qatar', 'Autre',
+  'France',
+  'Belgique',
+  'Suisse',
+  'Luxembourg',
+  'Maroc',
+  'Sénégal',
+  "Côte d'Ivoire",
+  'Cameroun',
+  'Gabon',
+  'Congo',
+  'RDC',
+  'Tunisie',
+  'Algérie',
+  'Mauritanie',
+  'Royaume-Uni',
+  'États-Unis',
+  'Canada',
+  'Émirats Arabes Unis',
+  'Qatar',
+  'Autre',
 ];
 
 export default function OnboardingPage() {
@@ -126,8 +153,18 @@ export default function OnboardingPage() {
           <span className="font-display text-navy font-bold text-base">GL Capital</span>
         </div>
         <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-0.5">
-          <button onClick={() => setLang('fr')} className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${lang === 'fr' ? 'bg-white text-navy shadow-sm' : 'text-slate-500'}`}>FR</button>
-          <button onClick={() => setLang('en')} className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${lang === 'en' ? 'bg-white text-navy shadow-sm' : 'text-slate-500'}`}>EN</button>
+          <button
+            onClick={() => setLang('fr')}
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${lang === 'fr' ? 'bg-white text-navy shadow-sm' : 'text-slate-500'}`}
+          >
+            FR
+          </button>
+          <button
+            onClick={() => setLang('en')}
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${lang === 'en' ? 'bg-white text-navy shadow-sm' : 'text-slate-500'}`}
+          >
+            EN
+          </button>
         </div>
       </header>
 
@@ -137,12 +174,22 @@ export default function OnboardingPage() {
           <div className="flex items-center gap-2 mb-8">
             {[1, 2].map((s) => (
               <React.Fragment key={s}>
-                <div className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all ${
-                  step > s ? 'bg-emerald-500 text-white' : step === s ? 'bg-navy text-white' : 'bg-slate-100 text-slate-400'
-                }`}>
+                <div
+                  className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all ${
+                    step > s
+                      ? 'bg-emerald-500 text-white'
+                      : step === s
+                        ? 'bg-navy text-white'
+                        : 'bg-slate-100 text-slate-400'
+                  }`}
+                >
                   {step > s ? <CheckCircle2 size={14} /> : s}
                 </div>
-                {s < 2 && <div className={`flex-1 h-0.5 rounded-full transition-all ${step > s ? 'bg-emerald-400' : 'bg-slate-200'}`} />}
+                {s < 2 && (
+                  <div
+                    className={`flex-1 h-0.5 rounded-full transition-all ${step > s ? 'bg-emerald-400' : 'bg-slate-200'}`}
+                  />
+                )}
               </React.Fragment>
             ))}
           </div>
@@ -163,9 +210,14 @@ export default function OnboardingPage() {
               <h2 className="text-sm font-bold text-slate-700 mb-3">{t.step1Title[lang]}</h2>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.fullName[lang]}</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                  {t.fullName[lang]}
+                </label>
                 <div className="relative">
-                  <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <User
+                    size={15}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
                   <input
                     type="text"
                     value={form.fullName}
@@ -177,9 +229,14 @@ export default function OnboardingPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.phone[lang]}</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                  {t.phone[lang]}
+                </label>
                 <div className="relative">
-                  <Phone size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Phone
+                    size={15}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
                   <input
                     type="tel"
                     value={form.phone}
@@ -191,16 +248,25 @@ export default function OnboardingPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.country[lang]}</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                  {t.country[lang]}
+                </label>
                 <div className="relative">
-                  <Globe size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Globe
+                    size={15}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
                   <select
                     value={form.country}
                     onChange={(e) => setForm((p) => ({ ...p, country: e.target.value }))}
                     className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/40 transition-all appearance-none"
                   >
                     <option value="">{t.selectCountry[lang]}</option>
-                    {COUNTRY_OPTIONS.map((c) => <option key={c} value={c}>{c}</option>)}
+                    {COUNTRY_OPTIONS.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -213,7 +279,10 @@ export default function OnboardingPage() {
                   {t.next[lang]}
                   <ArrowRight size={15} />
                 </button>
-                <button onClick={handleSkip} className="px-4 py-3 text-sm text-slate-400 hover:text-slate-600 transition-colors">
+                <button
+                  onClick={handleSkip}
+                  className="px-4 py-3 text-sm text-slate-400 hover:text-slate-600 transition-colors"
+                >
                   {t.skip[lang]}
                 </button>
               </div>
@@ -226,9 +295,14 @@ export default function OnboardingPage() {
               <h2 className="text-sm font-bold text-slate-700 mb-3">{t.step2Title[lang]}</h2>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.organization[lang]}</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                  {t.organization[lang]}
+                </label>
                 <div className="relative">
-                  <Building2 size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Building2
+                    size={15}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
                   <input
                     type="text"
                     value={form.organization}
@@ -240,9 +314,14 @@ export default function OnboardingPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.jobTitle[lang]}</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                  {t.jobTitle[lang]}
+                </label>
                 <div className="relative">
-                  <Briefcase size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Briefcase
+                    size={15}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
                   <input
                     type="text"
                     value={form.jobTitle}
@@ -254,7 +333,9 @@ export default function OnboardingPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.roleDetail[lang]}</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                  {t.roleDetail[lang]}
+                </label>
                 <select
                   value={form.roleDetail}
                   onChange={(e) => setForm((p) => ({ ...p, roleDetail: e.target.value }))}
@@ -262,18 +343,26 @@ export default function OnboardingPage() {
                 >
                   <option value="">{t.selectRole[lang]}</option>
                   {ROLE_OPTIONS.map((r) => (
-                    <option key={r.value} value={r.value}>{lang === 'fr' ? r.labelFr : r.labelEn}</option>
+                    <option key={r.value} value={r.value}>
+                      {lang === 'fr' ? r.labelFr : r.labelEn}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{t.projectType[lang]}</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                  {t.projectType[lang]}
+                </label>
                 <input
                   type="text"
                   value={form.projectType}
                   onChange={(e) => setForm((p) => ({ ...p, projectType: e.target.value }))}
-                  placeholder={lang === 'fr' ? 'Ex: Infrastructure portuaire, SBLC, Énergie…' : 'E.g. Port infrastructure, SBLC, Energy…'}
+                  placeholder={
+                    lang === 'fr'
+                      ? 'Ex: Infrastructure portuaire, SBLC, Énergie…'
+                      : 'E.g. Port infrastructure, SBLC, Energy…'
+                  }
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/40 transition-all"
                 />
               </div>
@@ -290,7 +379,11 @@ export default function OnboardingPage() {
                   disabled={submitting}
                   className="flex-1 flex items-center justify-center gap-2 px-5 py-3 bg-navy text-white rounded-xl text-sm font-semibold hover:bg-navy/90 transition-colors disabled:opacity-60"
                 >
-                  {submitting ? <Loader2 size={15} className="animate-spin" /> : <CheckCircle2 size={15} />}
+                  {submitting ? (
+                    <Loader2 size={15} className="animate-spin" />
+                  ) : (
+                    <CheckCircle2 size={15} />
+                  )}
                   {t.finish[lang]}
                 </button>
               </div>

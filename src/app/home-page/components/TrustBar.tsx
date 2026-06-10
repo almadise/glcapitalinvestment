@@ -95,19 +95,35 @@ export default function TrustBar() {
   }, []);
 
   return (
-    <div style={{ background: '#FFFFFF', borderTop: '1px solid #D8E0EC', borderBottom: '1px solid #D8E0EC' }} ref={ref}>
+    <div
+      style={{
+        background: '#FFFFFF',
+        borderTop: '1px solid #D8E0EC',
+        borderBottom: '1px solid #D8E0EC',
+      }}
+      ref={ref}
+    >
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-10">
         <div className="grid grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, i) => (
-            <div key={stat.id} className="text-center px-8 py-6" style={{ borderRight: '1px solid #D8E0EC' }}>
-              <div className="text-4xl lg:text-5xl font-bold tabular-nums mb-1" style={{ color: '#1E2D4A' }}>
+            <div
+              key={stat.id}
+              className="text-center px-8 py-6"
+              style={{ borderRight: '1px solid #D8E0EC' }}
+            >
+              <div
+                className="text-4xl lg:text-5xl font-bold tabular-nums mb-1"
+                style={{ color: '#1E2D4A' }}
+              >
                 {counts[i]}
                 {t(stat.suffixFr, stat.suffixEn)}
               </div>
               <p className="text-sm font-semibold mb-1" style={{ color: '#B8912A' }}>
                 {t(stat.labelFr, stat.labelEn)}
               </p>
-              <p className="text-xs" style={{ color: '#4A5C7A' }}>{t(stat.sublabelFr, stat.sublabelEn)}</p>
+              <p className="text-xs" style={{ color: '#4A5C7A' }}>
+                {t(stat.sublabelFr, stat.sublabelEn)}
+              </p>
             </div>
           ))}
         </div>

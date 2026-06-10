@@ -4,13 +4,27 @@ import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import PublicNavbar from '@/app/home-page/components/PublicNavbar';
 import PublicFooter from '@/app/home-page/components/PublicFooter';
-import { REGISTERED_ADDRESS_ONE_LINE_EN, REGISTERED_ADDRESS_ONE_LINE_FR } from '@/lib/companyContact';
+import {
+  REGISTERED_ADDRESS_ONE_LINE_EN,
+  REGISTERED_ADDRESS_ONE_LINE_FR,
+} from '@/lib/companyContact';
 
 // ── Icons ────────────────────────────────────────────────────────────────────
 
 function BuildingIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <rect x="3" y="3" width="18" height="18" rx="2" />
       <path d="M9 3v18" />
       <path d="M3 9h6" />
@@ -24,7 +38,18 @@ function BuildingIcon() {
 
 function ShieldIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
       <path d="m9 12 2 2 4-4" />
     </svg>
@@ -33,7 +58,18 @@ function ShieldIcon() {
 
 function ChartIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M3 3v18h18" />
       <path d="m19 9-5 5-4-4-3 3" />
     </svg>
@@ -42,7 +78,18 @@ function ChartIcon() {
 
 function CheckIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M20 6 9 17l-5-5" />
     </svg>
   );
@@ -55,12 +102,14 @@ const services = [
     icon: <BuildingIcon />,
     titleFr: 'Financement de Projets',
     titleEn: 'Project Finance',
-    descFr: 'Nous accompagnons les porteurs de projets dans la structuration et la documentation de leur dossier de financement. Notre rôle est celui d\'intermédiaire entre le porteur de projet et les institutions financières agréées.',
-    descEn: 'We assist project owners in structuring and documenting their financing file. Our role is that of intermediary between the project owner and licensed financial institutions.',
+    descFr:
+      "Nous accompagnons les porteurs de projets dans la structuration et la documentation de leur dossier de financement. Notre rôle est celui d'intermédiaire entre le porteur de projet et les institutions financières agréées.",
+    descEn:
+      'We assist project owners in structuring and documenting their financing file. Our role is that of intermediary between the project owner and licensed financial institutions.',
     bulletsFr: [
       "Projets d\'infrastructure et d\'énergie",
       'Immobilier commercial et industriel',
-      "Agro-industrie et projets de développement",
+      'Agro-industrie et projets de développement',
       'Ticket minimum : €5M',
       'Couverture mondiale - 47 pays',
     ],
@@ -76,8 +125,10 @@ const services = [
     icon: <ShieldIcon />,
     titleFr: 'Instruments Bancaires',
     titleEn: 'Bank Instruments',
-    descFr: "GL Capital accompagne les clients dans la compréhension et la documentation des instruments bancaires (SBLC, BG, MTN) utilisés comme garanties ou outils de financement structuré. Nous agissons exclusivement comme conseil documentaire et intermédiaire.",
-    descEn: 'GL Capital assists clients in understanding and documenting bank instruments (SBLC, BG, MTN) used as guarantees or structured finance tools. We act exclusively as documentary advisors and intermediaries.',
+    descFr:
+      'GL Capital accompagne les clients dans la compréhension et la documentation des instruments bancaires (SBLC, BG, MTN) utilisés comme garanties ou outils de financement structuré. Nous agissons exclusivement comme conseil documentaire et intermédiaire.',
+    descEn:
+      'GL Capital assists clients in understanding and documenting bank instruments (SBLC, BG, MTN) used as guarantees or structured finance tools. We act exclusively as documentary advisors and intermediaries.',
     bulletsFr: [
       'Standby Letters of Credit (SBLC)',
       'Bank Guarantees (BG)',
@@ -97,8 +148,10 @@ const services = [
     icon: <ChartIcon />,
     titleFr: 'Conseil & Structuration',
     titleEn: 'Advisory & Structuring',
-    descFr: "Évaluation de la bancabilité de votre projet, revue documentaire complète, pré-screening conformité KYC/AML et structuration du dossier pour soumission à des institutions financières partenaires.",
-    descEn: "Assessment of your project's bankability, complete documentary review, KYC/AML compliance pre-screening and file structuring for submission to partner financial institutions.",
+    descFr:
+      'Évaluation de la bancabilité de votre projet, revue documentaire complète, pré-screening conformité KYC/AML et structuration du dossier pour soumission à des institutions financières partenaires.',
+    descEn:
+      "Assessment of your project's bankability, complete documentary review, KYC/AML compliance pre-screening and file structuring for submission to partner financial institutions.",
     bulletsFr: [
       'Évaluation de bancabilité',
       'Revue et structuration documentaire',
@@ -166,9 +219,19 @@ export default function ServicesPage() {
       {/* ── Hero ── */}
       <section className="relative pt-32 pb-20 overflow-hidden">
         {/* Background grid */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+          }}
+        />
         {/* Radial glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full opacity-10" style={{ background: 'radial-gradient(ellipse, #C9A84C 0%, transparent 70%)' }} />
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full opacity-10"
+          style={{ background: 'radial-gradient(ellipse, #C9A84C 0%, transparent 70%)' }}
+        />
 
         <div className="relative max-w-screen-xl mx-auto px-6 lg:px-10 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gold-500/10 border border-gold-500/20 rounded-full mb-6">
@@ -183,7 +246,7 @@ export default function ServicesPage() {
           </h1>
           <p className="text-white/60 text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
             {t(
-              'GL Capital structure votre demande en dossier bancable auprès d\'institutions financières agréées. Nous n\'exécutons aucune transaction financière.',
+              "GL Capital structure votre demande en dossier bancable auprès d'institutions financières agréées. Nous n'exécutons aucune transaction financière.",
               'GL Capital structures your request into a bankable file for submission to licensed financial institutions. We do not execute financial transactions.'
             )}
           </p>
@@ -216,7 +279,21 @@ export default function ServicesPage() {
                       className="inline-flex items-center gap-2 px-5 py-2.5 bg-gold-500 hover:bg-gold-400 text-navy-900 text-sm font-semibold rounded-lg transition-all duration-200 active:scale-95"
                     >
                       {t('Soumettre un dossier', 'Submit a file')}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M5 12h14" />
+                        <path d="m12 5 7 7-7 7" />
+                      </svg>
                     </Link>
                   </div>
                 </div>
@@ -258,13 +335,18 @@ export default function ServicesPage() {
           {/* Horizontal step cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {processSteps?.map((step, idx) => (
-              <div key={idx} className="relative bg-navy-900 border border-navy-700 rounded-xl p-6 flex flex-col gap-3 group hover:border-gold-500/30 transition-colors duration-200">
+              <div
+                key={idx}
+                className="relative bg-navy-900 border border-navy-700 rounded-xl p-6 flex flex-col gap-3 group hover:border-gold-500/30 transition-colors duration-200"
+              >
                 {/* Connector line (desktop) */}
                 {idx < processSteps?.length - 1 && (
                   <div className="hidden lg:block absolute top-8 -right-2 w-4 h-px bg-navy-600 z-10" />
                 )}
                 <div className="flex items-center gap-3 mb-1">
-                  <span className="text-3xl font-bold text-gold-500/20 font-mono leading-none">{step?.num}</span>
+                  <span className="text-3xl font-bold text-gold-500/20 font-mono leading-none">
+                    {step?.num}
+                  </span>
                   <div className="flex-1 h-px bg-navy-700" />
                   <span className="text-[10px] font-mono text-white/30 bg-navy-800 border border-navy-700 px-2 py-0.5 rounded-full whitespace-nowrap">
                     {t(step?.durationFr, step?.durationEn)}

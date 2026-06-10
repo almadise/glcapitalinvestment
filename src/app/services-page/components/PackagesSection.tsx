@@ -2,8 +2,15 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import {
-  Search, Layers, TrendingUp, ArrowRight, CheckCircle2,
-  Clock, ChevronDown, ChevronUp, Star,
+  Search,
+  Layers,
+  TrendingUp,
+  ArrowRight,
+  CheckCircle2,
+  Clock,
+  ChevronDown,
+  ChevronUp,
+  Star,
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { trackCTA, trackEvent } from '@/lib/analytics/trackEvent';
@@ -45,7 +52,7 @@ const PACKAGES: Package[] = [
     timelineFr: '7 – 10 jours',
     timelineEn: '7 – 10 days',
     deliverablesFr: [
-      'Rapport d\'éligibilité détaillé',
+      "Rapport d'éligibilité détaillé",
       'Analyse de conformité KYC/AML préliminaire',
       'Identification des manques documentaires',
       'Recommandations de structuration',
@@ -103,7 +110,7 @@ const PACKAGES: Package[] = [
     icon: TrendingUp,
     nameFr: 'Exécution',
     nameEn: 'Execution',
-    taglineFr: 'Soumission active et accompagnement jusqu\'à décision',
+    taglineFr: "Soumission active et accompagnement jusqu'à décision",
     taglineEn: 'Active submission and support through decision',
     priceFr: 'Sur devis',
     priceEn: 'On request',
@@ -143,11 +150,17 @@ export default function PackagesSection() {
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-10">
         {/* Section header */}
         <div className="text-center mb-12">
-          <p className="text-xs font-mono tracking-widest uppercase mb-3" style={{ color: '#B8912A' }}>
+          <p
+            className="text-xs font-mono tracking-widest uppercase mb-3"
+            style={{ color: '#B8912A' }}
+          >
             {t('Nos formules', 'Our packages')}
           </p>
           <h2 className="text-3xl lg:text-4xl font-bold mb-4" style={{ color: '#1E2D4A' }}>
-            {t('Trois offres. Un cadre de conformité unique.', 'Three offers. One compliance framework.')}
+            {t(
+              'Trois offres. Un cadre de conformité unique.',
+              'Three offers. One compliance framework.'
+            )}
           </h2>
           <p className="text-slate-500 max-w-2xl mx-auto text-sm leading-relaxed">
             {t(
@@ -176,7 +189,10 @@ export default function PackagesSection() {
                 {/* Badge */}
                 {pkg.badge && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-bold text-white" style={{ background: '#B8912A' }}>
+                    <span
+                      className="flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-bold text-white"
+                      style={{ background: '#B8912A' }}
+                    >
                       <Star size={10} />
                       {lang === 'fr' ? pkg.badge.fr : pkg.badge.en}
                     </span>
@@ -204,7 +220,10 @@ export default function PackagesSection() {
 
                   {/* Meta row */}
                   <div className="grid grid-cols-2 gap-3 mb-5">
-                    <div className="rounded-xl p-3" style={{ background: '#F7F8FA', border: '1px solid #E8EDF5' }}>
+                    <div
+                      className="rounded-xl p-3"
+                      style={{ background: '#F7F8FA', border: '1px solid #E8EDF5' }}
+                    >
                       <div className="flex items-center gap-1.5 mb-1">
                         <Clock size={11} style={{ color: '#B8912A' }} />
                         <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
@@ -215,7 +234,10 @@ export default function PackagesSection() {
                         {lang === 'fr' ? pkg.timelineFr : pkg.timelineEn}
                       </p>
                     </div>
-                    <div className="rounded-xl p-3" style={{ background: '#F7F8FA', border: '1px solid #E8EDF5' }}>
+                    <div
+                      className="rounded-xl p-3"
+                      style={{ background: '#F7F8FA', border: '1px solid #E8EDF5' }}
+                    >
                       <div className="flex items-center gap-1.5 mb-1">
                         <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
                           {t('Ticket', 'Entry')}

@@ -14,7 +14,9 @@ export default function ServicesStickyCTA() {
         <div className="flex items-center gap-2">
           <Link
             href="/dossier-submission-wizard"
-            onClick={() => trackCTA('sticky_submit_application', '/dossier-submission-wizard', '/services-page')}
+            onClick={() =>
+              trackCTA('sticky_submit_application', '/dossier-submission-wizard', '/services-page')
+            }
             className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-navy px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy/90 transition-colors"
           >
             {t('Soumettre un dossier', 'Submit application')}

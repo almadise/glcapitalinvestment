@@ -4,12 +4,21 @@ import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useRouter } from 'next/navigation';
-import { Users, Search, RefreshCw, Loader2, AlertCircle, Shield, User, BarChart3, CheckCircle2, X,  } from 'lucide-react';
-
+import {
+  Users,
+  Search,
+  RefreshCw,
+  Loader2,
+  AlertCircle,
+  Shield,
+  User,
+  BarChart3,
+  CheckCircle2,
+  X,
+} from 'lucide-react';
 
 import Icon from '@/components/ui/AppIcon';
 import AdminLayout from '@/app/admin/components/AdminLayout';
-
 
 type UserRole = 'admin' | 'compliance' | 'analyst' | 'client';
 
@@ -21,18 +30,47 @@ interface UserProfile {
   created_at: string;
 }
 
-const ROLE_CONFIG: Record<UserRole, { labelFr: string; labelEn: string; color: string; bg: string; icon: React.ElementType }> = {
-  admin: { labelFr: 'Admin', labelEn: 'Admin', color: 'text-red-700', bg: 'bg-red-100 border-red-200', icon: Shield },
-  compliance: { labelFr: 'Conformité', labelEn: 'Compliance', color: 'text-amber-700', bg: 'bg-amber-100 border-amber-200', icon: CheckCircle2 },
-  analyst: { labelFr: 'Analyste', labelEn: 'Analyst', color: 'text-blue-700', bg: 'bg-blue-100 border-blue-200', icon: BarChart3 },
-  client: { labelFr: 'Client', labelEn: 'Client', color: 'text-slate-700', bg: 'bg-slate-100 border-slate-200', icon: User },
+const ROLE_CONFIG: Record<
+  UserRole,
+  { labelFr: string; labelEn: string; color: string; bg: string; icon: React.ElementType }
+> = {
+  admin: {
+    labelFr: 'Admin',
+    labelEn: 'Admin',
+    color: 'text-red-700',
+    bg: 'bg-red-100 border-red-200',
+    icon: Shield,
+  },
+  compliance: {
+    labelFr: 'Conformité',
+    labelEn: 'Compliance',
+    color: 'text-amber-700',
+    bg: 'bg-amber-100 border-amber-200',
+    icon: CheckCircle2,
+  },
+  analyst: {
+    labelFr: 'Analyste',
+    labelEn: 'Analyst',
+    color: 'text-blue-700',
+    bg: 'bg-blue-100 border-blue-200',
+    icon: BarChart3,
+  },
+  client: {
+    labelFr: 'Client',
+    labelEn: 'Client',
+    color: 'text-slate-700',
+    bg: 'bg-slate-100 border-slate-200',
+    icon: User,
+  },
 };
 
 function RoleBadge({ role, lang }: { role: UserRole; lang: string }) {
   const cfg = ROLE_CONFIG[role] || ROLE_CONFIG.client;
   const Icon = cfg.icon;
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${cfg.bg} ${cfg.color}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${cfg.bg} ${cfg.color}`}
+    >
       <Icon size={11} />
       {lang === 'fr' ? cfg.labelFr : cfg.labelEn}
     </span>
@@ -57,7 +95,10 @@ export default function AdminUserManagementPage() {
 
   const t = {
     title: lang === 'fr' ? 'Gestion des utilisateurs' : 'User Management',
-    subtitle: lang === 'fr' ? 'Gérez les rôles et accès des utilisateurs de la plateforme' : 'Manage platform user roles and access',
+    subtitle:
+      lang === 'fr'
+        ? 'Gérez les rôles et accès des utilisateurs de la plateforme'
+        : 'Manage platform user roles and access',
     search: lang === 'fr' ? 'Rechercher (nom, email…)' : 'Search (name, email…)',
     allRoles: lang === 'fr' ? 'Tous les rôles' : 'All roles',
     refresh: lang === 'fr' ? 'Actualiser' : 'Refresh',
@@ -122,7 +163,7 @@ export default function AdminUserManagementPage() {
         .eq('id', selectedUser.id);
 
       if (updateErr) throw updateErr;
-      setUsers(prev => prev.map(u => u.id === selectedUser.id ? { ...u, role: newRole } : u));
+      setUsers((prev) => prev.map((u) => (u.id === selectedUser.id ? { ...u, role: newRole } : u)));
       setSelectedUser(null);
     } catch (err: any) {
       setUpdateError(err?.message || 'Error updating role');
@@ -131,8 +172,9 @@ export default function AdminUserManagementPage() {
     }
   };
 
-  const filtered = users.filter(u => {
-    const matchSearch = !search ||
+  const filtered = users.filter((u) => {
+    const matchSearch =
+      !search ||
       (u.full_name || '').toLowerCase().includes(search.toLowerCase()) ||
       (u.email || '').toLowerCase().includes(search.toLowerCase());
     const matchRole = roleFilter === 'ALL' || u.role === roleFilter;
@@ -142,9 +184,13 @@ export default function AdminUserManagementPage() {
   const formatDate = (iso: string) => {
     try {
       return new Date(iso).toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', {
-        day: '2-digit', month: 'short', year: 'numeric',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
       });
-    } catch { return iso; }
+    } catch {
+      return iso;
+    }
   };
 
   if (authLoading) {
@@ -167,7 +213,9 @@ export default function AdminUserManagementPage() {
           </div>
           <div className="flex items-center gap-2 text-slate-500 text-sm">
             <Users size={14} />
-            <span>{filtered.length} {t.total}</span>
+            <span>
+              {filtered.length} {t.total}
+            </span>
           </div>
         </div>
 
@@ -178,25 +226,31 @@ export default function AdminUserManagementPage() {
             <input
               type="text"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder={t.search}
               className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-3 py-2 text-navy text-sm placeholder-slate-400 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition-all"
             />
             {search && (
-              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-navy">
+              <button
+                onClick={() => setSearch('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-navy"
+              >
                 <X size={13} />
               </button>
             )}
           </div>
           <div className="relative">
-            <Shield size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <Shield
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+            />
             <select
               value={roleFilter}
-              onChange={e => setRoleFilter(e.target.value as UserRole | 'ALL')}
+              onChange={(e) => setRoleFilter(e.target.value as UserRole | 'ALL')}
               className="bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-8 py-2 text-navy text-sm focus:outline-none focus:border-gold/50 appearance-none cursor-pointer min-w-[160px]"
             >
               <option value="ALL">{t.allRoles}</option>
-              {(['admin', 'compliance', 'analyst', 'client'] as UserRole[]).map(r => (
+              {(['admin', 'compliance', 'analyst', 'client'] as UserRole[]).map((r) => (
                 <option key={r} value={r}>
                   {lang === 'fr' ? ROLE_CONFIG[r].labelFr : ROLE_CONFIG[r].labelEn}
                 </option>
@@ -237,14 +291,17 @@ export default function AdminUserManagementPage() {
                 <thead>
                   <tr className="border-b border-slate-200 bg-slate-50">
                     {[t.colName, t.colEmail, t.colRole, t.colJoined, t.colActions].map((col, i) => (
-                      <th key={i} className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                      <th
+                        key={i}
+                        className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap"
+                      >
                         {col}
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {filtered.map(u => (
+                  {filtered.map((u) => (
                     <tr key={u.id} className="hover:bg-slate-50 transition-colors">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
@@ -253,14 +310,20 @@ export default function AdminUserManagementPage() {
                               {(u.full_name || u.email || '?')[0].toUpperCase()}
                             </span>
                           </div>
-                          <span className="text-navy font-medium whitespace-nowrap">{u.full_name || '-'}</span>
+                          <span className="text-navy font-medium whitespace-nowrap">
+                            {u.full_name || '-'}
+                          </span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{u.email || '-'}</td>
+                      <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
+                        {u.email || '-'}
+                      </td>
                       <td className="px-4 py-3">
                         <RoleBadge role={u.role} lang={lang} />
                       </td>
-                      <td className="px-4 py-3 text-slate-400 whitespace-nowrap text-xs">{formatDate(u.created_at)}</td>
+                      <td className="px-4 py-3 text-slate-400 whitespace-nowrap text-xs">
+                        {formatDate(u.created_at)}
+                      </td>
                       <td className="px-4 py-3">
                         <button
                           onClick={() => handleOpenEdit(u)}
@@ -285,19 +348,24 @@ export default function AdminUserManagementPage() {
           <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
               <h3 className="text-navy font-bold font-display">{t.editTitle}</h3>
-              <button onClick={() => setSelectedUser(null)} className="text-slate-400 hover:text-navy p-1 rounded-lg transition-colors">
+              <button
+                onClick={() => setSelectedUser(null)}
+                className="text-slate-400 hover:text-navy p-1 rounded-lg transition-colors"
+              >
                 <X size={18} />
               </button>
             </div>
             <div className="px-6 py-5 space-y-4">
               <div>
                 <p className="text-slate-400 text-xs uppercase tracking-wider mb-1">{t.colName}</p>
-                <p className="text-navy font-medium">{selectedUser.full_name || selectedUser.email || '-'}</p>
+                <p className="text-navy font-medium">
+                  {selectedUser.full_name || selectedUser.email || '-'}
+                </p>
               </div>
               <div>
                 <p className="text-slate-400 text-xs uppercase tracking-wider mb-2">{t.colRole}</p>
                 <div className="grid grid-cols-2 gap-2">
-                  {(['admin', 'compliance', 'analyst', 'client'] as UserRole[]).map(r => {
+                  {(['admin', 'compliance', 'analyst', 'client'] as UserRole[]).map((r) => {
                     const cfg = ROLE_CONFIG[r];
                     const Icon = cfg.icon;
                     return (
@@ -306,7 +374,8 @@ export default function AdminUserManagementPage() {
                         onClick={() => setNewRole(r)}
                         className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium transition-all ${
                           newRole === r
-                            ? 'bg-gold/10 border-gold/40 text-gold' :'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                            ? 'bg-gold/10 border-gold/40 text-gold'
+                            : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                         }`}
                       >
                         <Icon size={14} />
@@ -336,7 +405,11 @@ export default function AdminUserManagementPage() {
                 disabled={saving || newRole === selectedUser.role}
                 className="flex items-center gap-2 px-4 py-2 bg-gold hover:bg-gold/90 disabled:opacity-50 text-navy font-semibold rounded-lg text-sm transition-all"
               >
-                {saving ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
+                {saving ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <CheckCircle2 size={14} />
+                )}
                 {t.save}
               </button>
             </div>

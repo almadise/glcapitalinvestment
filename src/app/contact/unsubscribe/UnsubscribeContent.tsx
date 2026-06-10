@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 import React, { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -40,15 +41,17 @@ export default function UnsubscribeContent() {
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-10 max-w-md w-full text-center">
-
         {status === 'success' ? (
           <>
             <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto mb-5">
               <CheckCircle size={32} className="text-emerald-500" aria-hidden="true" />
             </div>
-            <h1 className="font-display text-xl font-bold text-navy mb-2">Désabonnement confirmé</h1>
+            <h1 className="font-display text-xl font-bold text-navy mb-2">
+              Désabonnement confirmé
+            </h1>
             <p className="text-slate-500 text-sm mb-6">
-              L'adresse <strong className="text-slate-700">{email}</strong> a été retirée de nos listes de communication.
+              L'adresse <strong className="text-slate-700">{email}</strong> a été retirée de nos
+              listes de communication.
             </p>
             <Link
               href="/home-page"
@@ -64,12 +67,16 @@ export default function UnsubscribeContent() {
             </div>
             <h1 className="font-display text-xl font-bold text-navy mb-2">Se désabonner</h1>
             <p className="text-slate-500 text-sm mb-6">
-              Entrez votre adresse email pour vous désabonner de toutes les communications de GL Capital Investment SA.
+              Entrez votre adresse email pour vous désabonner de toutes les communications de GL
+              Capital Investment SA.
             </p>
 
             <form onSubmit={handleUnsubscribe} className="text-left" noValidate>
               <div className="flex flex-col gap-2 mb-4">
-                <label htmlFor="unsub-email" className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
+                <label
+                  htmlFor="unsub-email"
+                  className="text-xs font-semibold text-slate-600 uppercase tracking-widest"
+                >
                   Adresse email
                 </label>
                 <input
@@ -85,8 +92,15 @@ export default function UnsubscribeContent() {
               </div>
 
               {errorMsg && (
-                <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4" role="alert">
-                  <AlertCircle size={16} className="text-red-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <div
+                  className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4"
+                  role="alert"
+                >
+                  <AlertCircle
+                    size={16}
+                    className="text-red-500 flex-shrink-0 mt-0.5"
+                    aria-hidden="true"
+                  />
                   <p className="text-red-700 text-sm">{errorMsg}</p>
                 </div>
               )}
@@ -109,7 +123,9 @@ export default function UnsubscribeContent() {
 
             <p className="text-slate-400 text-xs mt-4">
               Vous pouvez toujours nous contacter directement à{' '}
-              <a href={`mailto:${OFFICIAL_PUBLIC_EMAIL}`} className="text-gold hover:underline">{OFFICIAL_PUBLIC_EMAIL}</a>
+              <a href={`mailto:${OFFICIAL_PUBLIC_EMAIL}`} className="text-gold hover:underline">
+                {OFFICIAL_PUBLIC_EMAIL}
+              </a>
             </p>
           </>
         )}

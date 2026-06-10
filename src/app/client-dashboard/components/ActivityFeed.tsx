@@ -1,6 +1,14 @@
 'use client';
 import React, { useEffect, useState, useCallback } from 'react';
-import { FileUp, MessageSquare, CheckCircle2, AlertTriangle, Clock, ArrowRight, Loader2,  } from 'lucide-react';
+import {
+  FileUp,
+  MessageSquare,
+  CheckCircle2,
+  AlertTriangle,
+  Clock,
+  ArrowRight,
+  Loader2,
+} from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { createClient } from '@/lib/supabase/client';
@@ -28,7 +36,11 @@ function formatRelativeTime(dateStr: string, lang: 'fr' | 'en'): string {
   if (diffMins < 60) return lang === 'fr' ? `Il y a ${diffMins} min` : `${diffMins}m ago`;
   if (diffHours < 24) return lang === 'fr' ? `Il y a ${diffHours}h` : `${diffHours}h ago`;
   if (diffDays < 7) return lang === 'fr' ? `Il y a ${diffDays}j` : `${diffDays}d ago`;
-  return date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', { day: '2-digit', month: 'short', year: 'numeric' });
+  return date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
 }
 
 const ACTION_CONFIG: Record<string, { icon: React.ElementType; color: string }> = {
@@ -64,19 +76,30 @@ export default function ActivityFeed() {
         const mapped: ActivityItem[] = logs.map((log: any) => {
           const cfg = ACTION_CONFIG[log.action] || ACTION_CONFIG.DEFAULT;
           const detail = log.metadata?.detail || '';
-          const title = lang === 'fr'
-            ? (log.action === 'STATUS_CHANGE' ? 'Statut mis à jour'
-              : log.action === 'NOTE_ADDED' ? 'Note interne ajoutée'
-              : log.action === 'DOCUMENT_UPLOAD' ? 'Document téléchargé'
-              : log.action === 'DOCUMENT_DOWNLOAD' ? 'Document téléchargé'
-              : log.action === 'COMPLIANCE_FLAG' ? 'Alerte compliance'
-              : log.action)
-            : (log.action === 'STATUS_CHANGE' ? 'Status updated'
-              : log.action === 'NOTE_ADDED' ? 'Internal note added'
-              : log.action === 'DOCUMENT_UPLOAD' ? 'Document uploaded'
-              : log.action === 'DOCUMENT_DOWNLOAD' ? 'Document downloaded'
-              : log.action === 'COMPLIANCE_FLAG' ? 'Compliance alert'
-              : log.action);
+          const title =
+            lang === 'fr'
+              ? log.action === 'STATUS_CHANGE'
+                ? 'Statut mis à jour'
+                : log.action === 'NOTE_ADDED'
+                  ? 'Note interne ajoutée'
+                  : log.action === 'DOCUMENT_UPLOAD'
+                    ? 'Document téléchargé'
+                    : log.action === 'DOCUMENT_DOWNLOAD'
+                      ? 'Document téléchargé'
+                      : log.action === 'COMPLIANCE_FLAG'
+                        ? 'Alerte compliance'
+                        : log.action
+              : log.action === 'STATUS_CHANGE'
+                ? 'Status updated'
+                : log.action === 'NOTE_ADDED'
+                  ? 'Internal note added'
+                  : log.action === 'DOCUMENT_UPLOAD'
+                    ? 'Document uploaded'
+                    : log.action === 'DOCUMENT_DOWNLOAD'
+                      ? 'Document downloaded'
+                      : log.action === 'COMPLIANCE_FLAG'
+                        ? 'Compliance alert'
+                        : log.action;
 
           return {
             id: log.id,
@@ -165,15 +188,21 @@ export default function ActivityFeed() {
               key={activity.id}
               className="flex items-start gap-3 px-5 py-3.5 hover:bg-slate-50 transition-colors"
             >
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${activity.color}`}>
+              <div
+                className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${activity.color}`}
+              >
                 <activity.icon size={14} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <p className="text-xs font-semibold text-navy leading-snug">{activity.title}</p>
-                  <span className="text-[10px] text-slate-400 whitespace-nowrap flex-shrink-0">{activity.time}</span>
+                  <span className="text-[10px] text-slate-400 whitespace-nowrap flex-shrink-0">
+                    {activity.time}
+                  </span>
                 </div>
-                <p className="text-xs text-slate-500 leading-snug mt-0.5 truncate">{activity.desc}</p>
+                <p className="text-xs text-slate-500 leading-snug mt-0.5 truncate">
+                  {activity.desc}
+                </p>
                 {activity.dossier && activity.dossier !== '-' && (
                   <span className="inline-flex items-center mt-1 px-1.5 py-0.5 bg-navy/5 text-navy text-[10px] font-mono-data font-semibold rounded">
                     {activity.dossier}

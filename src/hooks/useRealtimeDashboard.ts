@@ -33,7 +33,9 @@ export function useRealtimeCaseDashboard({
     if (!enabled || !caseId) return;
 
     const supabase = createClient();
-    const timer = setTimeout(() => { isFirstLoad.current = false; }, 1500);
+    const timer = setTimeout(() => {
+      isFirstLoad.current = false;
+    }, 1500);
 
     channelRef.current = supabase
       .channel(`case_dashboard_${caseId}`)
@@ -54,7 +56,12 @@ export function useRealtimeCaseDashboard({
       )
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'case_internal_notes', filter: `case_id=eq.${caseId}` },
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'case_internal_notes',
+          filter: `case_id=eq.${caseId}`,
+        },
         (payload) => {
           if (isFirstLoad.current) return;
           const row = payload.new as any;
@@ -69,7 +76,12 @@ export function useRealtimeCaseDashboard({
       )
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'case_status_history', filter: `case_id=eq.${caseId}` },
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'case_status_history',
+          filter: `case_id=eq.${caseId}`,
+        },
         (payload) => {
           if (isFirstLoad.current) return;
           const row = payload.new as any;
@@ -114,34 +126,32 @@ export function useRealtimeAllCases({
     if (!enabled) return;
 
     const supabase = createClient();
-    const timer = setTimeout(() => { isFirstLoad.current = false; }, 1500);
+    const timer = setTimeout(() => {
+      isFirstLoad.current = false;
+    }, 1500);
 
     channelRef.current = supabase
       .channel('all_cases_realtime')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'case_files' },
-        (payload) => {
-          if (isFirstLoad.current) return;
-          const row = (payload.new || payload.old) as any;
-          if (payload.eventType === 'INSERT') {
-            toast.success(
-              lang === 'fr'
-                ? `Nouveau dossier créé : "${row?.title || ''}"`
-                : `New case created: "${row?.title || ''}"`,
-              { duration: 6000, icon: '📁' }
-            );
-          } else if (payload.eventType === 'UPDATE') {
-            toast.info(
-              lang === 'fr'
-                ? `Dossier mis à jour : "${row?.title || ''}" → ${row?.status || ''}`
-                : `Case updated: "${row?.title || ''}" → ${row?.status || ''}`,
-              { duration: 5000, icon: '🔄' }
-            );
-          }
-          onAnyUpdate?.(payload);
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'case_files' }, (payload) => {
+        if (isFirstLoad.current) return;
+        const row = (payload.new || payload.old) as any;
+        if (payload.eventType === 'INSERT') {
+          toast.success(
+            lang === 'fr'
+              ? `Nouveau dossier créé : "${row?.title || ''}"`
+              : `New case created: "${row?.title || ''}"`,
+            { duration: 6000, icon: '📁' }
+          );
+        } else if (payload.eventType === 'UPDATE') {
+          toast.info(
+            lang === 'fr'
+              ? `Dossier mis à jour : "${row?.title || ''}" → ${row?.status || ''}`
+              : `Case updated: "${row?.title || ''}" → ${row?.status || ''}`,
+            { duration: 5000, icon: '🔄' }
+          );
         }
-      )
+        onAnyUpdate?.(payload);
+      })
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'case_internal_notes' },

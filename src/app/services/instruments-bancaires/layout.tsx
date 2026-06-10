@@ -1,16 +1,13 @@
+import { buildServicePageMetadata } from '@/lib/seo/publicMetadata';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Instruments Bancaires - SBLC, BG & Lettres de Crédit',
+export const metadata: Metadata = buildServicePageMetadata({
+  title: 'Instruments bancaires',
   description:
-    'GL Capital facilite l\'accès aux instruments bancaires internationaux : SBLC, garanties bancaires et lettres de crédit pour sécuriser vos opérations de financement.',
-  openGraph: {
-    title: 'Instruments Bancaires - GL Capital Investment SA',
-    description:
-      'Accès aux instruments bancaires internationaux : SBLC, garanties bancaires et lettres de crédit.',
-    url: 'https://glcapital9393.builtwithrocket.new/services/instruments-bancaires',
-  },
-};
+    'SBLC, garanties bancaires, MT-760 et MT-799. Conseil documentaire et structuration pour instruments adossés à des fonds réels. Instruments loués non acceptés.',
+  path: '/services/instruments-bancaires',
+  keywords: 'SBLC, garantie bancaire, BG, MT-760, MT-799, instruments bancaires, trade finance',
+});
 
 export default function InstrumentsBancairesLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;

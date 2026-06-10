@@ -1,16 +1,19 @@
+import { getPublicSiteUrl } from '@/lib/companyContact';
 import type { Metadata } from 'next';
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://glcapital8049.builtwithrocket.new';
+const baseUrl = getPublicSiteUrl();
 
 export const metadata: Metadata = {
-  title: 'FAQ - Questions Fréquentes sur le Financement Institutionnel',
+  title: 'FAQ',
   description:
-    'Trouvez les réponses à vos questions sur les services de GL Capital : documents requis, délais de traitement, types de financement, conformité KYC/AML, et processus de soumission de dossier.',
-  keywords: 'FAQ financement, questions fréquentes, KYC AML, délais traitement, documents requis, SBLC BG',
+    'Questions sur le financement institutionnel, les prêts commerciaux USD, les programmes PPP, les instruments SBLC/BG, la conformité KYC/AML et les délais de traitement.',
+  keywords:
+    'FAQ financement, prêt commercial, placement privé PPP, KYC AML, SBLC BG, MT-760, résumé exécutif, surety bond',
   alternates: { canonical: `${baseUrl}/faq` },
   openGraph: {
     title: 'FAQ GL Capital - Questions sur le Financement Institutionnel',
-    description: 'Réponses aux questions fréquentes sur les services de structuration et de financement de GL Capital.',
+    description:
+      'Réponses aux questions fréquentes sur les services de structuration et de financement de GL Capital.',
     url: `${baseUrl}/faq`,
     type: 'website',
   },

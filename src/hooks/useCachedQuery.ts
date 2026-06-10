@@ -1,7 +1,6 @@
 'use client';
 import { useCallback, useRef, useState } from 'react';
 
-
 interface CacheEntry<T> {
   data: T;
   timestamp: number;
@@ -11,11 +10,7 @@ const CACHE_TTL = 30_000; // 30 seconds
 
 const cache = new Map<string, CacheEntry<any>>();
 
-export function useCachedQuery<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl = CACHE_TTL
-) {
+export function useCachedQuery<T>(key: string, fetcher: () => Promise<T>, ttl = CACHE_TTL) {
   const [data, setData] = useState<T | null>(() => {
     const entry = cache.get(key);
     if (entry && Date.now() - entry.timestamp < ttl) return entry.data;

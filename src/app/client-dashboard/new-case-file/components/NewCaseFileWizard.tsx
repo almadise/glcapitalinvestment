@@ -99,7 +99,14 @@ const REQUEST_TYPES = [
   'Autre',
 ];
 const CURRENCIES = ['EUR', 'USD', 'GBP', 'XOF', 'MAD', 'NGN'];
-const GUARANTEE_TYPES = ['Garantie bancaire', 'Hypothèque', 'Nantissement', 'SBLC', 'Caution solidaire', 'Aucune'];
+const GUARANTEE_TYPES = [
+  'Garantie bancaire',
+  'Hypothèque',
+  'Nantissement',
+  'SBLC',
+  'Caution solidaire',
+  'Aucune',
+];
 const FUND_SOURCES = [
   'Fonds propres',
   'Revenus opérationnels',
@@ -171,33 +178,33 @@ export default function NewCaseFileWizard() {
       const { removedColumns } = await insertCaseFileWithSchemaFallback({
         supabase,
         payload: {
-        user_id: user.id,
-        ref,
-        org_name: id.orgName,
-        org_country: id.orgCountry,
-        registry_number: id.registryNumber,
-        org_type: id.orgType,
-        ubo_name: id.uboName,
-        ubo_nationality: id.uboNationality,
-        ubo_ownership: id.uboOwnership,
-        contact_name: id.contactName,
-        contact_email: id.contactEmail,
-        contact_phone: id.contactPhone,
-        project_name: pr.projectName,
-        sector: pr.sector,
-        project_country: pr.projectCountry,
-        total_budget: pr.totalBudget,
-        currency: pr.currency || 'EUR',
-        request_type: pr.requestType,
-        project_description: pr.projectDescription,
-        debt_amount: fi.debtAmount,
-        equity_amount: fi.equityAmount,
-        maturity: fi.maturity,
-        guarantee_type: fi.guaranteeType,
-        fund_source: fi.fundSource,
-        metadata: Object.keys(metadataPayload).length > 0 ? metadataPayload : null,
-        status: 'RECU',
-        type: pr.requestType || 'Project Finance',
+          user_id: user.id,
+          ref,
+          org_name: id.orgName,
+          org_country: id.orgCountry,
+          registry_number: id.registryNumber,
+          org_type: id.orgType,
+          ubo_name: id.uboName,
+          ubo_nationality: id.uboNationality,
+          ubo_ownership: id.uboOwnership,
+          contact_name: id.contactName,
+          contact_email: id.contactEmail,
+          contact_phone: id.contactPhone,
+          project_name: pr.projectName,
+          sector: pr.sector,
+          project_country: pr.projectCountry,
+          total_budget: pr.totalBudget,
+          currency: pr.currency || 'EUR',
+          request_type: pr.requestType,
+          project_description: pr.projectDescription,
+          debt_amount: fi.debtAmount,
+          equity_amount: fi.equityAmount,
+          maturity: fi.maturity,
+          guarantee_type: fi.guaranteeType,
+          fund_source: fi.fundSource,
+          metadata: Object.keys(metadataPayload).length > 0 ? metadataPayload : null,
+          status: 'RECU',
+          type: pr.requestType || 'Project Finance',
         },
       });
       if (removedColumns.length > 0) {
@@ -218,9 +225,14 @@ export default function NewCaseFileWizard() {
         channel: 'client-dashboard',
         request_type: pr.requestType || 'Project Finance',
       });
-      toast.success(t(`Dossier créé - Référence : ${ref}`, `Case file created - Reference: ${ref}`));
+      toast.success(
+        t(`Dossier créé - Référence : ${ref}`, `Case file created - Reference: ${ref}`)
+      );
     } catch (err: any) {
-      toast.error(err.message || t('Échec de la création. Veuillez réessayer.', 'Creation failed. Please try again.'));
+      toast.error(
+        err.message ||
+          t('Échec de la création. Veuillez réessayer.', 'Creation failed. Please try again.')
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -260,11 +272,31 @@ export default function NewCaseFileWizard() {
           <div className="flex items-start gap-2">
             <Info size={14} className="text-amber-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-amber-800 text-xs font-semibold mb-1">{t('Prochaines étapes', 'Next steps')}</p>
+              <p className="text-amber-800 text-xs font-semibold mb-1">
+                {t('Prochaines étapes', 'Next steps')}
+              </p>
               <ul className="text-amber-700 text-xs space-y-1">
-                <li>• {t('Ajoutez vos documents depuis "Mes dossiers"', 'Add your documents from "My files"')}</li>
-                <li>• {t('Notre équipe vous contactera si des informations sont manquantes', 'Our team will contact you if information is missing')}</li>
-                <li>• {t('Suivez l\'avancement depuis votre tableau de bord', 'Track progress from your dashboard')}</li>
+                <li>
+                  •{' '}
+                  {t(
+                    'Ajoutez vos documents depuis "Mes dossiers"',
+                    'Add your documents from "My files"'
+                  )}
+                </li>
+                <li>
+                  •{' '}
+                  {t(
+                    'Notre équipe vous contactera si des informations sont manquantes',
+                    'Our team will contact you if information is missing'
+                  )}
+                </li>
+                <li>
+                  •{' '}
+                  {t(
+                    "Suivez l'avancement depuis votre tableau de bord",
+                    'Track progress from your dashboard'
+                  )}
+                </li>
               </ul>
             </div>
           </div>
@@ -340,14 +372,19 @@ export default function NewCaseFileWizard() {
                     s.num < step
                       ? 'bg-emerald-500 border-emerald-500 text-white'
                       : s.num === step
-                      ? 'bg-navy border-navy text-white' :'bg-white border-slate-200 text-slate-400'
+                        ? 'bg-navy border-navy text-white'
+                        : 'bg-white border-slate-200 text-slate-400'
                   }`}
                 >
                   {s.num < step ? <CheckCircle2 size={18} /> : <s.icon size={16} />}
                 </div>
                 <span
                   className={`text-xs font-medium hidden sm:block ${
-                    s.num === step ? 'text-navy' : s.num < step ? 'text-emerald-600' : 'text-slate-400'
+                    s.num === step
+                      ? 'text-navy'
+                      : s.num < step
+                        ? 'text-emerald-600'
+                        : 'text-slate-400'
                   }`}
                 >
                   {stepLabels[i]}
@@ -367,7 +404,6 @@ export default function NewCaseFileWizard() {
 
       {/* Step card */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-
         {/* ── STEP 1: Identity ─────────────────────────────────────────────── */}
         {step === 1 && (
           <div className="p-6 sm:p-8">
@@ -376,8 +412,15 @@ export default function NewCaseFileWizard() {
                 <Building2 size={18} className="text-gold" />
               </div>
               <div>
-                <h2 className="text-base font-bold text-navy">{t('Identité de l\'organisation', 'Organization Identity')}</h2>
-                <p className="text-slate-500 text-xs">{t('Entité juridique et propriétaire effectif', 'Legal entity and beneficial owner')}</p>
+                <h2 className="text-base font-bold text-navy">
+                  {t("Identité de l'organisation", 'Organization Identity')}
+                </h2>
+                <p className="text-slate-500 text-xs">
+                  {t(
+                    'Entité juridique et propriétaire effectif',
+                    'Legal entity and beneficial owner'
+                  )}
+                </p>
               </div>
             </div>
 
@@ -389,10 +432,13 @@ export default function NewCaseFileWizard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="sm:col-span-2">
                   <label className="block text-sm font-medium text-slate-700 mb-1">
-                    {t('Dénomination sociale', 'Legal Name')} <span className="text-red-500">*</span>
+                    {t('Dénomination sociale', 'Legal Name')}{' '}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
-                    {...identityForm.register('orgName', { required: t('Champ requis', 'Required') })}
+                    {...identityForm.register('orgName', {
+                      required: t('Champ requis', 'Required'),
+                    })}
                     placeholder="West Africa Energy Holdings Ltd"
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors"
                   />
@@ -401,15 +447,20 @@ export default function NewCaseFileWizard() {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">
-                    {t('Pays d\'immatriculation', 'Country of Registration')} <span className="text-red-500">*</span>
+                    {t("Pays d'immatriculation", 'Country of Registration')}{' '}
+                    <span className="text-red-500">*</span>
                   </label>
                   <select
-                    {...identityForm.register('orgCountry', { required: t('Champ requis', 'Required') })}
+                    {...identityForm.register('orgCountry', {
+                      required: t('Champ requis', 'Required'),
+                    })}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors bg-white"
                   >
                     <option value="">{t('Sélectionner...', 'Select...')}</option>
                     {COUNTRIES.map((c) => (
-                      <option key={c.code} value={c.code}>{c.label}</option>
+                      <option key={c.code} value={c.code}>
+                        {c.label}
+                      </option>
                     ))}
                   </select>
                   <FieldError message={identityForm.formState.errors.orgCountry?.message} />
@@ -417,10 +468,13 @@ export default function NewCaseFileWizard() {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">
-                    {t('Numéro de registre', 'Registry Number')} <span className="text-red-500">*</span>
+                    {t('Numéro de registre', 'Registry Number')}{' '}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
-                    {...identityForm.register('registryNumber', { required: t('Champ requis', 'Required') })}
+                    {...identityForm.register('registryNumber', {
+                      required: t('Champ requis', 'Required'),
+                    })}
                     placeholder="SN-2019-00847"
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:border-navy transition-colors"
                   />
@@ -432,11 +486,17 @@ export default function NewCaseFileWizard() {
                     {t('Forme juridique', 'Legal Form')} <span className="text-red-500">*</span>
                   </label>
                   <select
-                    {...identityForm.register('orgType', { required: t('Champ requis', 'Required') })}
+                    {...identityForm.register('orgType', {
+                      required: t('Champ requis', 'Required'),
+                    })}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors bg-white"
                   >
                     <option value="">{t('Sélectionner...', 'Select...')}</option>
-                    {ORG_TYPES.map((o) => <option key={o} value={o}>{o}</option>)}
+                    {ORG_TYPES.map((o) => (
+                      <option key={o} value={o}>
+                        {o}
+                      </option>
+                    ))}
                   </select>
                   <FieldError message={identityForm.formState.errors.orgType?.message} />
                 </div>
@@ -452,7 +512,9 @@ export default function NewCaseFileWizard() {
                     {t('Nom complet UBO', 'UBO Full Name')} <span className="text-red-500">*</span>
                   </label>
                   <input
-                    {...identityForm.register('uboName', { required: t('Champ requis', 'Required') })}
+                    {...identityForm.register('uboName', {
+                      required: t('Champ requis', 'Required'),
+                    })}
                     placeholder="Jean Dupont"
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors"
                   />
@@ -461,15 +523,20 @@ export default function NewCaseFileWizard() {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">
-                    {t('Nationalité UBO', 'UBO Nationality')} <span className="text-red-500">*</span>
+                    {t('Nationalité UBO', 'UBO Nationality')}{' '}
+                    <span className="text-red-500">*</span>
                   </label>
                   <select
-                    {...identityForm.register('uboNationality', { required: t('Champ requis', 'Required') })}
+                    {...identityForm.register('uboNationality', {
+                      required: t('Champ requis', 'Required'),
+                    })}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors bg-white"
                   >
                     <option value="">{t('Sélectionner...', 'Select...')}</option>
                     {COUNTRIES.map((c) => (
-                      <option key={c.code} value={c.code}>{c.label}</option>
+                      <option key={c.code} value={c.code}>
+                        {c.label}
+                      </option>
                     ))}
                   </select>
                   <FieldError message={identityForm.formState.errors.uboNationality?.message} />
@@ -482,7 +549,10 @@ export default function NewCaseFileWizard() {
                   <input
                     {...identityForm.register('uboOwnership', {
                       required: t('Champ requis', 'Required'),
-                      pattern: { value: /^\d{1,3}(\.\d{1,2})?$/, message: t('Pourcentage invalide', 'Invalid percentage') },
+                      pattern: {
+                        value: /^\d{1,3}(\.\d{1,2})?$/,
+                        message: t('Pourcentage invalide', 'Invalid percentage'),
+                      },
                     })}
                     placeholder="51"
                     type="number"
@@ -504,7 +574,9 @@ export default function NewCaseFileWizard() {
                     {t('Nom du contact', 'Contact Name')} <span className="text-red-500">*</span>
                   </label>
                   <input
-                    {...identityForm.register('contactName', { required: t('Champ requis', 'Required') })}
+                    {...identityForm.register('contactName', {
+                      required: t('Champ requis', 'Required'),
+                    })}
                     placeholder="Marie Diallo"
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors"
                   />
@@ -518,7 +590,10 @@ export default function NewCaseFileWizard() {
                   <input
                     {...identityForm.register('contactEmail', {
                       required: t('Champ requis', 'Required'),
-                      pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: t('Email invalide', 'Invalid email') },
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: t('Email invalide', 'Invalid email'),
+                      },
                     })}
                     type="email"
                     placeholder="contact@company.com"
@@ -550,8 +625,12 @@ export default function NewCaseFileWizard() {
                 <FileText size={18} className="text-gold" />
               </div>
               <div>
-                <h2 className="text-base font-bold text-navy">{t('Détails du projet', 'Project Details')}</h2>
-                <p className="text-slate-500 text-xs">{t('Nature et périmètre du projet', 'Nature and scope of the project')}</p>
+                <h2 className="text-base font-bold text-navy">
+                  {t('Détails du projet', 'Project Details')}
+                </h2>
+                <p className="text-slate-500 text-xs">
+                  {t('Nature et périmètre du projet', 'Nature and scope of the project')}
+                </p>
               </div>
             </div>
 
@@ -561,7 +640,9 @@ export default function NewCaseFileWizard() {
                   {t('Nom du projet', 'Project Name')} <span className="text-red-500">*</span>
                 </label>
                 <input
-                  {...projectForm.register('projectName', { required: t('Champ requis', 'Required') })}
+                  {...projectForm.register('projectName', {
+                    required: t('Champ requis', 'Required'),
+                  })}
                   placeholder={t('Centrale solaire 50 MW - Thiès', 'Solar Plant 50 MW - Thiès')}
                   className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors"
                 />
@@ -577,7 +658,11 @@ export default function NewCaseFileWizard() {
                   className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors bg-white"
                 >
                   <option value="">{t('Sélectionner...', 'Select...')}</option>
-                  {SECTORS.map((s) => <option key={s} value={s}>{s}</option>)}
+                  {SECTORS.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
                 </select>
                 <FieldError message={projectForm.formState.errors.sector?.message} />
               </div>
@@ -587,12 +672,16 @@ export default function NewCaseFileWizard() {
                   {t('Pays du projet', 'Project Country')} <span className="text-red-500">*</span>
                 </label>
                 <select
-                  {...projectForm.register('projectCountry', { required: t('Champ requis', 'Required') })}
+                  {...projectForm.register('projectCountry', {
+                    required: t('Champ requis', 'Required'),
+                  })}
                   className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors bg-white"
                 >
                   <option value="">{t('Sélectionner...', 'Select...')}</option>
                   {COUNTRIES.map((c) => (
-                    <option key={c.code} value={c.code}>{c.label}</option>
+                    <option key={c.code} value={c.code}>
+                      {c.label}
+                    </option>
                   ))}
                 </select>
                 <FieldError message={projectForm.formState.errors.projectCountry?.message} />
@@ -603,7 +692,9 @@ export default function NewCaseFileWizard() {
                   {t('Budget total', 'Total Budget')} <span className="text-red-500">*</span>
                 </label>
                 <input
-                  {...projectForm.register('totalBudget', { required: t('Champ requis', 'Required') })}
+                  {...projectForm.register('totalBudget', {
+                    required: t('Champ requis', 'Required'),
+                  })}
                   placeholder="50 000 000"
                   className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors"
                 />
@@ -619,7 +710,11 @@ export default function NewCaseFileWizard() {
                   className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors bg-white"
                 >
                   <option value="">{t('Sélectionner...', 'Select...')}</option>
-                  {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                  {CURRENCIES.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
                 </select>
                 <FieldError message={projectForm.formState.errors.currency?.message} />
               </div>
@@ -629,23 +724,33 @@ export default function NewCaseFileWizard() {
                   {t('Type de demande', 'Request Type')} <span className="text-red-500">*</span>
                 </label>
                 <select
-                  {...projectForm.register('requestType', { required: t('Champ requis', 'Required') })}
+                  {...projectForm.register('requestType', {
+                    required: t('Champ requis', 'Required'),
+                  })}
                   className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors bg-white"
                 >
                   <option value="">{t('Sélectionner...', 'Select...')}</option>
-                  {REQUEST_TYPES.map((r) => <option key={r} value={r}>{r}</option>)}
+                  {REQUEST_TYPES.map((r) => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ))}
                 </select>
                 <FieldError message={projectForm.formState.errors.requestType?.message} />
               </div>
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  {t('Description du projet', 'Project Description')} <span className="text-red-500">*</span>
+                  {t('Description du projet', 'Project Description')}{' '}
+                  <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   {...projectForm.register('projectDescription', {
                     required: t('Champ requis', 'Required'),
-                    minLength: { value: 50, message: t('Minimum 50 caractères', 'Minimum 50 characters') },
+                    minLength: {
+                      value: 50,
+                      message: t('Minimum 50 caractères', 'Minimum 50 characters'),
+                    },
                   })}
                   rows={4}
                   placeholder={t(
@@ -668,8 +773,12 @@ export default function NewCaseFileWizard() {
                 <DollarSign size={18} className="text-gold" />
               </div>
               <div>
-                <h2 className="text-base font-bold text-navy">{t('Plan de financement', 'Financing Plan')}</h2>
-                <p className="text-slate-500 text-xs">{t('Structure financière et garanties', 'Financial structure and guarantees')}</p>
+                <h2 className="text-base font-bold text-navy">
+                  {t('Plan de financement', 'Financing Plan')}
+                </h2>
+                <p className="text-slate-500 text-xs">
+                  {t('Structure financière et garanties', 'Financial structure and guarantees')}
+                </p>
               </div>
             </div>
 
@@ -712,25 +821,38 @@ export default function NewCaseFileWizard() {
                   {t('Type de garantie', 'Guarantee Type')} <span className="text-red-500">*</span>
                 </label>
                 <select
-                  {...financingForm.register('guaranteeType', { required: t('Champ requis', 'Required') })}
+                  {...financingForm.register('guaranteeType', {
+                    required: t('Champ requis', 'Required'),
+                  })}
                   className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors bg-white"
                 >
                   <option value="">{t('Sélectionner...', 'Select...')}</option>
-                  {GUARANTEE_TYPES.map((g) => <option key={g} value={g}>{g}</option>)}
+                  {GUARANTEE_TYPES.map((g) => (
+                    <option key={g} value={g}>
+                      {g}
+                    </option>
+                  ))}
                 </select>
                 <FieldError message={financingForm.formState.errors.guaranteeType?.message} />
               </div>
 
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  {t('Origine des fonds', 'Source of Funds')} <span className="text-red-500">*</span>
+                  {t('Origine des fonds', 'Source of Funds')}{' '}
+                  <span className="text-red-500">*</span>
                 </label>
                 <select
-                  {...financingForm.register('fundSource', { required: t('Champ requis', 'Required') })}
+                  {...financingForm.register('fundSource', {
+                    required: t('Champ requis', 'Required'),
+                  })}
                   className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-navy transition-colors bg-white"
                 >
                   <option value="">{t('Sélectionner...', 'Select...')}</option>
-                  {FUND_SOURCES.map((f) => <option key={f} value={f}>{f}</option>)}
+                  {FUND_SOURCES.map((f) => (
+                    <option key={f} value={f}>
+                      {f}
+                    </option>
+                  ))}
                 </select>
                 <FieldError message={financingForm.formState.errors.fundSource?.message} />
               </div>
@@ -771,8 +893,15 @@ export default function NewCaseFileWizard() {
                 <CheckCircle2 size={18} className="text-gold" />
               </div>
               <div>
-                <h2 className="text-base font-bold text-navy">{t('Révision & Confirmation', 'Review & Confirm')}</h2>
-                <p className="text-slate-500 text-xs">{t('Vérifiez les informations avant de soumettre', 'Verify information before submitting')}</p>
+                <h2 className="text-base font-bold text-navy">
+                  {t('Révision & Confirmation', 'Review & Confirm')}
+                </h2>
+                <p className="text-slate-500 text-xs">
+                  {t(
+                    'Vérifiez les informations avant de soumettre',
+                    'Verify information before submitting'
+                  )}
+                </p>
               </div>
             </div>
 
@@ -782,7 +911,9 @@ export default function NewCaseFileWizard() {
                 <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200">
                   <div className="flex items-center gap-2">
                     <Building2 size={14} className="text-navy" />
-                    <span className="text-sm font-semibold text-navy">{t('Identité', 'Identity')}</span>
+                    <span className="text-sm font-semibold text-navy">
+                      {t('Identité', 'Identity')}
+                    </span>
                   </div>
                   <button
                     type="button"
@@ -793,9 +924,15 @@ export default function NewCaseFileWizard() {
                   </button>
                 </div>
                 <div className="p-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-                  <ReviewRow label={t('Organisation', 'Organization')} value={identityVals.orgName} />
+                  <ReviewRow
+                    label={t('Organisation', 'Organization')}
+                    value={identityVals.orgName}
+                  />
                   <ReviewRow label={t('Pays', 'Country')} value={identityVals.orgCountry} />
-                  <ReviewRow label={t('Registre', 'Registry')} value={identityVals.registryNumber} />
+                  <ReviewRow
+                    label={t('Registre', 'Registry')}
+                    value={identityVals.registryNumber}
+                  />
                   <ReviewRow label={t('Forme', 'Form')} value={identityVals.orgType} />
                   <ReviewRow label={t('UBO', 'UBO')} value={identityVals.uboName} />
                   <ReviewRow label={t('Contact', 'Contact')} value={identityVals.contactName} />
@@ -808,7 +945,9 @@ export default function NewCaseFileWizard() {
                 <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200">
                   <div className="flex items-center gap-2">
                     <FileText size={14} className="text-navy" />
-                    <span className="text-sm font-semibold text-navy">{t('Projet', 'Project')}</span>
+                    <span className="text-sm font-semibold text-navy">
+                      {t('Projet', 'Project')}
+                    </span>
                   </div>
                   <button
                     type="button"
@@ -822,7 +961,10 @@ export default function NewCaseFileWizard() {
                   <ReviewRow label={t('Nom', 'Name')} value={projectVals.projectName} />
                   <ReviewRow label={t('Secteur', 'Sector')} value={projectVals.sector} />
                   <ReviewRow label={t('Pays', 'Country')} value={projectVals.projectCountry} />
-                  <ReviewRow label={t('Budget', 'Budget')} value={`${projectVals.currency} ${projectVals.totalBudget}`} />
+                  <ReviewRow
+                    label={t('Budget', 'Budget')}
+                    value={`${projectVals.currency} ${projectVals.totalBudget}`}
+                  />
                   <ReviewRow label={t('Type', 'Type')} value={projectVals.requestType} />
                 </div>
               </div>
@@ -832,7 +974,9 @@ export default function NewCaseFileWizard() {
                 <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200">
                   <div className="flex items-center gap-2">
                     <DollarSign size={14} className="text-navy" />
-                    <span className="text-sm font-semibold text-navy">{t('Financement', 'Financing')}</span>
+                    <span className="text-sm font-semibold text-navy">
+                      {t('Financement', 'Financing')}
+                    </span>
                   </div>
                   <button
                     type="button"
@@ -844,9 +988,18 @@ export default function NewCaseFileWizard() {
                 </div>
                 <div className="p-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
                   <ReviewRow label={t('Dette', 'Debt')} value={financingVals.debtAmount || '-'} />
-                  <ReviewRow label={t('Fonds propres', 'Equity')} value={financingVals.equityAmount || '-'} />
-                  <ReviewRow label={t('Garantie', 'Guarantee')} value={financingVals.guaranteeType} />
-                  <ReviewRow label={t('Origine fonds', 'Fund Source')} value={financingVals.fundSource} />
+                  <ReviewRow
+                    label={t('Fonds propres', 'Equity')}
+                    value={financingVals.equityAmount || '-'}
+                  />
+                  <ReviewRow
+                    label={t('Garantie', 'Guarantee')}
+                    value={financingVals.guaranteeType}
+                  />
+                  <ReviewRow
+                    label={t('Origine fonds', 'Fund Source')}
+                    value={financingVals.fundSource}
+                  />
                 </div>
               </div>
 
@@ -896,9 +1049,15 @@ export default function NewCaseFileWizard() {
               className="flex items-center gap-2 px-5 py-2.5 bg-gold text-navy text-sm font-bold rounded-xl hover:bg-gold/90 transition-colors active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
-                <><Loader2 size={15} className="animate-spin" />{t('Création...', 'Creating...')}</>
+                <>
+                  <Loader2 size={15} className="animate-spin" />
+                  {t('Création...', 'Creating...')}
+                </>
               ) : (
-                <><CheckCircle2 size={15} />{t('Créer le dossier', 'Create Case File')}</>
+                <>
+                  <CheckCircle2 size={15} />
+                  {t('Créer le dossier', 'Create Case File')}
+                </>
               )}
             </button>
           )}

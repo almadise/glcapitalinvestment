@@ -35,7 +35,8 @@ ${REGISTRO_MERCANTIL_CERT}
 Email : ${OFFICIAL_PUBLIC_EMAIL}`,
       },
       {
-        id: 'hebergeur',title: '2. Hébergeur',
+        id: 'hebergeur',
+        title: '2. Hébergeur',
         body: `Le site est hébergé par :
 
 **Vercel Inc.**
@@ -45,14 +46,17 @@ San Francisco, CA 94104
 Site web : https://vercel.com`,
       },
       {
-        id: 'directeur',title: '3. Directeur de la publication',
+        id: 'directeur',
+        title: '3. Directeur de la publication',
         body: `Le directeur de la publication est :
 
 **GL Capital Investment SA**
 Représentée par ses dirigeants légaux.`,
       },
       {
-        id: 'propriete',title: '4. Propriété intellectuelle',body: `L'ensemble du contenu de ce site (textes, images, graphismes, logo, icônes, sons, logiciels, etc.) constitue une œuvre protégée par les lois françaises et internationales relatives à la propriété intellectuelle.
+        id: 'propriete',
+        title: '4. Propriété intellectuelle',
+        body: `L'ensemble du contenu de ce site (textes, images, graphismes, logo, icônes, sons, logiciels, etc.) constitue une œuvre protégée par les lois françaises et internationales relatives à la propriété intellectuelle.
 
 Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de GL Capital Investment SA.
 
@@ -65,10 +69,15 @@ Toute reproduction, représentation, modification, publication, adaptation de to
 
 GL Capital Investment SA est une plateforme de structuration et de présentation de dossiers de financement. Elle agit exclusivement en qualité d'intermédiaire dans la mise en relation entre porteurs de projets et institutions financières dûment agréées.**Toute transaction financière est exécutée exclusivement par des institutions dûment agréées** par les autorités compétentes (AMF, ACPR, ou équivalents étrangers). GL Capital Investment SA ne garantit pas l'obtention d'un financement et ne saurait être tenue responsable des décisions prises par les partenaires financiers.
 
-Les informations présentées sur ce site ont un caractère purement informatif et ne constituent pas une offre de services financiers réglementés.`,
+Les informations présentées sur ce site ont un caractère purement informatif et ne constituent pas une offre de services financiers réglementés.
+
+**Programmes de placement privé (PPP) :** GL Capital ne publie pas d'offre publique continue de placement. Les PPP sont traités sur invitation, après conformité, pour des tickets institutionnels (indicatif à partir de 100 M USD/EUR). Aucun rendement n'est garanti. Les instruments loués ne sont pas acceptés.
+
+**Prêts commerciaux :** GL Capital structure les dossiers et assure la mise en relation avec des prêteurs partenaires. Le décaissement relève exclusivement du prêteur retenu, après approbation et souscription de la caution d'assurance requise. Les taux et montants publiés sont indicatifs.`,
       },
       {
-        id: 'donnees',title: '6. Protection des données personnelles',
+        id: 'donnees',
+        title: '6. Protection des données personnelles',
         body: `Conformément au Règlement Général sur la Protection des Données (RGPD - Règlement UE 2016/679) et à la loi Informatique et Libertés modifiée, GL Capital Investment SA s'engage à protéger les données personnelles de ses utilisateurs.
 
 **Base légale du traitement :** Exécution d'un contrat ou de mesures précontractuelles prises à la demande de la personne concernée (article 6.1.b du RGPD).
@@ -137,17 +146,23 @@ Any reproduction, representation, modification, publication, or adaptation of al
 **All rights reserved © 2026 GL Capital Investment SA.**`,
       },
       {
-        id: 'disclaimer',title: '5. Disclaimer',
+        id: 'disclaimer',
+        title: '5. Disclaimer',
         body: `**GL Capital Investment SA is not a bank**, does not collect deposits, does not make public offerings of financial securities, and does not provide investment advice within the meaning of applicable financial regulations.
 
 GL Capital Investment SA is a platform for structuring and presenting financing files. It acts exclusively as an intermediary in connecting project holders with duly authorized financial institutions.
 
 **All financial transactions are executed exclusively by duly authorized institutions** by competent authorities (AMF, ACPR, or foreign equivalents). GL Capital Investment SA does not guarantee the obtaining of financing and cannot be held responsible for decisions made by financial partners.
 
-The information presented on this website is purely informational and does not constitute an offer of regulated financial services.`,
+The information presented on this website is purely informational and does not constitute an offer of regulated financial services.
+
+**Private placement programmes (PPP):** GL Capital does not publish a continuous public placement offer. PPP files are handled by invitation, after compliance, for institutional tickets (indicative from USD/EUR 100M). No return is guaranteed. Leased instruments are not accepted.
+
+**Commercial loans:** GL Capital structures files and facilitates introductions to partner lenders. Disbursement is carried out exclusively by the selected lender, after approval and arrangement of the required insurance surety bond. Published rates and amounts are indicative.`,
       },
       {
-        id: 'donnees',title: '6. Personal Data Protection',
+        id: 'donnees',
+        title: '6. Personal Data Protection',
         body: `In accordance with the General Data Protection Regulation (GDPR - EU Regulation 2016/679) and the amended French Data Protection Act, GL Capital Investment SA is committed to protecting the personal data of its users.
 
 **Legal basis for processing:** Performance of a contract or pre-contractual measures taken at the request of the data subject (Article 6.1.b of the GDPR).
@@ -185,7 +200,13 @@ function renderBody(text: string) {
       return (
         <p key={i} className="text-slate-700 text-sm leading-relaxed mb-1">
           {parts.map((part, j) =>
-            j % 2 === 1 ? <strong key={j} className="text-navy">{part}</strong> : part
+            j % 2 === 1 ? (
+              <strong key={j} className="text-navy">
+                {part}
+              </strong>
+            ) : (
+              part
+            )
           )}
         </p>
       );
@@ -228,7 +249,7 @@ export default function MentionsLegalesPage() {
           className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-navy transition-colors mb-8"
         >
           <ArrowLeft size={14} />
-          {activeLang === 'fr' ? 'Retour à l\'accueil' : 'Back to home'}
+          {activeLang === 'fr' ? "Retour à l'accueil" : 'Back to home'}
         </Link>
 
         {/* Header */}
@@ -245,8 +266,7 @@ export default function MentionsLegalesPage() {
                 key={l}
                 onClick={() => handleLangSwitch(l)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
-                  activeLang === l
-                    ? 'bg-navy text-white' :'text-slate-600 hover:bg-slate-100'
+                  activeLang === l ? 'bg-navy text-white' : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >
                 {l === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN'}
@@ -257,7 +277,7 @@ export default function MentionsLegalesPage() {
 
         {/* Last updated */}
         <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 mb-8 text-sm text-amber-800">
-          {activeLang === 'fr' ?'Dernière mise à jour : Avril 2026' :'Last updated: April 2026'}
+          {activeLang === 'fr' ? 'Dernière mise à jour : Avril 2026' : 'Last updated: April 2026'}
         </div>
 
         {/* Sections */}
@@ -282,7 +302,9 @@ export default function MentionsLegalesPage() {
             {activeLang === 'fr' ? 'Des questions ?' : 'Questions?'}
           </p>
           <p className="text-slate-300 text-sm mb-4">
-            {activeLang === 'fr' ?'Pour toute question juridique ou relative à la protection des données :' :'For any legal or data protection questions:'}
+            {activeLang === 'fr'
+              ? 'Pour toute question juridique ou relative à la protection des données :'
+              : 'For any legal or data protection questions:'}
           </p>
           <a
             href={`mailto:${OFFICIAL_PUBLIC_EMAIL}`}

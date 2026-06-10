@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createServiceRoleClient } from '../../../lib/supabase/service';
 import { escapeHtml } from '@/lib/apiSecurity';
-import { CONTACT_EMAIL_FALLBACK, RESEND_FROM_FALLBACK } from '@/lib/companyContact';
+import { CONTACT_EMAIL_FALLBACK, getPublicSiteUrl, RESEND_FROM_FALLBACK, TRANSACTIONAL_EMAIL_FOOTER_LINE } from '@/lib/companyContact';
+import { resolveDevOrSandboxRecipient } from '@/lib/resendRecipients';
 
 const EMAIL_FROM = process.env.RESEND_FROM_EMAIL?.trim() || RESEND_FROM_FALLBACK;
 
@@ -10,7 +11,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const token = searchParams.get('token');
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || req.url;
+  const baseUrl = getPublicSiteUrl();
 
   if (!token) {
     return NextResponse.redirect(new URL('/contact?error=invalid_token', baseUrl));
@@ -59,11 +60,19 @@ export async function GET(req: NextRequest) {
     console.error('[contact-verify-confirm] Insert error:', insertError.message);
   }
 
-  // Send admin notification
   const apiKey = process.env.RESEND_API_KEY;
   const adminEmail = process.env.CONTACT_EMAIL || CONTACT_EMAIL_FALLBACK;
+  const isProduction = process.env.NODE_ENV === 'production';
+  const {
+    to: adminRecipient,
+    configError: adminConfigError,
+  } = resolveDevOrSandboxRecipient({
+    productionRecipient: adminEmail,
+    fromAddress: EMAIL_FROM,
+    isProduction,
+  });
 
-  if (apiKey) {
+  if (apiKey && !adminConfigError) {
     const resend = new Resend(apiKey);
     const submittedAt = new Date().toLocaleString('fr-FR', {
       timeZone: 'Europe/Paris',
@@ -82,7 +91,7 @@ export async function GET(req: NextRequest) {
     await resend.emails
       .send({
         from: EMAIL_FROM,
-        to: adminEmail,
+        to: adminRecipient,
         replyTo: pending.email,
         subject: `✓ Nouveau lead vérifié - ${pending.nom_complet} (${pending.societe})`,
         html: `
@@ -116,6 +125,47 @@ export async function GET(req: NextRequest) {
 </body></html>`,
       })
       .catch((e) => console.error('[contact-verify-confirm] Admin email error:', e));
+
+    const {
+      to: visitorRecipient,
+      configError: visitorConfigError,
+    } = resolveDevOrSandboxRecipient({
+      productionRecipient: pending.email,
+      fromAddress: EMAIL_FROM,
+      isProduction,
+    });
+
+    if (!visitorConfigError) {
+      await resend.emails
+        .send({
+          from: EMAIL_FROM,
+          to: visitorRecipient,
+          subject: 'Votre demande a bien été enregistrée - GL Capital Investment SA',
+          html: `
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/></head>
+<body style="margin:0;padding:0;background:#f0f4f8;font-family:Helvetica,Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
+<tr><td align="center">
+<table width="580" cellpadding="0" cellspacing="0" style="max-width:580px;">
+<tr><td style="background:linear-gradient(135deg,#0a1941,#0d2060);border-radius:12px 12px 0 0;padding:32px 40px;text-align:center;">
+<h1 style="margin:0;color:#c9a84c;font-size:20px;font-weight:700;letter-spacing:3px;text-transform:uppercase;">GL CAPITAL</h1>
+</td></tr>
+<tr><td style="background:#c9a84c;height:3px;"></td></tr>
+<tr><td style="background:#fff;padding:36px 40px;border-radius:0 0 12px 12px;">
+<h2 style="margin:0 0 16px;color:#0a1941;font-size:18px;">Demande confirmée</h2>
+<p style="color:#475569;font-size:14px;line-height:1.7;margin:0 0 12px;">Bonjour <strong>${safeNom}</strong>,</p>
+<p style="color:#475569;font-size:14px;line-height:1.7;margin:0 0 12px;">Nous avons bien reçu et enregistré votre demande pour <strong>${safeSociete}</strong>. Un conseiller GL Capital vous recontactera dans les meilleurs délais.</p>
+<p style="color:#94a3b8;font-size:11px;margin:20px 0 0;text-align:center;">${TRANSACTIONAL_EMAIL_FOOTER_LINE}</p>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body></html>`,
+        })
+        .catch((e) => console.error('[contact-verify-confirm] Visitor confirmation error:', e));
+    }
+  } else if (adminConfigError) {
+    console.error('[contact-verify-confirm]', adminConfigError);
   }
 
   return NextResponse.redirect(new URL('/contact-success', baseUrl));

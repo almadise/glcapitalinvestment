@@ -41,10 +41,22 @@ function AuditExportContent({ layout }: { layout: 'admin' | 'compliance' }) {
   const fetchData = async () => {
     setLoading(true);
     try {
-      let historyQuery = supabase.from('case_status_history').select('*').order('created_at', { ascending: false });
-      let notesQuery = supabase.from('case_internal_notes').select('*').order('created_at', { ascending: false });
-      if (dateFrom) { historyQuery = historyQuery.gte('created_at', dateFrom); notesQuery = notesQuery.gte('created_at', dateFrom); }
-      if (dateTo) { historyQuery = historyQuery.lte('created_at', dateTo + 'T23:59:59'); notesQuery = notesQuery.lte('created_at', dateTo + 'T23:59:59'); }
+      let historyQuery = supabase
+        .from('case_status_history')
+        .select('*')
+        .order('created_at', { ascending: false });
+      let notesQuery = supabase
+        .from('case_internal_notes')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (dateFrom) {
+        historyQuery = historyQuery.gte('created_at', dateFrom);
+        notesQuery = notesQuery.gte('created_at', dateFrom);
+      }
+      if (dateTo) {
+        historyQuery = historyQuery.lte('created_at', dateTo + 'T23:59:59');
+        notesQuery = notesQuery.lte('created_at', dateTo + 'T23:59:59');
+      }
       const [histRes, notesRes] = await Promise.all([historyQuery, notesQuery]);
       setAuditData(histRes.data || []);
       setNotesData(notesRes.data || []);
@@ -55,13 +67,25 @@ function AuditExportContent({ layout }: { layout: 'admin' | 'compliance' }) {
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  const formatDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const formatDate = (d: string) =>
+    new Date(d).toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
 
   const exportCSV = () => {
     const data = exportType === 'history' ? auditData : notesData;
-    if (data.length === 0) { toast.error('Aucune donnée à exporter'); return; }
+    if (data.length === 0) {
+      toast.error('Aucune donnée à exporter');
+      return;
+    }
 
     let csvContent = '';
     if (exportType === 'history') {
@@ -88,7 +112,10 @@ function AuditExportContent({ layout }: { layout: 'admin' | 'compliance' }) {
 
   const exportPDF = () => {
     const data = exportType === 'history' ? auditData : notesData;
-    if (data.length === 0) { toast.error('Aucune donnée à exporter'); return; }
+    if (data.length === 0) {
+      toast.error('Aucune donnée à exporter');
+      return;
+    }
 
     let html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Audit GL Capital</title>
     <style>body{font-family:Arial,sans-serif;font-size:11px;margin:20px}h1{color:#1a2744;font-size:16px}table{width:100%;border-collapse:collapse;margin-top:10px}th{background:#1a2744;color:white;padding:6px 8px;text-align:left;font-size:10px}td{padding:5px 8px;border-bottom:1px solid #e2e8f0;font-size:10px}tr:nth-child(even){background:#f8fafc}.meta{color:#64748b;font-size:10px;margin-bottom:10px}</style>
@@ -128,44 +155,76 @@ function AuditExportContent({ layout }: { layout: 'admin' | 'compliance' }) {
           <Download size={20} className="text-gold" />
           <h1 className="font-display text-2xl font-bold text-navy">Exports Audit</h1>
         </div>
-        <p className="text-slate-500 text-sm">Historique des décisions et notes internes - accès Admin/Compliance uniquement</p>
+        <p className="text-slate-500 text-sm">
+          Historique des décisions et notes internes - accès Admin/Compliance uniquement
+        </p>
       </div>
 
       <div className="bg-red-50 border border-red-200 rounded-xl p-3 flex items-center gap-3 mb-6 text-xs text-red-800">
         <Shield size={14} className="flex-shrink-0" />
-        <span><strong>Accès restreint :</strong> Ces exports contiennent des données sensibles. Réservé aux rôles Admin et Compliance Officer.</span>
+        <span>
+          <strong>Accès restreint :</strong> Ces exports contiennent des données sensibles. Réservé
+          aux rôles Admin et Compliance Officer.
+        </span>
       </div>
 
       {/* Filters */}
       <div className="bg-white rounded-xl border border-slate-200 p-4 mb-4">
         <div className="flex flex-wrap items-end gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1">Type de données</label>
+            <label className="block text-xs font-semibold text-slate-600 mb-1">
+              Type de données
+            </label>
             <div className="flex gap-2">
-              <button onClick={() => setExportType('history')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${exportType === 'history' ? 'bg-navy text-white border-navy' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>
+              <button
+                onClick={() => setExportType('history')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${exportType === 'history' ? 'bg-navy text-white border-navy' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+              >
                 Historique statuts
               </button>
-              <button onClick={() => setExportType('notes')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${exportType === 'notes' ? 'bg-navy text-white border-navy' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}>
+              <button
+                onClick={() => setExportType('notes')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${exportType === 'notes' ? 'bg-navy text-white border-navy' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+              >
                 Notes internes
               </button>
             </div>
           </div>
           <div>
             <label className="block text-xs font-semibold text-slate-600 mb-1">Du</label>
-            <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:outline-none" />
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:outline-none"
+            />
           </div>
           <div>
             <label className="block text-xs font-semibold text-slate-600 mb-1">Au</label>
-            <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:outline-none" />
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:outline-none"
+            />
           </div>
-          <button onClick={fetchData} className="flex items-center gap-2 px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm hover:bg-slate-200">
+          <button
+            onClick={fetchData}
+            className="flex items-center gap-2 px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm hover:bg-slate-200"
+          >
             <Filter size={14} /> Filtrer
           </button>
           <div className="flex gap-2 ml-auto">
-            <button onClick={exportCSV} className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700">
+            <button
+              onClick={exportCSV}
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700"
+            >
               <Download size={14} /> CSV
             </button>
-            <button onClick={exportPDF} className="flex items-center gap-2 px-4 py-2 bg-navy text-white rounded-lg text-sm font-semibold hover:bg-navy/90">
+            <button
+              onClick={exportPDF}
+              className="flex items-center gap-2 px-4 py-2 bg-navy text-white rounded-lg text-sm font-semibold hover:bg-navy/90"
+            >
               <FileText size={14} /> PDF
             </button>
           </div>
@@ -174,7 +233,9 @@ function AuditExportContent({ layout }: { layout: 'admin' | 'compliance' }) {
 
       {/* Data preview */}
       {loading ? (
-        <div className="flex items-center justify-center h-40"><Loader2 size={28} className="animate-spin text-gold" /></div>
+        <div className="flex items-center justify-center h-40">
+          <Loader2 size={28} className="animate-spin text-gold" />
+        </div>
       ) : (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
@@ -185,40 +246,70 @@ function AuditExportContent({ layout }: { layout: 'admin' | 'compliance' }) {
               <thead className="bg-slate-50 border-b border-slate-200">
                 {exportType === 'history' ? (
                   <tr>
-                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">Dossier</th>
-                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">Ancien statut</th>
-                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">Nouveau statut</th>
-                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">Modifié par</th>
-                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">Note</th>
-                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">Date</th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">
+                      Dossier
+                    </th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">
+                      Ancien statut
+                    </th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">
+                      Nouveau statut
+                    </th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">
+                      Modifié par
+                    </th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">
+                      Note
+                    </th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">
+                      Date
+                    </th>
                   </tr>
                 ) : (
                   <tr>
-                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">Dossier</th>
-                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">Auteur</th>
-                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">Contenu</th>
-                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">Date</th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">
+                      Dossier
+                    </th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">
+                      Auteur
+                    </th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">
+                      Contenu
+                    </th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-600 uppercase tracking-wide">
+                      Date
+                    </th>
                   </tr>
                 )}
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {displayData.length === 0 ? (
-                  <tr><td colSpan={6} className="text-center py-10 text-slate-400">Aucune donnée</td></tr>
+                  <tr>
+                    <td colSpan={6} className="text-center py-10 text-slate-400">
+                      Aucune donnée
+                    </td>
+                  </tr>
                 ) : exportType === 'history' ? (
                   (auditData as AuditEntry[]).slice(0, 50).map((row) => (
                     <tr key={row.id} className="hover:bg-slate-50">
-                      <td className="px-4 py-2 font-mono text-slate-500">{row.case_id.slice(0, 8)}…</td>
+                      <td className="px-4 py-2 font-mono text-slate-500">
+                        {row.case_id.slice(0, 8)}…
+                      </td>
                       <td className="px-4 py-2 text-slate-500">{row.old_status || '-'}</td>
                       <td className="px-4 py-2 font-semibold text-navy">{row.new_status}</td>
                       <td className="px-4 py-2 text-slate-600">{row.changed_by_email || '-'}</td>
-                      <td className="px-4 py-2 text-slate-500 max-w-xs truncate">{row.note || '-'}</td>
+                      <td className="px-4 py-2 text-slate-500 max-w-xs truncate">
+                        {row.note || '-'}
+                      </td>
                       <td className="px-4 py-2 text-slate-400">{formatDate(row.created_at)}</td>
                     </tr>
                   ))
                 ) : (
                   (notesData as NoteEntry[]).slice(0, 50).map((row) => (
                     <tr key={row.id} className="hover:bg-slate-50">
-                      <td className="px-4 py-2 font-mono text-slate-500">{row.case_id.slice(0, 8)}…</td>
+                      <td className="px-4 py-2 font-mono text-slate-500">
+                        {row.case_id.slice(0, 8)}…
+                      </td>
                       <td className="px-4 py-2 text-slate-600">{row.author_email || '-'}</td>
                       <td className="px-4 py-2 text-slate-700 max-w-xs truncate">{row.content}</td>
                       <td className="px-4 py-2 text-slate-400">{formatDate(row.created_at)}</td>
@@ -230,7 +321,7 @@ function AuditExportContent({ layout }: { layout: 'admin' | 'compliance' }) {
           </div>
           {displayData.length > 50 && (
             <div className="px-4 py-3 border-t border-slate-200 text-xs text-slate-400 text-center">
-              Aperçu limité à 50 entrées. Utilisez l'export CSV/PDF pour toutes les données.
+              Aperçu limité à 50 entrées. Utilisez l&apos;export CSV/PDF pour toutes les données.
             </div>
           )}
         </div>

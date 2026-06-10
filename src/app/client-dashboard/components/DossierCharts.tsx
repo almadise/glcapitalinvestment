@@ -43,20 +43,42 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const STATUS_LABELS_FR: Record<string, string> = {
-  RECU: 'Reçu', A_COMPLETER: 'À compléter', EN_ANALYSE: 'En analyse',
-  EN_REVUE_COMPLIANCE: 'En revue', ELIGIBLE: 'Éligible',
-  SOUMIS_PARTENAIRE: 'Soumis', RETOUR_PARTENAIRE: 'Retour', EN_NEGOCIATION: 'Négociation',
-  CLOTURE: 'Clôturé', REJETE: 'Rejeté',
+  RECU: 'Reçu',
+  A_COMPLETER: 'À compléter',
+  EN_ANALYSE: 'En analyse',
+  EN_REVUE_COMPLIANCE: 'En revue',
+  ELIGIBLE: 'Éligible',
+  SOUMIS_PARTENAIRE: 'Soumis',
+  RETOUR_PARTENAIRE: 'Retour',
+  EN_NEGOCIATION: 'Négociation',
+  CLOTURE: 'Clôturé',
+  REJETE: 'Rejeté',
 };
 
 const STATUS_LABELS_EN: Record<string, string> = {
-  RECU: 'Received', A_COMPLETER: 'To complete', EN_ANALYSE: 'In analysis',
-  EN_REVUE_COMPLIANCE: 'In review', ELIGIBLE: 'Eligible',
-  SOUMIS_PARTENAIRE: 'Submitted', RETOUR_PARTENAIRE: 'Feedback', EN_NEGOCIATION: 'Negotiation',
-  CLOTURE: 'Closed', REJETE: 'Rejected',
+  RECU: 'Received',
+  A_COMPLETER: 'To complete',
+  EN_ANALYSE: 'In analysis',
+  EN_REVUE_COMPLIANCE: 'In review',
+  ELIGIBLE: 'Eligible',
+  SOUMIS_PARTENAIRE: 'Submitted',
+  RETOUR_PARTENAIRE: 'Feedback',
+  EN_NEGOCIATION: 'Negotiation',
+  CLOTURE: 'Closed',
+  REJETE: 'Rejected',
 };
 
-const CustomTooltipArea = ({ active, payload, label, lang }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string; lang: 'fr' | 'en' }) => {
+const CustomTooltipArea = ({
+  active,
+  payload,
+  label,
+  lang,
+}: {
+  active?: boolean;
+  payload?: Array<{ name: string; value: number; color: string }>;
+  label?: string;
+  lang: 'fr' | 'en';
+}) => {
   if (!active || !payload || !payload.length) return null;
   return (
     <div className="bg-white border border-slate-200 rounded-xl shadow-xl p-3 text-xs">
@@ -72,12 +94,24 @@ const CustomTooltipArea = ({ active, payload, label, lang }: { active?: boolean;
   );
 };
 
-const CustomTooltipBar = ({ active, payload, label, lang }: { active?: boolean; payload?: Array<{ value: number }>; label?: string; lang: 'fr' | 'en' }) => {
+const CustomTooltipBar = ({
+  active,
+  payload,
+  label,
+  lang,
+}: {
+  active?: boolean;
+  payload?: Array<{ value: number }>;
+  label?: string;
+  lang: 'fr' | 'en';
+}) => {
   if (!active || !payload || !payload.length) return null;
   return (
     <div className="bg-white border border-slate-200 rounded-xl shadow-xl p-3 text-xs">
       <p className="font-semibold text-navy mb-1">{label}</p>
-      <p className="font-bold text-navy font-mono-data">{payload[0].value} {lang === 'fr' ? 'dossier(s)' : 'file(s)'}</p>
+      <p className="font-bold text-navy font-mono-data">
+        {payload[0].value} {lang === 'fr' ? 'dossier(s)' : 'file(s)'}
+      </p>
     </div>
   );
 };
@@ -158,17 +192,34 @@ export default function DossierCharts() {
     if (!user) return;
     const channel = supabase
       .channel('charts_dossiers')
-      .on('postgres_changes', {
-        event: '*', schema: 'public', table: 'case_files',
-        filter: `user_id=eq.${user.id}`,
-      }, fetchChartData)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'case_files',
+          filter: `user_id=eq.${user.id}`,
+        },
+        fetchChartData
+      )
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user, fetchChartData]);
 
-  const areaLegend = lang === 'fr'
-    ? [{ label: 'Soumis', color: '#0F2557' }, { label: 'En analyse', color: '#C9A84C' }, { label: 'Clôturés', color: '#10b981' }]
-    : [{ label: 'Submitted', color: '#0F2557' }, { label: 'In analysis', color: '#C9A84C' }, { label: 'Closed', color: '#10b981' }];
+  const areaLegend =
+    lang === 'fr'
+      ? [
+          { label: 'Soumis', color: '#0F2557' },
+          { label: 'En analyse', color: '#C9A84C' },
+          { label: 'Clôturés', color: '#10b981' },
+        ]
+      : [
+          { label: 'Submitted', color: '#0F2557' },
+          { label: 'In analysis', color: '#C9A84C' },
+          { label: 'Closed', color: '#10b981' },
+        ];
 
   return (
     <div className="space-y-5">
@@ -180,7 +231,9 @@ export default function DossierCharts() {
               {lang === 'fr' ? 'Activité des dossiers' : 'File activity'}
             </h3>
             <p className="text-slate-500 text-xs mt-0.5">
-              {lang === 'fr' ? 'Soumissions, analyses et clôtures - 12 semaines' : 'Submissions, analyses and closures - 12 weeks'}
+              {lang === 'fr'
+                ? 'Soumissions, analyses et clôtures - 12 semaines'
+                : 'Submissions, analyses and closures - 12 weeks'}
             </p>
           </div>
           <div className="flex items-center gap-4 text-xs">
@@ -214,12 +267,38 @@ export default function DossierCharts() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="week" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+              <XAxis
+                dataKey="week"
+                tick={{ fontSize: 11, fill: '#94a3b8' }}
+                axisLine={false}
+                tickLine={false}
+              />
               <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltipArea lang={lang} />} />
-              <Area type="monotone" dataKey="soumis" name={lang === 'fr' ? 'Soumis' : 'Submitted'} stroke="#0F2557" strokeWidth={2} fill="url(#gradSoumis)" />
-              <Area type="monotone" dataKey="enAnalyse" name={lang === 'fr' ? 'En analyse' : 'In analysis'} stroke="#C9A84C" strokeWidth={2} fill="url(#gradAnalyse)" />
-              <Area type="monotone" dataKey="clotures" name={lang === 'fr' ? 'Clôturés' : 'Closed'} stroke="#10b981" strokeWidth={2} fill="url(#gradClotures)" />
+              <Area
+                type="monotone"
+                dataKey="soumis"
+                name={lang === 'fr' ? 'Soumis' : 'Submitted'}
+                stroke="#0F2557"
+                strokeWidth={2}
+                fill="url(#gradSoumis)"
+              />
+              <Area
+                type="monotone"
+                dataKey="enAnalyse"
+                name={lang === 'fr' ? 'En analyse' : 'In analysis'}
+                stroke="#C9A84C"
+                strokeWidth={2}
+                fill="url(#gradAnalyse)"
+              />
+              <Area
+                type="monotone"
+                dataKey="clotures"
+                name={lang === 'fr' ? 'Clôturés' : 'Closed'}
+                stroke="#10b981"
+                strokeWidth={2}
+                fill="url(#gradClotures)"
+              />
             </AreaChart>
           </ResponsiveContainer>
         )}
@@ -232,7 +311,9 @@ export default function DossierCharts() {
             {lang === 'fr' ? 'Distribution du pipeline' : 'Pipeline distribution'}
           </h3>
           <p className="text-slate-500 text-xs mt-0.5">
-            {lang === 'fr' ? 'Nombre de dossiers par statut actuel' : 'Number of files by current status'}
+            {lang === 'fr'
+              ? 'Nombre de dossiers par statut actuel'
+              : 'Number of files by current status'}
           </p>
         </div>
         {loading ? (
@@ -241,13 +322,20 @@ export default function DossierCharts() {
           </div>
         ) : pipelineData.length === 0 ? (
           <div className="h-[170px] flex items-center justify-center">
-            <p className="text-slate-400 text-sm">{lang === 'fr' ? 'Aucun dossier' : 'No files yet'}</p>
+            <p className="text-slate-400 text-sm">
+              {lang === 'fr' ? 'Aucun dossier' : 'No files yet'}
+            </p>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={170}>
             <BarChart data={pipelineData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-              <XAxis dataKey="status" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+              <XAxis
+                dataKey="status"
+                tick={{ fontSize: 10, fill: '#94a3b8' }}
+                axisLine={false}
+                tickLine={false}
+              />
               <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltipBar lang={lang} />} />
               <Bar dataKey="count" radius={[4, 4, 0, 0]}>

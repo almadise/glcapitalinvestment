@@ -19,11 +19,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { caseFileDescription, caseFileLabel, caseFileType } from '@/lib/caseFileLabel';
-import {
-  getCaseStatusLabel,
-  type CaseStatus,
-} from '@/lib/caseStatus';
-
+import { getCaseStatusLabel, type CaseStatus } from '@/lib/caseStatus';
 
 type DossierStatus = CaseStatus;
 
@@ -135,7 +131,7 @@ const PHASES: Array<{
 const REQUIRED_DOCS_BY_STATUS: Record<string, { fr: string[]; en: string[] }> = {
   A_COMPLETER: {
     fr: [
-      'Pièce d\'identité valide (passeport ou CNI)',
+      "Pièce d'identité valide (passeport ou CNI)",
       'Justificatif de domicile récent (moins de 3 mois)',
       'Statuts de la société (si applicable)',
       'Business plan ou note de présentation du projet',
@@ -150,7 +146,7 @@ const REQUIRED_DOCS_BY_STATUS: Record<string, { fr: string[]; en: string[] }> = 
     ],
   },
   RECU: {
-    fr: ['Aucune action requise - votre dossier est en cours d\'examen initial.'],
+    fr: ["Aucune action requise - votre dossier est en cours d'examen initial."],
     en: ['No action required - your file is under initial review.'],
   },
   ELIGIBLE: {
@@ -187,10 +183,19 @@ function getPhaseIndex(status: DossierStatus): number {
 function getNextStepAction(
   status: DossierStatus,
   lang: 'fr' | 'en'
-): { title: string; description: string; cta: string; href: string; severity: 'urgent' | 'neutral' } {
+): {
+  title: string;
+  description: string;
+  cta: string;
+  href: string;
+  severity: 'urgent' | 'neutral';
+} {
   if (status === 'A_COMPLETER') {
     return {
-      title: lang === 'fr' ? 'Action prioritaire : completer vos documents' : 'Priority action: complete your documents',
+      title:
+        lang === 'fr'
+          ? 'Action prioritaire : completer vos documents'
+          : 'Priority action: complete your documents',
       description:
         lang === 'fr'
           ? 'Des pieces sont manquantes. Leur depot permet de relancer immediatement le traitement.'
@@ -203,7 +208,10 @@ function getNextStepAction(
 
   if (status === 'RECU') {
     return {
-      title: lang === 'fr' ? 'Prochaine etape : verification initiale' : 'Next step: initial verification',
+      title:
+        lang === 'fr'
+          ? 'Prochaine etape : verification initiale'
+          : 'Next step: initial verification',
       description:
         lang === 'fr'
           ? 'Aucune action immediate requise. Vous serez notifie si des pieces sont necessaires.'
@@ -216,7 +224,10 @@ function getNextStepAction(
 
   if (status === 'REJETE') {
     return {
-      title: lang === 'fr' ? 'Dossier rejete : reorientation possible' : 'Dossier rejected: reorientation possible',
+      title:
+        lang === 'fr'
+          ? 'Dossier rejete : reorientation possible'
+          : 'Dossier rejected: reorientation possible',
       description:
         lang === 'fr'
           ? 'Vous pouvez soumettre un nouveau dossier avec les ajustements recommandes.'
@@ -319,8 +330,12 @@ export default function DossierTimelinePage() {
 
   const currentStatus = selectedCase?.status ?? null;
   const currentStepIndex = currentStatus ? getPhaseIndex(currentStatus) : -1;
-  const requiredDocs = currentStatus ? (REQUIRED_DOCS_BY_STATUS[currentStatus] || REQUIRED_DOCS_BY_STATUS['RECU']) : null;
-  const nextStepAction = currentStatus ? getNextStepAction(currentStatus, lang as 'fr' | 'en') : null;
+  const requiredDocs = currentStatus
+    ? REQUIRED_DOCS_BY_STATUS[currentStatus] || REQUIRED_DOCS_BY_STATUS['RECU']
+    : null;
+  const nextStepAction = currentStatus
+    ? getNextStepAction(currentStatus, lang as 'fr' | 'en')
+    : null;
 
   /* Compute global status summary across all cases */
   const urgentCases = cases.filter((c) => c.status === 'A_COMPLETER');
@@ -333,7 +348,9 @@ export default function DossierTimelinePage() {
           {lang === 'fr' ? 'Suivi de mon dossier' : 'My File Status'}
         </h1>
         <p className="text-slate-500 text-sm mt-1">
-          {lang === 'fr' ? 'Consultez l\'avancement et les actions requises pour votre dossier.' : 'Track progress and required actions for your file.'}
+          {lang === 'fr'
+            ? "Consultez l'avancement et les actions requises pour votre dossier."
+            : 'Track progress and required actions for your file.'}
         </p>
       </div>
 
@@ -346,7 +363,9 @@ export default function DossierTimelinePage() {
             </div>
             <div>
               <p className="text-xl font-bold text-navy">{cases.length}</p>
-              <p className="text-xs text-slate-500">{lang === 'fr' ? 'Dossier(s) total' : 'Total file(s)'}</p>
+              <p className="text-xs text-slate-500">
+                {lang === 'fr' ? 'Dossier(s) total' : 'Total file(s)'}
+              </p>
             </div>
           </div>
           <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 flex items-center gap-3">
@@ -355,20 +374,32 @@ export default function DossierTimelinePage() {
             </div>
             <div>
               <p className="text-xl font-bold text-blue-800">{activeCases.length}</p>
-              <p className="text-xs text-blue-600">{lang === 'fr' ? 'En cours de traitement' : 'In progress'}</p>
+              <p className="text-xs text-blue-600">
+                {lang === 'fr' ? 'En cours de traitement' : 'In progress'}
+              </p>
             </div>
           </div>
-          <div className={`rounded-xl border p-4 flex items-center gap-3 ${urgentCases.length > 0 ? 'border-orange-200 bg-orange-50' : 'border-emerald-200 bg-emerald-50'}`}>
-            <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${urgentCases.length > 0 ? 'bg-orange-100' : 'bg-emerald-100'}`}>
-              {urgentCases.length > 0
-                ? <AlertTriangle size={16} className="text-orange-600" />
-                : <CheckCircle2 size={16} className="text-emerald-600" />}
+          <div
+            className={`rounded-xl border p-4 flex items-center gap-3 ${urgentCases.length > 0 ? 'border-orange-200 bg-orange-50' : 'border-emerald-200 bg-emerald-50'}`}
+          >
+            <div
+              className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${urgentCases.length > 0 ? 'bg-orange-100' : 'bg-emerald-100'}`}
+            >
+              {urgentCases.length > 0 ? (
+                <AlertTriangle size={16} className="text-orange-600" />
+              ) : (
+                <CheckCircle2 size={16} className="text-emerald-600" />
+              )}
             </div>
             <div>
-              <p className={`text-xl font-bold ${urgentCases.length > 0 ? 'text-orange-800' : 'text-emerald-800'}`}>
+              <p
+                className={`text-xl font-bold ${urgentCases.length > 0 ? 'text-orange-800' : 'text-emerald-800'}`}
+              >
                 {urgentCases.length}
               </p>
-              <p className={`text-xs ${urgentCases.length > 0 ? 'text-orange-600' : 'text-emerald-600'}`}>
+              <p
+                className={`text-xs ${urgentCases.length > 0 ? 'text-orange-600' : 'text-emerald-600'}`}
+              >
                 {lang === 'fr' ? 'Action(s) requise(s)' : 'Action(s) required'}
               </p>
             </div>
@@ -395,7 +426,10 @@ export default function DossierTimelinePage() {
               <h2 className="text-sm font-semibold text-slate-700">
                 {lang === 'fr' ? 'Mes dossiers' : 'My files'}
               </h2>
-              <button onClick={fetchCases} className="text-slate-400 hover:text-navy transition-colors p-1 rounded-lg hover:bg-slate-100">
+              <button
+                onClick={fetchCases}
+                className="text-slate-400 hover:text-navy transition-colors p-1 rounded-lg hover:bg-slate-100"
+              >
                 <RefreshCw size={14} />
               </button>
             </div>
@@ -417,8 +451,14 @@ export default function DossierTimelinePage() {
                       <p className="text-sm font-semibold text-navy truncate">{caseFileLabel(c)}</p>
                       <p className="text-xs text-slate-400 mt-0.5">{c.type}</p>
                     </div>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 ${step?.color ?? 'text-slate-600'} ${step?.bg ?? 'bg-slate-50'} ${step?.border ?? 'border-slate-200'}`}>
-                      {step ? (lang === 'fr' ? step.labelFr : step.labelEn) : getCaseStatusLabel(c.status, lang as 'fr' | 'en')}
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 ${step?.color ?? 'text-slate-600'} ${step?.bg ?? 'bg-slate-50'} ${step?.border ?? 'border-slate-200'}`}
+                    >
+                      {step
+                        ? lang === 'fr'
+                          ? step.labelFr
+                          : step.labelEn
+                        : getCaseStatusLabel(c.status, lang as 'fr' | 'en')}
                     </span>
                   </div>
                   <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
@@ -449,13 +489,15 @@ export default function DossierTimelinePage() {
                       return (
                         <div key={step.key} className="relative flex gap-4 pb-6 last:pb-0">
                           {/* Icon */}
-                          <div className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${
-                            isCompleted
-                              ? 'bg-emerald-500 border-emerald-500'
-                              : isCurrent
-                              ? `${step.bg} ${step.border} border-2`
-                              : 'bg-white border-slate-200'
-                          }`}>
+                          <div
+                            className={`relative z-10 flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${
+                              isCompleted
+                                ? 'bg-emerald-500 border-emerald-500'
+                                : isCurrent
+                                  ? `${step.bg} ${step.border} border-2`
+                                  : 'bg-white border-slate-200'
+                            }`}
+                          >
                             {isCompleted ? (
                               <CheckCircle2 size={18} className="text-white" />
                             ) : isCurrent ? (
@@ -465,22 +507,34 @@ export default function DossierTimelinePage() {
                             )}
                           </div>
                           {/* Content */}
-                          <div className={`flex-1 pt-1.5 pb-2 px-4 rounded-xl transition-all ${
-                            isCurrent ? `${step.bg} border ${step.border}` : ''
-                          }`}>
+                          <div
+                            className={`flex-1 pt-1.5 pb-2 px-4 rounded-xl transition-all ${
+                              isCurrent ? `${step.bg} border ${step.border}` : ''
+                            }`}
+                          >
                             <div className="flex items-center justify-between gap-2 flex-wrap">
-                              <p className={`text-sm font-semibold ${
-                                isCompleted ? 'text-emerald-700' : isCurrent ? step.color : 'text-slate-400'
-                              }`}>
+                              <p
+                                className={`text-sm font-semibold ${
+                                  isCompleted
+                                    ? 'text-emerald-700'
+                                    : isCurrent
+                                      ? step.color
+                                      : 'text-slate-400'
+                                }`}
+                              >
                                 {lang === 'fr' ? step.labelFr : step.labelEn}
                               </p>
                               {isCurrent && (
-                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${step.bg} ${step.color} border ${step.border}`}>
+                                <span
+                                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${step.bg} ${step.color} border ${step.border}`}
+                                >
                                   {lang === 'fr' ? 'Statut actuel' : 'Current status'}
                                 </span>
                               )}
                             </div>
-                            <p className={`text-xs mt-1 ${isCurrent ? step.color + '/80' : 'text-slate-400'}`}>
+                            <p
+                              className={`text-xs mt-1 ${isCurrent ? step.color + '/80' : 'text-slate-400'}`}
+                            >
                               {lang === 'fr' ? step.descFr : step.descEn}
                             </p>
                           </div>
@@ -513,7 +567,9 @@ export default function DossierTimelinePage() {
                   <div className="flex items-center gap-2 mb-2">
                     <Flag
                       size={16}
-                      className={nextStepAction.severity === 'urgent' ? 'text-orange-600' : 'text-blue-600'}
+                      className={
+                        nextStepAction.severity === 'urgent' ? 'text-orange-600' : 'text-blue-600'
+                      }
                     />
                     <h3
                       className={`text-sm font-semibold ${
@@ -538,7 +594,11 @@ export default function DossierTimelinePage() {
                         : 'bg-blue-600 hover:bg-blue-700'
                     }`}
                   >
-                    {nextStepAction.severity === 'urgent' ? <Upload size={13} /> : <ChevronRight size={13} />}
+                    {nextStepAction.severity === 'urgent' ? (
+                      <Upload size={13} />
+                    ) : (
+                      <ChevronRight size={13} />
+                    )}
                     {nextStepAction.cta}
                   </Link>
                 </div>
@@ -546,26 +606,45 @@ export default function DossierTimelinePage() {
 
               {/* Required Actions / Documents */}
               {requiredDocs && (
-                <div className={`rounded-xl border p-5 ${
-                  currentStatus === 'A_COMPLETER' ?'bg-orange-50 border-orange-200' :'bg-slate-50 border-slate-200'
-                }`}>
+                <div
+                  className={`rounded-xl border p-5 ${
+                    currentStatus === 'A_COMPLETER'
+                      ? 'bg-orange-50 border-orange-200'
+                      : 'bg-slate-50 border-slate-200'
+                  }`}
+                >
                   <div className="flex items-center gap-2 mb-3">
                     {currentStatus === 'A_COMPLETER' ? (
                       <Upload size={16} className="text-orange-600" />
                     ) : (
                       <Flag size={16} className="text-slate-500" />
                     )}
-                    <h3 className={`text-sm font-semibold ${currentStatus === 'A_COMPLETER' ? 'text-orange-700' : 'text-slate-700'}`}>
+                    <h3
+                      className={`text-sm font-semibold ${currentStatus === 'A_COMPLETER' ? 'text-orange-700' : 'text-slate-700'}`}
+                    >
                       {currentStatus === 'A_COMPLETER'
-                        ? (lang === 'fr' ? 'Documents requis' : 'Required documents')
-                        : (lang === 'fr' ? 'Informations' : 'Information')}
+                        ? lang === 'fr'
+                          ? 'Documents requis'
+                          : 'Required documents'
+                        : lang === 'fr'
+                          ? 'Informations'
+                          : 'Information'}
                     </h3>
                   </div>
                   <ul className="space-y-2">
                     {(lang === 'fr' ? requiredDocs.fr : requiredDocs.en).map((doc, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm">
-                        <ChevronRight size={14} className={`mt-0.5 flex-shrink-0 ${currentStatus === 'A_COMPLETER' ? 'text-orange-500' : 'text-slate-400'}`} />
-                        <span className={currentStatus === 'A_COMPLETER' ? 'text-orange-800' : 'text-slate-600'}>{doc}</span>
+                        <ChevronRight
+                          size={14}
+                          className={`mt-0.5 flex-shrink-0 ${currentStatus === 'A_COMPLETER' ? 'text-orange-500' : 'text-slate-400'}`}
+                        />
+                        <span
+                          className={
+                            currentStatus === 'A_COMPLETER' ? 'text-orange-800' : 'text-slate-600'
+                          }
+                        >
+                          {doc}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -608,7 +687,9 @@ export default function DossierTimelinePage() {
                             {entry.note && (
                               <p className="text-slate-500 mt-0.5 italic">{entry.note}</p>
                             )}
-                            <p className="text-slate-400 mt-0.5">{formatDate(entry.created_at, lang)}</p>
+                            <p className="text-slate-400 mt-0.5">
+                              {formatDate(entry.created_at, lang)}
+                            </p>
                           </div>
                         </div>
                       );

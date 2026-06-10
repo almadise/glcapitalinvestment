@@ -16,13 +16,17 @@ export default function ComplianceDocumentsPage() {
           </h1>
         </div>
         <p className="text-slate-500 text-sm">
-          {lang === 'fr' ? 'Consultez et gérez les documents de conformité réglementaire.' : 'View and manage regulatory compliance documents.'}
+          {lang === 'fr'
+            ? 'Consultez et gérez les documents de conformité réglementaire.'
+            : 'View and manage regulatory compliance documents.'}
         </p>
       </div>
       <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
         <FileText size={40} className="text-slate-300 mx-auto mb-3" />
         <p className="text-slate-500 text-sm">
-          {lang === 'fr' ? 'Les documents de conformité seront disponibles prochainement.' : 'Compliance documents will be available soon.'}
+          {lang === 'fr'
+            ? 'Les documents de conformité seront disponibles prochainement.'
+            : 'Compliance documents will be available soon.'}
         </p>
       </div>
     </ComplianceLayout>

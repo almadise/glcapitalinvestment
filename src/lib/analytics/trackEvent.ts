@@ -10,19 +10,19 @@
  */
 
 export type TrackableEvent =
-  | 'lead_submitted'           // Contact form soumis
-  | 'lead_qualified'           // Lead qualifié par l'équipe
-  | 'dossier_created'          // Nouveau dossier créé
-  | 'dossier_qualified'        // Dossier éligible
-  | 'dossier_submitted_partner'// Soumis aux partenaires
-  | 'dossier_closed'           // Dossier clôturé
-  | 'dossier_rejected'         // Dossier rejeté
-  | 'page_view_services'       // Vue page services
-  | 'cta_clicked'              // CTA cliqué
-  | 'package_interest'         // Intérêt pour un package
-  | 'document_uploaded'        // Document uploadé
-  | 'compliance_flag'          // Flag conformité déclenché
-  | 'email_reminder_sent';     // Email de relance envoyé
+  | 'lead_submitted' // Contact form soumis
+  | 'lead_qualified' // Lead qualifié par l'équipe
+  | 'dossier_created' // Nouveau dossier créé
+  | 'dossier_qualified' // Dossier éligible
+  | 'dossier_submitted_partner' // Soumis aux partenaires
+  | 'dossier_closed' // Dossier clôturé
+  | 'dossier_rejected' // Dossier rejeté
+  | 'page_view_services' // Vue page services
+  | 'cta_clicked' // CTA cliqué
+  | 'package_interest' // Intérêt pour un package
+  | 'document_uploaded' // Document uploadé
+  | 'compliance_flag' // Flag conformité déclenché
+  | 'email_reminder_sent'; // Email de relance envoyé
 
 interface EventPayload {
   [key: string]: string | number | boolean | undefined;
@@ -59,7 +59,11 @@ export function trackEvent(event: TrackableEvent, payload?: EventPayload): void 
 
 /** Convenience: track CTA click with location and target */
 export function trackCTA(ctaId: string, href: string, page?: string): void {
-  trackEvent('cta_clicked', { cta_id: ctaId, href, page: page ?? (typeof window !== 'undefined' ? window.location.pathname : '') });
+  trackEvent('cta_clicked', {
+    cta_id: ctaId,
+    href,
+    page: page ?? (typeof window !== 'undefined' ? window.location.pathname : ''),
+  });
 }
 
 /** Convenience: track lead from contact form */
@@ -69,7 +73,12 @@ export function trackLeadSubmitted(channel: string, service?: string): void {
 
 /** Convenience: track dossier lifecycle */
 export function trackDossierEvent(
-  eventType: 'dossier_created' | 'dossier_qualified' | 'dossier_submitted_partner' | 'dossier_closed' | 'dossier_rejected',
+  eventType:
+    | 'dossier_created'
+    | 'dossier_qualified'
+    | 'dossier_submitted_partner'
+    | 'dossier_closed'
+    | 'dossier_rejected',
   caseId: string,
   extras?: EventPayload
 ): void {

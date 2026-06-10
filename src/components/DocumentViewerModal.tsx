@@ -1,6 +1,16 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { X, Download, ZoomIn, ZoomOut, RotateCw, FileText, Image, ExternalLink, Loader2 } from 'lucide-react';
+import {
+  X,
+  Download,
+  ZoomIn,
+  ZoomOut,
+  RotateCw,
+  FileText,
+  Image,
+  ExternalLink,
+  Loader2,
+} from 'lucide-react';
 
 interface DocumentViewerModalProps {
   isOpen: boolean;
@@ -67,7 +77,9 @@ export default function DocumentViewerModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
@@ -89,7 +101,11 @@ export default function DocumentViewerModal({
               {fileSize && <span>{formatBytes(fileSize)}</span>}
               {uploadedAt && (
                 <span>
-                  {new Date(uploadedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  {new Date(uploadedAt).toLocaleDateString('fr-FR', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
                 </span>
               )}
               {uploaderName && <span>par {uploaderName}</span>}
@@ -190,7 +206,10 @@ export default function DocumentViewerModal({
                 src={fileUrl}
                 alt={fileName}
                 onLoad={() => setImgLoaded(true)}
-                onError={() => { setImgError(true); setImgLoaded(true); }}
+                onError={() => {
+                  setImgError(true);
+                  setImgLoaded(true);
+                }}
                 style={{
                   display: imgLoaded && !imgError ? 'block' : 'none',
                   transform: `scale(${zoom / 100}) rotate(${rotation}deg)`,

@@ -34,7 +34,9 @@ function ConseilSection({
       <div className="max-w-screen-xl mx-auto px-6 lg:px-10 xl:px-16">
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 bg-navy/5 border border-navy/10 rounded-full px-4 py-1.5 mb-5">
-            <span className="text-navy text-xs font-semibold tracking-widest uppercase">{badge}</span>
+            <span className="text-navy text-xs font-semibold tracking-widest uppercase">
+              {badge}
+            </span>
           </div>
           <h2 className="font-display text-3xl lg:text-4xl font-bold text-navy mb-4">{title}</h2>
           <p className="text-slate-500 text-base max-w-xl mx-auto">{description}</p>
@@ -72,31 +74,97 @@ function ExpertStyleCard({
 export default function ConseilStructurationPage() {
   const { lang } = useLanguage();
 
-  const prestations = lang === 'fr'
-    ? [
-        { icon: Search, title: 'Analyse de faisabilité', description: "Évaluation de viabilité du projet, identification des instruments de financement adaptés, recommandation sur la structure de capital dette/fonds propres." },
-        { icon: FileText, title: 'Montage documentaire', description: "Préparation de la Lettre d'Intention (LOI), CIS/FIC, NCNDA, plan d'affaires et résumé exécutif. Constitution d'un dossier complet et conforme aux exigences institutionnelles." },
-        { icon: ShieldCheck, title: 'Conformité KYC/AML', description: "Accompagnement dans la préparation du dossier de conformité selon les exigences des plateformes bancaires partenaires. Vérification d'identité et conformité anti-blanchiment." },
-        { icon: Users, title: 'Introduction institutionnelle', description: "Mise en relation formelle avec banques d'affaires, family offices, investisseurs institutionnels et opérateurs agréés. Accès au réseau partenaire de GL Capital." },
-        { icon: ClipboardList, title: 'Suivi post-financement', description: "Gestion des obligations contractuelles post-décaissement, conformité d'utilisation des fonds, interface avec les partenaires bancaires tout au long de la durée du financement." },
-      ]
-    : [
-        { icon: Search, title: 'Feasibility analysis', description: 'Project viability assessment, identification of suitable financing instruments, recommendation on debt/equity capital structure.' },
-        { icon: FileText, title: 'Document preparation', description: 'Preparation of the Letter of Intent (LOI), CIS/FIC, NCNDA, business plan and executive summary. Assembly of a complete file compliant with institutional requirements.' },
-        { icon: ShieldCheck, title: 'KYC/AML compliance', description: 'Support in preparing the compliance file according to the requirements of partner banking platforms. Identity verification and anti-money laundering compliance.' },
-        { icon: Users, title: 'Institutional introduction', description: "Formal introduction to investment banks, family offices, institutional investors and licensed operators. Access to GL Capital's partner network." },
-        { icon: ClipboardList, title: 'Post-financing monitoring', description: 'Management of post-disbursement contractual obligations, fund use compliance, interface with banking partners throughout the financing period.' },
-      ];
+  const prestations =
+    lang === 'fr'
+      ? [
+          {
+            icon: Search,
+            title: 'Analyse de faisabilité',
+            description:
+              'Évaluation de viabilité du projet, identification des instruments de financement adaptés, recommandation sur la structure de capital dette/fonds propres.',
+          },
+          {
+            icon: FileText,
+            title: 'Montage documentaire',
+            description:
+              "Préparation de la Lettre d'Intention (LOI), CIS/FIC, NCNDA, plan d'affaires et résumé exécutif. Constitution d'un dossier complet et conforme aux exigences institutionnelles.",
+          },
+          {
+            icon: ShieldCheck,
+            title: 'Conformité KYC/AML',
+            description:
+              "Accompagnement dans la préparation du dossier de conformité selon les exigences des plateformes bancaires partenaires. Vérification d'identité et conformité anti-blanchiment.",
+          },
+          {
+            icon: Users,
+            title: 'Introduction institutionnelle',
+            description:
+              "Mise en relation formelle avec banques d'affaires, family offices, investisseurs institutionnels et opérateurs agréés. Accès au réseau partenaire de GL Capital.",
+          },
+          {
+            icon: ClipboardList,
+            title: 'Suivi post-financement',
+            description:
+              "Gestion des obligations contractuelles post-décaissement, conformité d'utilisation des fonds, interface avec les partenaires bancaires tout au long de la durée du financement.",
+          },
+        ]
+      : [
+          {
+            icon: Search,
+            title: 'Feasibility analysis',
+            description:
+              'Project viability assessment, identification of suitable financing instruments, recommendation on debt/equity capital structure.',
+          },
+          {
+            icon: FileText,
+            title: 'Document preparation',
+            description:
+              'Preparation of the Letter of Intent (LOI), CIS/FIC, NCNDA, business plan and executive summary. Assembly of a complete file compliant with institutional requirements.',
+          },
+          {
+            icon: ShieldCheck,
+            title: 'KYC/AML compliance',
+            description:
+              'Support in preparing the compliance file according to the requirements of partner banking platforms. Identity verification and anti-money laundering compliance.',
+          },
+          {
+            icon: Users,
+            title: 'Institutional introduction',
+            description:
+              "Formal introduction to investment banks, family offices, institutional investors and licensed operators. Access to GL Capital's partner network.",
+          },
+          {
+            icon: ClipboardList,
+            title: 'Post-financing monitoring',
+            description:
+              'Management of post-disbursement contractual obligations, fund use compliance, interface with banking partners throughout the financing period.',
+          },
+        ];
 
-  const expertiseNetwork = lang === 'fr'
-    ? ["Avocats d'affaires", 'Juristes en droit financier international', 'Comptables certifiés', 'Fiscalistes internationaux', 'Gérants de fortune']
-    : ['Business lawyers', 'Financial law specialists', 'Certified accountants', 'Tax advisors', 'Wealth managers'];
+  const expertiseNetwork =
+    lang === 'fr'
+      ? [
+          "Avocats d'affaires",
+          'Juristes en droit financier international',
+          'Comptables certifiés',
+          'Fiscalistes internationaux',
+          'Gérants de fortune',
+        ]
+      : [
+          'Business lawyers',
+          'Financial law specialists',
+          'Certified accountants',
+          'Tax advisors',
+          'Wealth managers',
+        ];
 
-  const approachTags = lang === 'fr'
-    ? ['Structuration sur mesure', 'Réseau pluridisciplinaire', 'Conformité internationale']
-    : ['Tailored structuring', 'Multidisciplinary network', 'International compliance'];
+  const approachTags =
+    lang === 'fr'
+      ? ['Structuration sur mesure', 'Réseau pluridisciplinaire', 'Conformité internationale']
+      : ['Tailored structuring', 'Multidisciplinary network', 'International compliance'];
 
-  const approachTitle = lang === 'fr' ? 'Coordination des intervenants' : 'Stakeholder coordination';
+  const approachTitle =
+    lang === 'fr' ? 'Coordination des intervenants' : 'Stakeholder coordination';
   const approachText =
     lang === 'fr'
       ? "GL Capital coordonne l'ensemble des intervenants juridiques, financiers et bancaires pour garantir la cohérence et la solidité du dossier présenté aux institutions partenaires. Chaque structuration est adaptée au profil du porteur de projet et aux exigences des financeurs ciblés."
@@ -179,7 +247,11 @@ export default function ConseilStructurationPage() {
 
       <ConseilSection
         badge={lang === 'fr' ? 'Contact' : 'Contact'}
-        title={lang === 'fr' ? 'Structurez votre dossier avec nos experts' : 'Structure your file with our experts'}
+        title={
+          lang === 'fr'
+            ? 'Structurez votre dossier avec nos experts'
+            : 'Structure your file with our experts'
+        }
         description={
           lang === 'fr'
             ? "Nos conseillers analysent votre projet et vous accompagnent dans la constitution d'un dossier bancable, prêt à être présenté aux institutions partenaires."

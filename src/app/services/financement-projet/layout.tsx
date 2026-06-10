@@ -1,16 +1,14 @@
+import { buildServicePageMetadata } from '@/lib/seo/publicMetadata';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Financement de Projet - Accès aux Capitaux Institutionnels',
+export const metadata: Metadata = buildServicePageMetadata({
+  title: 'Financement de projet',
   description:
-    'GL Capital structure et présente vos dossiers de financement de projet auprès d\'institutions financières internationales. Montants de 2 M€ à 4 Md€.',
-  openGraph: {
-    title: 'Financement de Projet - GL Capital Investment SA',
-    description:
-      'Structuration et présentation de dossiers de financement de projet auprès d\'institutions financières internationales.',
-    url: 'https://glcapital9393.builtwithrocket.new/services/financement-projet',
-  },
-};
+    'Structuration de dossiers de financement de projet en euros (2 M€ à 4 Md€). Mise en relation institutionnelle. Prêts commerciaux USD sur la page Prêts.',
+  path: '/services/financement-projet',
+  keywords:
+    'financement de projet, financement institutionnel, structuration dossier, euro, éligibilité projet',
+});
 
 export default function FinancementProjetLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;

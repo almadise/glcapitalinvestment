@@ -43,8 +43,12 @@ export default function ContactVerifyContent() {
         {status === 'loading' && (
           <>
             <Loader2 size={40} className="text-gold animate-spin mx-auto mb-4" aria-hidden="true" />
-            <h1 className="font-display text-xl font-bold text-navy mb-2">Vérification en cours…</h1>
-            <p className="text-slate-500 text-sm">Veuillez patienter pendant que nous confirmons votre adresse email.</p>
+            <h1 className="font-display text-xl font-bold text-navy mb-2">
+              Vérification en cours…
+            </h1>
+            <p className="text-slate-500 text-sm">
+              Veuillez patienter pendant que nous confirmons votre adresse email.
+            </p>
           </>
         )}
         {status === 'success' && (
@@ -53,7 +57,9 @@ export default function ContactVerifyContent() {
               <CheckCircle size={32} className="text-emerald-500" aria-hidden="true" />
             </div>
             <h1 className="font-display text-xl font-bold text-navy mb-2">Email confirmé !</h1>
-            <p className="text-slate-500 text-sm mb-4">Votre demande a été enregistrée. Redirection en cours…</p>
+            <p className="text-slate-500 text-sm mb-4">
+              Votre demande a été enregistrée. Redirection en cours…
+            </p>
           </>
         )}
         {status === 'error' && (
@@ -62,7 +68,9 @@ export default function ContactVerifyContent() {
               <AlertCircle size={32} className="text-red-500" aria-hidden="true" />
             </div>
             <h1 className="font-display text-xl font-bold text-navy mb-2">Lien invalide</h1>
-            <p className="text-slate-500 text-sm mb-6" role="alert">{errorMsg}</p>
+            <p className="text-slate-500 text-sm mb-6" role="alert">
+              {errorMsg}
+            </p>
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-navy text-white rounded-lg text-sm font-semibold hover:bg-navy/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"

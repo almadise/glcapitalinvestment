@@ -28,7 +28,13 @@ function getPasswordStrength(password: string, lang: string): PasswordStrength {
     lang === 'fr'
       ? ['Très faible', 'Faible', 'Moyen', 'Fort', 'Très fort']
       : ['Very weak', 'Weak', 'Fair', 'Strong', 'Very strong'];
-  const colors = ['bg-red-400', 'bg-orange-400', 'bg-yellow-400', 'bg-emerald-400', 'bg-emerald-500'];
+  const colors = [
+    'bg-red-400',
+    'bg-orange-400',
+    'bg-yellow-400',
+    'bg-emerald-400',
+    'bg-emerald-500',
+  ];
 
   return { score, label: labels[score], color: colors[score] };
 }
@@ -48,29 +54,39 @@ export default function ResetPasswordPage() {
   const t = {
     title: lang === 'fr' ? 'Nouveau mot de passe' : 'New Password',
     subtitle:
-      lang === 'fr' ?'Choisissez un nouveau mot de passe sécurisé pour votre compte.' :'Choose a new secure password for your account.',
+      lang === 'fr'
+        ? 'Choisissez un nouveau mot de passe sécurisé pour votre compte.'
+        : 'Choose a new secure password for your account.',
     passwordLabel: lang === 'fr' ? 'Nouveau mot de passe' : 'New password',
     confirmLabel: lang === 'fr' ? 'Confirmer le mot de passe' : 'Confirm password',
     submit: lang === 'fr' ? 'Réinitialiser le mot de passe' : 'Reset password',
     submitting: lang === 'fr' ? 'Mise à jour...' : 'Updating...',
     successTitle: lang === 'fr' ? 'Mot de passe mis à jour' : 'Password updated',
     successMsg:
-      lang === 'fr' ?'Votre mot de passe a été réinitialisé avec succès. Vous allez être redirigé vers la page de connexion.' :'Your password has been reset successfully. You will be redirected to the sign-in page.',
+      lang === 'fr'
+        ? 'Votre mot de passe a été réinitialisé avec succès. Vous allez être redirigé vers la page de connexion.'
+        : 'Your password has been reset successfully. You will be redirected to the sign-in page.',
     goToLogin: lang === 'fr' ? 'Se connecter' : 'Sign in',
-    mismatch:
-      lang === 'fr' ?'Les mots de passe ne correspondent pas.' :'Passwords do not match.',
+    mismatch: lang === 'fr' ? 'Les mots de passe ne correspondent pas.' : 'Passwords do not match.',
     tooShort:
-      lang === 'fr' ?'Le mot de passe doit contenir au moins 8 caractères.' :'Password must be at least 8 characters.',
-    invalidLinkTitle:
-      lang === 'fr' ? 'Lien invalide ou expiré' : 'Invalid or expired link',
+      lang === 'fr'
+        ? 'Le mot de passe doit contenir au moins 8 caractères.'
+        : 'Password must be at least 8 characters.',
+    invalidLinkTitle: lang === 'fr' ? 'Lien invalide ou expiré' : 'Invalid or expired link',
     invalidLinkMsg:
-      lang === 'fr' ?'Ce lien de réinitialisation est invalide ou a expiré. Veuillez faire une nouvelle demande.' :'This reset link is invalid or has expired. Please request a new one.',
+      lang === 'fr'
+        ? 'Ce lien de réinitialisation est invalide ou a expiré. Veuillez faire une nouvelle demande.'
+        : 'This reset link is invalid or has expired. Please request a new one.',
     newRequest: lang === 'fr' ? 'Nouvelle demande' : 'Request new link',
     validatingTitle: lang === 'fr' ? 'Validation du lien...' : 'Validating link...',
     validatingMsg:
-      lang === 'fr' ?'Veuillez patienter pendant que nous validons votre lien de réinitialisation.' :'Please wait while we validate your reset link.',
+      lang === 'fr'
+        ? 'Veuillez patienter pendant que nous validons votre lien de réinitialisation.'
+        : 'Please wait while we validate your reset link.',
     errorGeneric:
-      lang === 'fr' ?'Une erreur est survenue. Veuillez réessayer.' :'An error occurred. Please try again.',
+      lang === 'fr'
+        ? 'Une erreur est survenue. Veuillez réessayer.'
+        : 'An error occurred. Please try again.',
     strengthLabel: lang === 'fr' ? 'Force du mot de passe' : 'Password strength',
     requirements: lang === 'fr' ? 'Exigences' : 'Requirements',
     req8chars: lang === 'fr' ? 'Au moins 8 caractères' : 'At least 8 characters',
@@ -82,7 +98,9 @@ export default function ResetPasswordPage() {
     const supabase = createClient();
 
     // Check if there's already a valid session (token in URL hash handled by Supabase)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY') {
         setSessionState('ready');
       } else if (event === 'SIGNED_OUT') {
@@ -150,8 +168,12 @@ export default function ResetPasswordPage() {
         <div className="flex items-center justify-center gap-3 mb-8">
           <AppLogo size={40} />
           <div>
-            <span className="font-display text-white font-bold text-lg block leading-tight">GL Capital</span>
-            <span className="text-gold text-[10px] font-medium tracking-widest uppercase">Investment SA</span>
+            <span className="font-display text-white font-bold text-lg block leading-tight">
+              GL Capital
+            </span>
+            <span className="text-gold text-[10px] font-medium tracking-widest uppercase">
+              Investment SA
+            </span>
           </div>
         </div>
 
@@ -171,9 +193,8 @@ export default function ResetPasswordPage() {
                 {t.goToLogin}
               </Link>
             </div>
-
-          /* ── Loading / validating state ── */
-          ) : sessionState === 'loading' ? (
+          ) : /* ── Loading / validating state ── */
+          sessionState === 'loading' ? (
             <div className="text-center py-4">
               <div className="w-16 h-16 rounded-full bg-navy/5 border border-navy/10 flex items-center justify-center mx-auto mb-5">
                 <Loader2 size={32} className="text-navy animate-spin" />
@@ -181,14 +202,15 @@ export default function ResetPasswordPage() {
               <h2 className="font-display text-xl font-bold text-navy mb-3">{t.validatingTitle}</h2>
               <p className="text-slate-500 text-sm leading-relaxed">{t.validatingMsg}</p>
             </div>
-
-          /* ── Invalid / expired link state ── */
-          ) : sessionState === 'invalid' ? (
+          ) : /* ── Invalid / expired link state ── */
+          sessionState === 'invalid' ? (
             <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-red-50 border border-red-200 flex items-center justify-center mx-auto mb-5">
                 <AlertCircle size={32} className="text-red-400" />
               </div>
-              <h2 className="font-display text-xl font-bold text-navy mb-3">{t.invalidLinkTitle}</h2>
+              <h2 className="font-display text-xl font-bold text-navy mb-3">
+                {t.invalidLinkTitle}
+              </h2>
               <p className="text-slate-500 text-sm leading-relaxed mb-8">{t.invalidLinkMsg}</p>
               <Link
                 href="/forgot-password"
@@ -197,9 +219,8 @@ export default function ResetPasswordPage() {
                 {t.newRequest}
               </Link>
             </div>
-
-          /* ── Form state ── */
           ) : (
+            /* ── Form state ── */
             <>
               <div className="mb-7">
                 <div className="flex items-center gap-2 mb-2">
@@ -223,7 +244,10 @@ export default function ResetPasswordPage() {
                     {t.passwordLabel}
                   </label>
                   <div className="relative">
-                    <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Lock
+                      size={16}
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                    />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={password}
@@ -262,7 +286,8 @@ export default function ResetPasswordPage() {
                             strength.score <= 1
                               ? 'text-red-500'
                               : strength.score === 2
-                              ? 'text-yellow-600' :'text-emerald-600'
+                                ? 'text-yellow-600'
+                                : 'text-emerald-600'
                           }`}
                         >
                           {strength.label}
@@ -275,7 +300,10 @@ export default function ResetPasswordPage() {
                   <div className="mt-3 space-y-1">
                     {[
                       { check: password.length >= 8, label: t.req8chars },
-                      { check: /[A-Z]/.test(password) && /[a-z]/.test(password), label: t.reqUpperLower },
+                      {
+                        check: /[A-Z]/.test(password) && /[a-z]/.test(password),
+                        label: t.reqUpperLower,
+                      },
                       { check: /[0-9]/.test(password), label: t.reqNumber },
                     ].map(({ check, label }) => (
                       <div key={label} className="flex items-center gap-1.5">
@@ -283,7 +311,9 @@ export default function ResetPasswordPage() {
                           size={12}
                           className={`flex-shrink-0 transition-colors ${check ? 'text-emerald-500' : 'text-slate-300'}`}
                         />
-                        <span className={`text-xs transition-colors ${check ? 'text-emerald-600' : 'text-slate-400'}`}>
+                        <span
+                          className={`text-xs transition-colors ${check ? 'text-emerald-600' : 'text-slate-400'}`}
+                        >
                           {label}
                         </span>
                       </div>
@@ -297,7 +327,10 @@ export default function ResetPasswordPage() {
                     {t.confirmLabel}
                   </label>
                   <div className="relative">
-                    <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Lock
+                      size={16}
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                    />
                     <input
                       type={showConfirm ? 'text' : 'password'}
                       value={confirmPassword}
@@ -308,7 +341,8 @@ export default function ResetPasswordPage() {
                         confirmPassword && confirmPassword !== password
                           ? 'border-red-300 focus:border-red-400 focus:ring-red-200'
                           : confirmPassword && confirmPassword === password
-                          ? 'border-emerald-300 focus:border-emerald-400 focus:ring-emerald-200' :'border-slate-200 focus:border-gold focus:ring-gold/30'
+                            ? 'border-emerald-300 focus:border-emerald-400 focus:ring-emerald-200'
+                            : 'border-slate-200 focus:border-gold focus:ring-gold/30'
                       }`}
                     />
                     <button

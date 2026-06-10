@@ -2,9 +2,19 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import {
-  ShieldCheck, Lock, FileCheck, Eye, Server, Users,
-  ChevronDown, ChevronUp, ArrowRight, CheckCircle2,
-  AlertTriangle, Globe, Key,
+  ShieldCheck,
+  Lock,
+  FileCheck,
+  Eye,
+  Server,
+  Users,
+  ChevronDown,
+  ChevronUp,
+  ArrowRight,
+  CheckCircle2,
+  AlertTriangle,
+  Globe,
+  Key,
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -21,36 +31,46 @@ const FAQ_ITEMS: AccordionItem[] = [
     id: 'faq-1',
     questionFr: 'Que couvre le processus KYC/AML ?',
     questionEn: 'What does the KYC/AML process cover?',
-    answerFr: 'Notre revue KYC (Know Your Customer) couvre l\'identification des bénéficiaires effectifs (UBO), la vérification des documents d\'identité, le registre des sociétés, l\'origine des fonds et la conformité aux listes de sanctions internationales (OFAC, UE, ONU). Le processus AML (Anti-Money Laundering) analyse les structures de transaction et signale les opérations à risque.',
-    answerEn: 'Our KYC (Know Your Customer) review covers ultimate beneficial owner (UBO) identification, identity document verification, company registry, source of funds, and compliance with international sanctions lists (OFAC, EU, UN). The AML (Anti-Money Laundering) process analyzes transaction structures and flags high-risk operations.',
+    answerFr:
+      "Notre revue KYC (Know Your Customer) couvre l'identification des bénéficiaires effectifs (UBO), la vérification des documents d'identité, le registre des sociétés, l'origine des fonds et la conformité aux listes de sanctions internationales (OFAC, UE, ONU). Le processus AML (Anti-Money Laundering) analyse les structures de transaction et signale les opérations à risque.",
+    answerEn:
+      'Our KYC (Know Your Customer) review covers ultimate beneficial owner (UBO) identification, identity document verification, company registry, source of funds, and compliance with international sanctions lists (OFAC, EU, UN). The AML (Anti-Money Laundering) process analyzes transaction structures and flags high-risk operations.',
   },
   {
     id: 'faq-2',
-    questionFr: 'Qu\'est-ce que la NCNDA et comment protège-t-elle les parties ?',
+    questionFr: "Qu'est-ce que la NCNDA et comment protège-t-elle les parties ?",
     questionEn: 'What is the NCNDA and how does it protect parties?',
-    answerFr: 'La NCNDA (Non-Circumvention Non-Disclosure Agreement) est un accord de confidentialité renforcé qui interdit toute divulgation d\'informations partenaires et empêche toute tentative de contournement des relations commerciales établies. Elle est signée par toutes les parties avant tout partage d\'informations sensibles sur un dossier.',
-    answerEn: 'The NCNDA (Non-Circumvention Non-Disclosure Agreement) is an enhanced confidentiality agreement that prohibits disclosure of partner information and prevents any attempt to circumvent established business relationships. It is signed by all parties before any sensitive dossier information is shared.',
+    answerFr:
+      "La NCNDA (Non-Circumvention Non-Disclosure Agreement) est un accord de confidentialité renforcé qui interdit toute divulgation d'informations partenaires et empêche toute tentative de contournement des relations commerciales établies. Elle est signée par toutes les parties avant tout partage d'informations sensibles sur un dossier.",
+    answerEn:
+      'The NCNDA (Non-Circumvention Non-Disclosure Agreement) is an enhanced confidentiality agreement that prohibits disclosure of partner information and prevents any attempt to circumvent established business relationships. It is signed by all parties before any sensitive dossier information is shared.',
   },
   {
     id: 'faq-3',
     questionFr: 'Comment mes données sont-elles stockées et protégées ?',
     questionEn: 'How is my data stored and protected?',
-    answerFr: 'Toutes les données sont hébergées sur une infrastructure cloud sécurisée avec chiffrement au repos (AES-256) et en transit (TLS 1.3). L\'accès est contrôlé par authentification multi-facteurs et le principe du moindre privilège. Les documents sont stockés dans des espaces isolés par client avec traçabilité complète des accès.',
-    answerEn: 'All data is hosted on a secure cloud infrastructure with encryption at rest (AES-256) and in transit (TLS 1.3). Access is controlled by multi-factor authentication and the principle of least privilege. Documents are stored in client-isolated spaces with complete access traceability.',
+    answerFr:
+      "Toutes les données sont hébergées sur une infrastructure cloud sécurisée avec chiffrement au repos (AES-256) et en transit (TLS 1.3). L'accès est contrôlé par authentification multi-facteurs et le principe du moindre privilège. Les documents sont stockés dans des espaces isolés par client avec traçabilité complète des accès.",
+    answerEn:
+      'All data is hosted on a secure cloud infrastructure with encryption at rest (AES-256) and in transit (TLS 1.3). Access is controlled by multi-factor authentication and the principle of least privilege. Documents are stored in client-isolated spaces with complete access traceability.',
   },
   {
     id: 'faq-4',
     questionFr: 'Qui a accès à mon dossier au sein de GL Capital ?',
     questionEn: 'Who has access to my file within GL Capital?',
-    answerFr: 'L\'accès à votre dossier est strictement limité aux membres de l\'équipe directement impliqués dans son instruction. Chaque accès est journalisé et auditable. Les partenaires externes ne reçoivent que les informations strictement nécessaires à l\'analyse, après signature de la NCNDA.',
-    answerEn: 'Access to your file is strictly limited to team members directly involved in its processing. Each access is logged and auditable. External partners only receive the information strictly necessary for analysis, after signing the NCNDA.',
+    answerFr:
+      "L'accès à votre dossier est strictement limité aux membres de l'équipe directement impliqués dans son instruction. Chaque accès est journalisé et auditable. Les partenaires externes ne reçoivent que les informations strictement nécessaires à l'analyse, après signature de la NCNDA.",
+    answerEn:
+      'Access to your file is strictly limited to team members directly involved in its processing. Each access is logged and auditable. External partners only receive the information strictly necessary for analysis, after signing the NCNDA.',
   },
   {
     id: 'faq-5',
     questionFr: 'GL Capital est-il une institution financière agréée ?',
     questionEn: 'Is GL Capital a licensed financial institution?',
-    answerFr: 'GL Capital Investment SA est un cabinet de conseil en structuration financière. Nous ne détenons pas de licence bancaire ou d\'investissement et n\'exécutons pas de transactions financières. Toutes les transactions sont réalisées exclusivement par des institutions financières dûment agréées. Notre rôle est la structuration, la documentation et la mise en relation avec des partenaires institutionnels.',
-    answerEn: 'GL Capital Investment SA is a financial structuring advisory firm. We do not hold a banking or investment license and do not execute financial transactions. All transactions are carried out exclusively by duly licensed financial institutions. Our role is structuring, documentation and introduction to institutional partners.',
+    answerFr:
+      "GL Capital Investment SA est un cabinet de conseil en structuration financière. Nous ne détenons pas de licence bancaire ou d'investissement et n'exécutons pas de transactions financières. Toutes les transactions sont réalisées exclusivement par des institutions financières dûment agréées. Notre rôle est la structuration, la documentation et la mise en relation avec des partenaires institutionnels.",
+    answerEn:
+      'GL Capital Investment SA is a financial structuring advisory firm. We do not hold a banking or investment license and do not execute financial transactions. All transactions are carried out exclusively by duly licensed financial institutions. Our role is structuring, documentation and introduction to institutional partners.',
   },
 ];
 
@@ -60,12 +80,14 @@ const SECURITY_PILLARS = [
     icon: ShieldCheck,
     titleFr: 'KYC / AML',
     titleEn: 'KYC / AML',
-    descFr: 'Revue systématique de conformité sur chaque dossier. Vérification des bénéficiaires effectifs, origine des fonds et listes de sanctions.',
-    descEn: 'Systematic compliance review on every file. Verification of beneficial owners, source of funds and sanctions lists.',
+    descFr:
+      'Revue systématique de conformité sur chaque dossier. Vérification des bénéficiaires effectifs, origine des fonds et listes de sanctions.',
+    descEn:
+      'Systematic compliance review on every file. Verification of beneficial owners, source of funds and sanctions lists.',
     pointsFr: [
       'Identification UBO (bénéficiaires effectifs)',
       'Vérification OFAC / UE / ONU',
-      'Analyse de l\'origine des fonds',
+      "Analyse de l'origine des fonds",
       'Évaluation du risque pays',
     ],
     pointsEn: [
@@ -84,8 +106,10 @@ const SECURITY_PILLARS = [
     icon: Lock,
     titleFr: 'NCNDA & Confidentialité',
     titleEn: 'NCNDA & Confidentiality',
-    descFr: 'Chaque engagement est couvert par un accord de non-divulgation et de non-contournement signé par toutes les parties.',
-    descEn: 'Every engagement is covered by a non-disclosure and non-circumvention agreement signed by all parties.',
+    descFr:
+      'Chaque engagement est couvert par un accord de non-divulgation et de non-contournement signé par toutes les parties.',
+    descEn:
+      'Every engagement is covered by a non-disclosure and non-circumvention agreement signed by all parties.',
     pointsFr: [
       'NCNDA bilatéral avant tout partage',
       'Confidentialité identité partenaires',
@@ -108,10 +132,12 @@ const SECURITY_PILLARS = [
     icon: FileCheck,
     titleFr: 'Gouvernance & Audit',
     titleEn: 'Governance & Audit',
-    descFr: 'Traçabilité complète de chaque action sur un dossier. Journal d\'audit horodaté et exportable pour les besoins de conformité.',
-    descEn: 'Complete traceability of every action on a file. Timestamped and exportable audit log for compliance needs.',
+    descFr:
+      "Traçabilité complète de chaque action sur un dossier. Journal d'audit horodaté et exportable pour les besoins de conformité.",
+    descEn:
+      'Complete traceability of every action on a file. Timestamped and exportable audit log for compliance needs.',
     pointsFr: [
-      'Journal d\'audit complet horodaté',
+      "Journal d'audit complet horodaté",
       'Traçabilité des changements de statut',
       'Historique des accès aux documents',
       'Export CSV pour auditeurs',
@@ -132,8 +158,10 @@ const SECURITY_PILLARS = [
     icon: Server,
     titleFr: 'Sécurité des données',
     titleEn: 'Data security',
-    descFr: 'Infrastructure cloud sécurisée avec chiffrement de bout en bout, authentification renforcée et cloisonnement des données par client.',
-    descEn: 'Secure cloud infrastructure with end-to-end encryption, strong authentication and client data isolation.',
+    descFr:
+      'Infrastructure cloud sécurisée avec chiffrement de bout en bout, authentification renforcée et cloisonnement des données par client.',
+    descEn:
+      'Secure cloud infrastructure with end-to-end encryption, strong authentication and client data isolation.',
     pointsFr: [
       'Chiffrement AES-256 au repos',
       'Transit TLS 1.3',
@@ -156,12 +184,14 @@ const SECURITY_PILLARS = [
     icon: Eye,
     titleFr: 'Confidentialité RGPD',
     titleEn: 'GDPR Privacy',
-    descFr: 'Vos données personnelles sont traitées conformément au règlement européen RGPD. Droit d\'accès, de rectification et de suppression garantis.',
-    descEn: 'Your personal data is processed in accordance with European GDPR regulation. Right of access, rectification and deletion guaranteed.',
+    descFr:
+      "Vos données personnelles sont traitées conformément au règlement européen RGPD. Droit d'accès, de rectification et de suppression garantis.",
+    descEn:
+      'Your personal data is processed in accordance with European GDPR regulation. Right of access, rectification and deletion guaranteed.',
     pointsFr: [
       'Traitement conforme au RGPD',
       'Minimisation des données',
-      'Droit d\'accès et rectification',
+      "Droit d'accès et rectification",
       'Durée de conservation limitée',
     ],
     pointsEn: [
@@ -180,8 +210,10 @@ const SECURITY_PILLARS = [
     icon: Globe,
     titleFr: 'Conformité internationale',
     titleEn: 'International compliance',
-    descFr: 'Respect des standards financiers internationaux. Exclusion systématique des juridictions sanctionnées et des secteurs prohibés.',
-    descEn: 'Adherence to international financial standards. Systematic exclusion of sanctioned jurisdictions and prohibited sectors.',
+    descFr:
+      'Respect des standards financiers internationaux. Exclusion systématique des juridictions sanctionnées et des secteurs prohibés.',
+    descEn:
+      'Adherence to international financial standards. Systematic exclusion of sanctioned jurisdictions and prohibited sectors.',
     pointsFr: [
       'Exclusion pays sanctionnés OFAC/UE/ONU',
       'Secteurs prohibés exclus',
@@ -261,8 +293,11 @@ export default function CompliancePageContent() {
             </p>
           </div>
           <h1 className="text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight">
-            {t('Un cadre rigoureux', 'A rigorous framework')}<br />
-            <span className="text-gradient-gold">{t('au service de votre dossier', 'protecting your file')}</span>
+            {t('Un cadre rigoureux', 'A rigorous framework')}
+            <br />
+            <span className="text-gradient-gold">
+              {t('au service de votre dossier', 'protecting your file')}
+            </span>
           </h1>
           <p className="text-white/70 text-lg max-w-2xl mx-auto leading-relaxed">
             {t(
@@ -279,7 +314,7 @@ export default function CompliancePageContent() {
           <AlertTriangle size={14} className="text-amber-600 flex-shrink-0" />
           <p className="text-xs text-amber-800">
             {t(
-              'GL Capital Investment SA est un cabinet de conseil en structuration financière. Nous ne sommes pas une institution bancaire ou d\'investissement agréée et n\'exécutons pas de transactions financières.',
+              "GL Capital Investment SA est un cabinet de conseil en structuration financière. Nous ne sommes pas une institution bancaire ou d'investissement agréée et n'exécutons pas de transactions financières.",
               'GL Capital Investment SA is a financial structuring advisory firm. We are not a licensed banking or investment institution and do not execute financial transactions.'
             )}
           </p>
@@ -307,11 +342,10 @@ export default function CompliancePageContent() {
               const points = lang === 'fr' ? pillar.pointsFr : pillar.pointsEn;
 
               return (
-                <div
-                  key={pillar.id}
-                  className={`rounded-2xl border p-6 bg-white ${pillar.border}`}
-                >
-                  <div className={`w-11 h-11 rounded-xl ${pillar.iconBg} flex items-center justify-center mb-4`}>
+                <div key={pillar.id} className={`rounded-2xl border p-6 bg-white ${pillar.border}`}>
+                  <div
+                    className={`w-11 h-11 rounded-xl ${pillar.iconBg} flex items-center justify-center mb-4`}
+                  >
                     <Icon size={20} className={pillar.color} />
                   </div>
                   <h3 className={`text-base font-bold mb-2 ${pillar.color}`}>
@@ -323,7 +357,10 @@ export default function CompliancePageContent() {
                   <ul className="space-y-1.5">
                     {points.map((point, i) => (
                       <li key={i} className="flex items-start gap-2 text-xs text-slate-600">
-                        <CheckCircle2 size={12} className={`flex-shrink-0 mt-0.5 ${pillar.color}`} />
+                        <CheckCircle2
+                          size={12}
+                          className={`flex-shrink-0 mt-0.5 ${pillar.color}`}
+                        />
                         {point}
                       </li>
                     ))}
@@ -343,7 +380,10 @@ export default function CompliancePageContent() {
               {t('Processus de revue KYC/AML', 'KYC/AML review process')}
             </h2>
             <p className="text-slate-500 max-w-xl mx-auto text-sm">
-              {t('Chaque dossier suit ces étapes avant toute soumission institutionnelle.', 'Every file follows these steps before any institutional submission.')}
+              {t(
+                'Chaque dossier suit ces étapes avant toute soumission institutionnelle.',
+                'Every file follows these steps before any institutional submission.'
+              )}
             </p>
           </div>
 
@@ -353,8 +393,10 @@ export default function CompliancePageContent() {
                 step: '01',
                 titleFr: 'Réception & Enregistrement',
                 titleEn: 'Receipt & Registration',
-                descFr: 'Enregistrement sécurisé du dossier. Génération d\'une référence unique. Confirmation au client.',
-                descEn: 'Secure file registration. Unique reference generation. Client confirmation.',
+                descFr:
+                  "Enregistrement sécurisé du dossier. Génération d'une référence unique. Confirmation au client.",
+                descEn:
+                  'Secure file registration. Unique reference generation. Client confirmation.',
                 durationFr: '1 jour',
                 durationEn: '1 day',
                 icon: Key,
@@ -363,8 +405,10 @@ export default function CompliancePageContent() {
                 step: '02',
                 titleFr: 'Vérification documentaire',
                 titleEn: 'Document verification',
-                descFr: 'Contrôle des pièces d\'identité, registre des sociétés, documents de projet et justificatifs financiers.',
-                descEn: 'Verification of identity documents, company registry, project documents and financial statements.',
+                descFr:
+                  "Contrôle des pièces d'identité, registre des sociétés, documents de projet et justificatifs financiers.",
+                descEn:
+                  'Verification of identity documents, company registry, project documents and financial statements.',
                 durationFr: '2–5 jours',
                 durationEn: '2–5 days',
                 icon: FileCheck,
@@ -373,8 +417,10 @@ export default function CompliancePageContent() {
                 step: '03',
                 titleFr: 'Revue AML & Sanctions',
                 titleEn: 'AML & Sanctions review',
-                descFr: 'Criblage sur listes de sanctions (OFAC, UE, ONU), analyse du risque pays et origine des fonds.',
-                descEn: 'Screening on sanctions lists (OFAC, EU, UN), country risk analysis and source of funds.',
+                descFr:
+                  'Criblage sur listes de sanctions (OFAC, UE, ONU), analyse du risque pays et origine des fonds.',
+                descEn:
+                  'Screening on sanctions lists (OFAC, EU, UN), country risk analysis and source of funds.',
                 durationFr: '2–5 jours',
                 durationEn: '2–5 days',
                 icon: ShieldCheck,
@@ -383,8 +429,10 @@ export default function CompliancePageContent() {
                 step: '04',
                 titleFr: 'Décision de conformité',
                 titleEn: 'Compliance decision',
-                descFr: 'Rapport de conformité interne. Décision : éligible, à compléter ou rejeté. Notification au client.',
-                descEn: 'Internal compliance report. Decision: eligible, to complete, or rejected. Client notification.',
+                descFr:
+                  'Rapport de conformité interne. Décision : éligible, à compléter ou rejeté. Notification au client.',
+                descEn:
+                  'Internal compliance report. Decision: eligible, to complete, or rejected. Client notification.',
                 durationFr: '1–2 jours',
                 durationEn: '1–2 days',
                 icon: CheckCircle2,
@@ -398,7 +446,10 @@ export default function CompliancePageContent() {
                   )}
                   <div className="rounded-2xl border border-slate-200 p-5 bg-white h-full">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-2xl font-bold font-mono" style={{ color: 'rgba(184,145,42,0.4)' }}>
+                      <span
+                        className="text-2xl font-bold font-mono"
+                        style={{ color: 'rgba(184,145,42,0.4)' }}
+                      >
                         {step.step}
                       </span>
                       <div className="w-8 h-8 rounded-lg bg-navy/10 flex items-center justify-center">
@@ -465,7 +516,7 @@ export default function CompliancePageContent() {
               className="flex items-center gap-2 px-8 py-4 font-semibold rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 transition-all duration-200 text-sm"
             >
               <Users size={16} />
-              {t('Contacter l\'équipe', 'Contact the team')}
+              {t("Contacter l'équipe", 'Contact the team')}
             </Link>
           </div>
         </div>

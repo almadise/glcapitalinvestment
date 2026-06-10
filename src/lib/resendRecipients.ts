@@ -1,6 +1,7 @@
 /**
- * Avec un expéditeur test Resend (`onboarding@resend.dev`), les envois ne sont
- * acceptés que vers l’email du compte Resend — pas vers CONTACT_EMAIL arbitraire.
+ * Avec l'expéditeur test Resend (`onboarding@resend.dev`), les envois ne sont
+ * acceptés que vers l'email du compte Resend — pas vers des adresses arbitraires.
+ * Avec un domaine vérifié (`RESEND_FROM_EMAIL`), les envois vont au vrai destinataire.
  * @see https://resend.com/docs
  */
 export function isResendSandboxFromAddress(from: string): boolean {
@@ -14,28 +15,33 @@ export function resolveDevOrSandboxRecipient(params: {
 }): { to: string; redirected: boolean; configError?: string } {
   const { productionRecipient, fromAddress, isProduction } = params;
 
-  if (isProduction) {
+  // Domaine vérifié configuré → envoi réel vers le destinataire prévu (dev et prod)
+  if (!isResendSandboxFromAddress(fromAddress)) {
     return { to: productionRecipient, redirected: false };
   }
 
-  if (isResendSandboxFromAddress(fromAddress)) {
-    const sandbox = process.env.RESEND_TEST_RECIPIENT?.trim();
-    if (!sandbox) {
-      return {
-        to: '',
-        redirected: false,
-        configError:
-          'En développement, avec l’expéditeur test Resend (onboarding@resend.dev), définissez RESEND_TEST_RECIPIENT avec l’email de votre compte Resend (voir message d’erreur Resend). En production, vérifiez un domaine sur resend.com/domains et définissez RESEND_FROM_EMAIL.',
-      };
-    }
+  // Production sans domaine vérifié
+  if (isProduction) {
     return {
-      to: sandbox,
-      redirected: sandbox.toLowerCase() !== productionRecipient.toLowerCase(),
+      to: '',
+      redirected: false,
+      configError:
+        'Définissez RESEND_FROM_EMAIL avec un domaine vérifié sur resend.com/domains (onboarding@resend.dev ne permet pas d’envoyer aux visiteurs).',
     };
   }
 
-  const devFallback =
-    process.env.RESEND_TEST_RECIPIENT?.trim() || process.env.CONTACT_EMAIL?.trim();
-  const to = devFallback || productionRecipient;
-  return { to, redirected: to.toLowerCase() !== productionRecipient.toLowerCase() };
+  // Dev + expéditeur test Resend uniquement
+  const sandbox = process.env.RESEND_TEST_RECIPIENT?.trim();
+  if (!sandbox) {
+    return {
+      to: '',
+      redirected: false,
+      configError:
+        'En développement sans domaine vérifié, définissez RESEND_TEST_RECIPIENT (email du compte Resend) ou configurez RESEND_FROM_EMAIL avec un domaine vérifié pour envoyer aux visiteurs.',
+    };
+  }
+  return {
+    to: sandbox,
+    redirected: sandbox.toLowerCase() !== productionRecipient.toLowerCase(),
+  };
 }

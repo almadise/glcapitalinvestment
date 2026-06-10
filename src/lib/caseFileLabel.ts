@@ -27,9 +27,7 @@ export function caseFileDescription(cf: {
   metadata?: Record<string, unknown> | null;
 }): string | null {
   const metaDescription =
-    cf.metadata && typeof cf.metadata.description === 'string'
-      ? cf.metadata.description
-      : null;
+    cf.metadata && typeof cf.metadata.description === 'string' ? cf.metadata.description : null;
   const raw = cf.project_description ?? cf.description ?? metaDescription;
   if (typeof raw !== 'string') return null;
   const t = raw.trim();
@@ -47,9 +45,7 @@ export function caseFileType(cf: {
   const direct = typeof cf.type === 'string' ? cf.type.trim() : '';
   if (direct) return direct;
   const metaType =
-    cf.metadata && typeof cf.metadata.type === 'string'
-      ? cf.metadata.type.trim()
-      : '';
+    cf.metadata && typeof cf.metadata.type === 'string' ? cf.metadata.type.trim() : '';
   if (metaType) return metaType;
   return 'Project Finance';
 }

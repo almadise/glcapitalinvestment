@@ -150,9 +150,18 @@ function DownloadsContent() {
     if (filtered.length === 0) return;
     setExporting('csv');
 
-    const headers = lang === 'fr'
-      ? ['ID', 'Titre', 'Type', 'Statut', 'Date de création', 'Dernière mise à jour', 'Description']
-      : ['ID', 'Title', 'Type', 'Status', 'Created At', 'Last Updated', 'Description'];
+    const headers =
+      lang === 'fr'
+        ? [
+            'ID',
+            'Titre',
+            'Type',
+            'Statut',
+            'Date de création',
+            'Dernière mise à jour',
+            'Description',
+          ]
+        : ['ID', 'Title', 'Type', 'Status', 'Created At', 'Last Updated', 'Description'];
 
     const rows = filtered.map((f) => [
       f.id,
@@ -188,15 +197,22 @@ function DownloadsContent() {
     const toLabel = lang === 'fr' ? 'au' : 'to';
 
     const filterSummary = [
-      statusFilter !== 'ALL' ? `${statusLabel}: ${getStatusLabel(statusFilter as CaseFileStatus)}` : '',
+      statusFilter !== 'ALL'
+        ? `${statusLabel}: ${getStatusLabel(statusFilter as CaseFileStatus)}`
+        : '',
       dateFrom || dateTo ? `${periodLabel}: ${dateFrom || '-'} ${toLabel} ${dateTo || '-'}` : '',
-    ].filter(Boolean).join(' | ');
+    ]
+      .filter(Boolean)
+      .join(' | ');
 
-    const tableHeaders = lang === 'fr'
-      ? ['Titre', 'Type', 'Statut', 'Date de création', 'Dernière mise à jour']
-      : ['Title', 'Type', 'Status', 'Created At', 'Last Updated'];
+    const tableHeaders =
+      lang === 'fr'
+        ? ['Titre', 'Type', 'Statut', 'Date de création', 'Dernière mise à jour']
+        : ['Title', 'Type', 'Status', 'Created At', 'Last Updated'];
 
-    const rows = filtered.map((f) => `
+    const rows = filtered
+      .map(
+        (f) => `
       <tr>
         <td>${f.title || '-'}</td>
         <td>${f.type}</td>
@@ -204,7 +220,9 @@ function DownloadsContent() {
         <td>${formatDate(f.created_at)}</td>
         <td>${formatDate(f.updated_at)}</td>
       </tr>
-    `).join('');
+    `
+      )
+      .join('');
 
     const html = `
       <!DOCTYPE html>
@@ -265,7 +283,9 @@ function DownloadsContent() {
               {lang === 'fr' ? 'Téléchargements' : 'Downloads'}
             </h1>
             <p className="text-slate-500 text-sm mt-1">
-              {lang === 'fr' ?'Exportez vos dossiers et soumissions en PDF ou CSV' :'Export your case files and submissions as PDF or CSV'}
+              {lang === 'fr'
+                ? 'Exportez vos dossiers et soumissions en PDF ou CSV'
+                : 'Export your case files and submissions as PDF or CSV'}
             </p>
           </div>
           <button
@@ -350,7 +370,10 @@ function DownloadsContent() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <p className="text-sm text-slate-500">
             {loading ? (
-              <span className="flex items-center gap-1.5"><Loader2 size={13} className="animate-spin" /> {lang === 'fr' ? 'Chargement...' : 'Loading...'}</span>
+              <span className="flex items-center gap-1.5">
+                <Loader2 size={13} className="animate-spin" />{' '}
+                {lang === 'fr' ? 'Chargement...' : 'Loading...'}
+              </span>
             ) : (
               <>
                 <span className="font-semibold text-navy">{filtered.length}</span>{' '}
@@ -359,7 +382,9 @@ function DownloadsContent() {
                   : `case file${filtered.length !== 1 ? 's' : ''} found`}
                 {hasActiveFilters && (
                   <span className="ml-1 text-slate-400">
-                    {lang === 'fr' ? `(sur ${caseFiles.length} au total)` : `(of ${caseFiles.length} total)`}
+                    {lang === 'fr'
+                      ? `(sur ${caseFiles.length} au total)`
+                      : `(of ${caseFiles.length} total)`}
                   </span>
                 )}
               </>
@@ -372,7 +397,11 @@ function DownloadsContent() {
               disabled={filtered.length === 0 || exporting !== null}
               className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-white border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
             >
-              {exporting === 'csv' ? <Loader2 size={14} className="animate-spin" /> : <Table2 size={14} />}
+              {exporting === 'csv' ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Table2 size={14} />
+              )}
               CSV
             </button>
             <button
@@ -380,7 +409,11 @@ function DownloadsContent() {
               disabled={filtered.length === 0 || exporting !== null}
               className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-navy text-white rounded-xl hover:bg-navy/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
             >
-              {exporting === 'pdf' ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+              {exporting === 'pdf' ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Download size={14} />
+              )}
               PDF
             </button>
           </div>
@@ -409,8 +442,12 @@ function DownloadsContent() {
             </p>
             <p className="text-slate-400 text-xs max-w-xs">
               {hasActiveFilters
-                ? (lang === 'fr' ? 'Essayez de modifier vos filtres.' : 'Try adjusting your filters.')
-                : (lang === 'fr' ? 'Vous n\'avez pas encore soumis de dossier.' : 'You haven\'t submitted any case files yet.')}
+                ? lang === 'fr'
+                  ? 'Essayez de modifier vos filtres.'
+                  : 'Try adjusting your filters.'
+                : lang === 'fr'
+                  ? "Vous n'avez pas encore soumis de dossier."
+                  : "You haven't submitted any case files yet."}
             </p>
             {hasActiveFilters && (
               <button
@@ -456,19 +493,27 @@ function DownloadsContent() {
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
                             <FileText size={14} className="text-slate-400 flex-shrink-0" />
-                            <span className="font-medium text-navy truncate max-w-[200px]" title={file.title}>
+                            <span
+                              className="font-medium text-navy truncate max-w-[200px]"
+                              title={file.title}
+                            >
                               {file.title}
                             </span>
                           </div>
                           {file.description && (
-                            <p className="text-xs text-slate-400 mt-0.5 truncate max-w-[200px] pl-5" title={file.description}>
+                            <p
+                              className="text-xs text-slate-400 mt-0.5 truncate max-w-[200px] pl-5"
+                              title={file.description}
+                            >
                               {file.description}
                             </p>
                           )}
                         </td>
                         <td className="px-4 py-3 text-slate-600">{file.type}</td>
                         <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${badge?.color || 'bg-slate-100 text-slate-600 border-slate-200'}`}>
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${badge?.color || 'bg-slate-100 text-slate-600 border-slate-200'}`}
+                          >
                             <StatusIcon size={11} />
                             {getStatusLabel(file.status as CaseFileStatus) || file.status}
                           </span>
@@ -491,11 +536,30 @@ function DownloadsContent() {
                                 formatDate(file.updated_at),
                                 `"${(file.description || '').replace(/"/g, '""')}"`,
                               ];
-                              const headers = lang === 'fr'
-                                ? ['ID', 'Titre', 'Type', 'Statut', 'Date de création', 'Dernière mise à jour', 'Description']
-                                : ['ID', 'Title', 'Type', 'Status', 'Created At', 'Last Updated', 'Description'];
+                              const headers =
+                                lang === 'fr'
+                                  ? [
+                                      'ID',
+                                      'Titre',
+                                      'Type',
+                                      'Statut',
+                                      'Date de création',
+                                      'Dernière mise à jour',
+                                      'Description',
+                                    ]
+                                  : [
+                                      'ID',
+                                      'Title',
+                                      'Type',
+                                      'Status',
+                                      'Created At',
+                                      'Last Updated',
+                                      'Description',
+                                    ];
                               const csv = [headers.join(','), row.join(',')].join('\n');
-                              const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+                              const blob = new Blob(['\uFEFF' + csv], {
+                                type: 'text/csv;charset=utf-8;',
+                              });
                               const url = URL.createObjectURL(blob);
                               const link = document.createElement('a');
                               link.href = url;

@@ -16,8 +16,10 @@ export default function CaseStudiesSection() {
       sectorEn: 'Renewable Energy',
       regionFr: "Afrique de l\'Ouest",
       regionEn: 'West Africa',
-      descFr: 'Projet de ferme solaire SPV. KYC/AML validé. Plan de financement structuré avec composantes dette senior et fonds propres.',
-      descEn: 'Solar farm SPV project. KYC/AML validated. Financing plan structured with senior debt and equity components.',
+      descFr:
+        'Projet de ferme solaire SPV. KYC/AML validé. Plan de financement structuré avec composantes dette senior et fonds propres.',
+      descEn:
+        'Solar farm SPV project. KYC/AML validated. Financing plan structured with senior debt and equity components.',
       statusFr: 'Éligible - Soumis',
       statusEn: 'Eligible - Submitted',
     },
@@ -31,8 +33,10 @@ export default function CaseStudiesSection() {
       sectorEn: 'Commercial Real Estate',
       regionFr: 'Europe du Sud',
       regionEn: 'Southern Europe',
-      descFr: 'Structuration de garantie de performance pour un développement mixte. Cadre SBLC documenté et soumis à la banque émettrice.',
-      descEn: 'Performance guarantee structuring for a mixed-use development. SBLC framework documented and submitted to issuing bank.',
+      descFr:
+        'Structuration de garantie de performance pour un développement mixte. Cadre SBLC documenté et soumis à la banque émettrice.',
+      descEn:
+        'Performance guarantee structuring for a mixed-use development. SBLC framework documented and submitted to issuing bank.',
       statusFr: 'Clôturé - Succès',
       statusEn: 'Closed - Success',
     },
@@ -46,8 +50,10 @@ export default function CaseStudiesSection() {
       sectorEn: 'Agro-industrial',
       regionFr: "Afrique de l\'Est",
       regionEn: 'East Africa',
-      descFr: "Financement d\'usine de transformation. Évaluation de bancabilité complétée. Documentation restructurée pour soumission à un IFD.",
-      descEn: "Processing plant financing. Bankability assessment completed. Documentation restructured for submission to a DFI.",
+      descFr:
+        "Financement d\'usine de transformation. Évaluation de bancabilité complétée. Documentation restructurée pour soumission à un IFD.",
+      descEn:
+        'Processing plant financing. Bankability assessment completed. Documentation restructured for submission to a DFI.',
       statusFr: 'Éligible - En négociation',
       statusEn: 'Eligible - In Negotiation',
     },
@@ -58,7 +64,12 @@ export default function CaseStudiesSection() {
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-10">
         {/* Header */}
         <div className="text-center mb-16">
-          <p className="text-xs font-mono tracking-widest uppercase mb-4" style={{ color: '#4A5C7A' }}>{t('Cas anonymisés', 'Anonymized Cases')}</p>
+          <p
+            className="text-xs font-mono tracking-widest uppercase mb-4"
+            style={{ color: '#4A5C7A' }}
+          >
+            {t('Cas anonymisés', 'Anonymized Cases')}
+          </p>
           <h2 className="text-4xl font-bold mb-4" style={{ color: '#1E2D4A' }}>
             {t('Dossiers', 'Representative')}{' '}
             <span className="text-gradient-gold">{t('représentatifs', 'cases')}</span>
@@ -86,22 +97,32 @@ export default function CaseStudiesSection() {
                 >
                   {t(c?.typeFr, c?.typeEn)}
                 </span>
-                <span className="text-xs font-mono" style={{ color: '#4A5C7A' }}>{t(c?.daysFr, c?.daysEn)}</span>
+                <span className="text-xs font-mono" style={{ color: '#4A5C7A' }}>
+                  {t(c?.daysFr, c?.daysEn)}
+                </span>
               </div>
               <div className="mb-4">
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-3xl font-bold tabular-nums" style={{ color: '#1E2D4A' }}>{c?.amount}</span>
+                  <span className="text-3xl font-bold tabular-nums" style={{ color: '#1E2D4A' }}>
+                    {c?.amount}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm" style={{ color: '#4A5C7A' }}>
-                  <span className="font-medium" style={{ color: '#1E2D4A' }}>{t(c?.sectorFr, c?.sectorEn)}</span>
+                  <span className="font-medium" style={{ color: '#1E2D4A' }}>
+                    {t(c?.sectorFr, c?.sectorEn)}
+                  </span>
                   <span>·</span>
                   <span>{t(c?.regionFr, c?.regionEn)}</span>
                 </div>
               </div>
-              <p className="text-sm leading-relaxed mb-4" style={{ color: '#4A5C7A' }}>{t(c?.descFr, c?.descEn)}</p>
+              <p className="text-sm leading-relaxed mb-4" style={{ color: '#4A5C7A' }}>
+                {t(c?.descFr, c?.descEn)}
+              </p>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full" style={{ background: '#B8912A' }} />
-                <span className="text-xs font-semibold" style={{ color: '#B8912A' }}>{t(c?.statusFr, c?.statusEn)}</span>
+                <span className="text-xs font-semibold" style={{ color: '#B8912A' }}>
+                  {t(c?.statusFr, c?.statusEn)}
+                </span>
               </div>
             </div>
           ))}

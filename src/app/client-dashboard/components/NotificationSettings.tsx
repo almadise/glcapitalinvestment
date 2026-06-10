@@ -26,7 +26,10 @@ export default function NotificationSettings() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user?.id) { setLoading(false); return; }
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
     setError(null);
     supabase
       .from('user_profiles')
@@ -60,11 +63,13 @@ export default function NotificationSettings() {
       if (upsertErr) throw upsertErr;
 
       setSaved(true);
-      toast.success(t('Préférences de notifications enregistrées', 'Notification preferences saved'));
+      toast.success(
+        t('Préférences de notifications enregistrées', 'Notification preferences saved')
+      );
       setTimeout(() => setSaved(false), 2500);
     } catch (err: any) {
-      setError(err.message || t('Erreur lors de l\'enregistrement', 'Error saving preferences'));
-      toast.error(err.message || t('Erreur lors de l\'enregistrement', 'Error saving preferences'));
+      setError(err.message || t("Erreur lors de l'enregistrement", 'Error saving preferences'));
+      toast.error(err.message || t("Erreur lors de l'enregistrement", 'Error saving preferences'));
     } finally {
       setSaving(false);
     }
@@ -130,7 +135,9 @@ export default function NotificationSettings() {
         {items.map(({ key, icon: ItemIcon, iconBg, iconColor, title, desc }) => (
           <div key={key} className="flex items-center justify-between px-5 py-4 gap-4">
             <div className="flex items-center gap-3 min-w-0">
-              <div className={`w-9 h-9 rounded-lg border flex items-center justify-center flex-shrink-0 ${iconBg}`}>
+              <div
+                className={`w-9 h-9 rounded-lg border flex items-center justify-center flex-shrink-0 ${iconBg}`}
+              >
                 <ItemIcon size={16} className={iconColor} />
               </div>
               <div className="min-w-0">

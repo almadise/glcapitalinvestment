@@ -1,14 +1,47 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { ShieldCheck, Globe, Clock, Users, ArrowRight, Lock, FileCheck, HandshakeIcon } from 'lucide-react';
+import {
+  ShieldCheck,
+  Globe,
+  Clock,
+  Users,
+  ArrowRight,
+  Lock,
+  FileCheck,
+  HandshakeIcon,
+} from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 const STATS = [
-  { id: 'st-1', valueFr: '12+', valueEn: '12+', labelFr: 'Pays couverts', labelEn: 'Countries covered' },
-  { id: 'st-2', valueFr: '€500M+', valueEn: '€500M+', labelFr: 'Dossiers structurés', labelEn: 'Structured files' },
-  { id: 'st-3', valueFr: '3–7j', valueEn: '3–7d', labelFr: 'Revue KYC initiale', labelEn: 'Initial KYC review' },
-  { id: 'st-4', valueFr: '100%', valueEn: '100%', labelFr: 'Conformité NCNDA', labelEn: 'NCNDA compliant' },
+  {
+    id: 'st-1',
+    valueFr: '12+',
+    valueEn: '12+',
+    labelFr: 'Pays couverts',
+    labelEn: 'Countries covered',
+  },
+  {
+    id: 'st-2',
+    valueFr: '€500M+',
+    valueEn: '€500M+',
+    labelFr: 'Dossiers structurés',
+    labelEn: 'Structured files',
+  },
+  {
+    id: 'st-3',
+    valueFr: '3–7j',
+    valueEn: '3–7d',
+    labelFr: 'Revue KYC initiale',
+    labelEn: 'Initial KYC review',
+  },
+  {
+    id: 'st-4',
+    valueFr: '100%',
+    valueEn: '100%',
+    labelFr: 'Conformité NCNDA',
+    labelEn: 'NCNDA compliant',
+  },
 ];
 
 const COMPLIANCE_BADGES = [
@@ -61,7 +94,7 @@ const COMPLIANCE_BADGES = [
 const CASE_EXAMPLES = [
   {
     id: 'ce-1',
-    sectorFr: 'Énergie solaire – Afrique de l\'Ouest',
+    sectorFr: "Énergie solaire – Afrique de l'Ouest",
     sectorEn: 'Solar energy – West Africa',
     amountFr: '€28M structurés',
     amountEn: '€28M structured',
@@ -110,9 +143,7 @@ export default function TrustProofSection() {
               <p className="text-3xl font-bold mb-1" style={{ color: '#1E2D4A' }}>
                 {lang === 'fr' ? s.valueFr : s.valueEn}
               </p>
-              <p className="text-xs text-slate-500">
-                {lang === 'fr' ? s.labelFr : s.labelEn}
-              </p>
+              <p className="text-xs text-slate-500">{lang === 'fr' ? s.labelFr : s.labelEn}</p>
             </div>
           ))}
         </div>
@@ -150,7 +181,10 @@ export default function TrustProofSection() {
                 className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-navy transition-colors"
                 style={{ color: '#1E2D4A' }}
               >
-                {t('En savoir plus sur notre cadre de conformité', 'Learn more about our compliance framework')}
+                {t(
+                  'En savoir plus sur notre cadre de conformité',
+                  'Learn more about our compliance framework'
+                )}
                 <ArrowRight size={12} />
               </Link>
             </div>

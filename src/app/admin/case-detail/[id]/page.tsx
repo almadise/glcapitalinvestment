@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -5,14 +6,39 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useParams, useRouter } from 'next/navigation';
 import AdminLayout from '@/app/admin/components/AdminLayout';
-import { ArrowLeft, FileText, Loader2, AlertCircle, MessageSquare, History, Paperclip, Eye, Download, Tag, User, Calendar, Edit2, Check, X,  } from 'lucide-react';
+import {
+  ArrowLeft,
+  FileText,
+  Loader2,
+  AlertCircle,
+  MessageSquare,
+  History,
+  Paperclip,
+  Eye,
+  Download,
+  Tag,
+  User,
+  Calendar,
+  Edit2,
+  Check,
+  X,
+} from 'lucide-react';
 import Link from 'next/link';
 import DocumentViewerModal from '@/components/DocumentViewerModal';
 import Icon from '@/components/ui/AppIcon';
 import { caseFileDescription, caseFileLabel } from '@/lib/caseFileLabel';
 
-
-type CaseStatus = 'RECU' | 'A_COMPLETER' | 'EN_ANALYSE' | 'EN_REVUE_COMPLIANCE' | 'ELIGIBLE' | 'SOUMIS_PARTENAIRE' | 'RETOUR_PARTENAIRE' | 'EN_NEGOCIATION' | 'CLOTURE' | 'REJETE';
+type CaseStatus =
+  | 'RECU'
+  | 'A_COMPLETER'
+  | 'EN_ANALYSE'
+  | 'EN_REVUE_COMPLIANCE'
+  | 'ELIGIBLE'
+  | 'SOUMIS_PARTENAIRE'
+  | 'RETOUR_PARTENAIRE'
+  | 'EN_NEGOCIATION'
+  | 'CLOTURE'
+  | 'REJETE';
 
 interface CaseFile {
   id: string;
@@ -58,30 +84,86 @@ interface InternalNote {
   updated_at?: string;
 }
 
-const STATUS_CONFIG: Record<CaseStatus, { label: string; color: string; bg: string; border: string }> = {
+const STATUS_CONFIG: Record<
+  CaseStatus,
+  { label: string; color: string; bg: string; border: string }
+> = {
   RECU: { label: 'Reçu', color: 'text-slate-700', bg: 'bg-slate-100', border: 'border-slate-300' },
-  A_COMPLETER: { label: 'À compléter', color: 'text-orange-700', bg: 'bg-orange-100', border: 'border-orange-300' },
-  EN_ANALYSE: { label: 'En analyse', color: 'text-amber-700', bg: 'bg-amber-100', border: 'border-amber-300' },
-  EN_REVUE_COMPLIANCE: { label: 'En revue conformité', color: 'text-blue-700', bg: 'bg-blue-100', border: 'border-blue-300' },
-  ELIGIBLE: { label: 'Éligible', color: 'text-emerald-700', bg: 'bg-emerald-100', border: 'border-emerald-300' },
-  SOUMIS_PARTENAIRE: { label: 'Soumis partenaire', color: 'text-indigo-700', bg: 'bg-indigo-100', border: 'border-indigo-300' },
-  RETOUR_PARTENAIRE: { label: 'Retour partenaire', color: 'text-violet-700', bg: 'bg-violet-100', border: 'border-violet-300' },
-  EN_NEGOCIATION: { label: 'En négociation', color: 'text-purple-700', bg: 'bg-purple-100', border: 'border-purple-300' },
-  CLOTURE: { label: 'Clôturé', color: 'text-teal-700', bg: 'bg-teal-100', border: 'border-teal-300' },
+  A_COMPLETER: {
+    label: 'À compléter',
+    color: 'text-orange-700',
+    bg: 'bg-orange-100',
+    border: 'border-orange-300',
+  },
+  EN_ANALYSE: {
+    label: 'En analyse',
+    color: 'text-amber-700',
+    bg: 'bg-amber-100',
+    border: 'border-amber-300',
+  },
+  EN_REVUE_COMPLIANCE: {
+    label: 'En revue conformité',
+    color: 'text-blue-700',
+    bg: 'bg-blue-100',
+    border: 'border-blue-300',
+  },
+  ELIGIBLE: {
+    label: 'Éligible',
+    color: 'text-emerald-700',
+    bg: 'bg-emerald-100',
+    border: 'border-emerald-300',
+  },
+  SOUMIS_PARTENAIRE: {
+    label: 'Soumis partenaire',
+    color: 'text-indigo-700',
+    bg: 'bg-indigo-100',
+    border: 'border-indigo-300',
+  },
+  RETOUR_PARTENAIRE: {
+    label: 'Retour partenaire',
+    color: 'text-violet-700',
+    bg: 'bg-violet-100',
+    border: 'border-violet-300',
+  },
+  EN_NEGOCIATION: {
+    label: 'En négociation',
+    color: 'text-purple-700',
+    bg: 'bg-purple-100',
+    border: 'border-purple-300',
+  },
+  CLOTURE: {
+    label: 'Clôturé',
+    color: 'text-teal-700',
+    bg: 'bg-teal-100',
+    border: 'border-teal-300',
+  },
   REJETE: { label: 'Rejeté', color: 'text-red-700', bg: 'bg-red-100', border: 'border-red-300' },
 };
 
 function StatusBadge({ status }: { status: CaseStatus }) {
-  const cfg = STATUS_CONFIG[status] || { label: status, color: 'text-slate-700', bg: 'bg-slate-100', border: 'border-slate-300' };
+  const cfg = STATUS_CONFIG[status] || {
+    label: status,
+    color: 'text-slate-700',
+    bg: 'bg-slate-100',
+    border: 'border-slate-300',
+  };
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${cfg.bg} ${cfg.color} ${cfg.border}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${cfg.bg} ${cfg.color} ${cfg.border}`}
+    >
       {cfg.label}
     </span>
   );
 }
 
 function formatDate(d: string) {
-  return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  return new Date(d).toLocaleDateString('fr-FR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 export default function CaseDetailPage() {
@@ -98,7 +180,9 @@ export default function CaseDetailPage() {
   const [notes, setNotes] = useState<InternalNote[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'documents' | 'history' | 'notes'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'documents' | 'history' | 'notes'>(
+    'overview'
+  );
 
   // Note editing
   const [newNote, setNewNote] = useState('');
@@ -118,15 +202,30 @@ export default function CaseDetailPage() {
     try {
       const [caseRes, docsRes, historyRes, notesRes] = await Promise.all([
         supabase.from('case_files').select('*').eq('id', caseId).single(),
-        supabase.from('documents').select('*').eq('case_id', caseId).order('uploaded_at', { ascending: false }),
-        supabase.from('case_status_history').select('*').eq('case_id', caseId).order('created_at', { ascending: false }),
-        supabase.from('case_internal_notes').select('*').eq('case_id', caseId).order('created_at', { ascending: false }),
+        supabase
+          .from('documents')
+          .select('*')
+          .eq('case_id', caseId)
+          .order('uploaded_at', { ascending: false }),
+        supabase
+          .from('case_status_history')
+          .select('*')
+          .eq('case_id', caseId)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('case_internal_notes')
+          .select('*')
+          .eq('case_id', caseId)
+          .order('created_at', { ascending: false }),
       ]);
       if (caseRes.error) throw caseRes.error;
       setCaseFile(caseRes.data);
       setDocuments(docsRes.data || []);
       setStatusHistory(historyRes.data || []);
-      const notesWithVersion = (notesRes.data || []).reverse().map((n: InternalNote, i: number) => ({ ...n, version: i + 1 })).reverse();
+      const notesWithVersion = (notesRes.data || [])
+        .reverse()
+        .map((n: InternalNote, i: number) => ({ ...n, version: i + 1 }))
+        .reverse();
       setNotes(notesWithVersion);
     } catch (err: any) {
       setError(err.message || 'Erreur lors du chargement');
@@ -135,7 +234,9 @@ export default function CaseDetailPage() {
     }
   }, [caseId]);
 
-  useEffect(() => { fetchAll(); }, [fetchAll]);
+  useEffect(() => {
+    fetchAll();
+  }, [fetchAll]);
 
   const handleAddNote = async () => {
     if (!newNote.trim() || !caseId) return;
@@ -160,7 +261,10 @@ export default function CaseDetailPage() {
     if (!editingContent.trim()) return;
     setSavingEdit(true);
     try {
-      await supabase.from('case_internal_notes').update({ content: editingContent.trim(), updated_at: new Date().toISOString() }).eq('id', noteId);
+      await supabase
+        .from('case_internal_notes')
+        .update({ content: editingContent.trim(), updated_at: new Date().toISOString() })
+        .eq('id', noteId);
       setEditingNoteId(null);
       await fetchAll();
     } catch (err: any) {
@@ -199,7 +303,7 @@ export default function CaseDetailPage() {
   }
 
   const tabs = [
-    { key: 'overview', label: 'Vue d\'ensemble', icon: FileText },
+    { key: 'overview', label: "Vue d'ensemble", icon: FileText },
     { key: 'documents', label: `Documents (${documents.length})`, icon: Paperclip },
     { key: 'history', label: `Historique (${statusHistory.length})`, icon: History },
     { key: 'notes', label: `Notes (${notes.length})`, icon: MessageSquare },
@@ -225,36 +329,53 @@ export default function CaseDetailPage() {
                 <StatusBadge status={caseFile.status} />
                 <span className="text-xs text-slate-400 font-mono">{caseFile.id}</span>
               </div>
-              <h1 className="font-display text-2xl font-bold text-navy mb-1">{caseFileLabel(caseFile)}</h1>
+              <h1 className="font-display text-2xl font-bold text-navy mb-1">
+                {caseFileLabel(caseFile)}
+              </h1>
               {caseFileDescription(caseFile) && (
-                <p className="text-slate-500 text-sm leading-relaxed">{caseFileDescription(caseFile)}</p>
+                <p className="text-slate-500 text-sm leading-relaxed">
+                  {caseFileDescription(caseFile)}
+                </p>
               )}
             </div>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-5 pt-5 border-t border-slate-100">
             <div>
-              <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">Type</p>
+              <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">
+                Type
+              </p>
               <p className="text-sm font-semibold text-navy">{caseFile.type}</p>
             </div>
             <div>
-              <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">Client</p>
+              <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">
+                Client
+              </p>
               <p className="text-sm text-slate-700">{caseFile.client_email || '-'}</p>
             </div>
             <div>
-              <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">Créé le</p>
+              <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">
+                Créé le
+              </p>
               <p className="text-sm text-slate-700">{formatDate(caseFile.created_at)}</p>
             </div>
             <div>
-              <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">Mis à jour</p>
-              <p className="text-sm text-slate-700">{caseFile.updated_at ? formatDate(caseFile.updated_at) : '-'}</p>
+              <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">
+                Mis à jour
+              </p>
+              <p className="text-sm text-slate-700">
+                {caseFile.updated_at ? formatDate(caseFile.updated_at) : '-'}
+              </p>
             </div>
           </div>
 
           {caseFile.risk_tags && caseFile.risk_tags.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-1.5">
               {caseFile.risk_tags.map((tag) => (
-                <span key={tag} className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-full">
+                <span
+                  key={tag}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-full"
+                >
                   <Tag size={10} />
                   {tag}
                 </span>
@@ -270,7 +391,9 @@ export default function CaseDetailPage() {
               key={key}
               onClick={() => setActiveTab(key)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all ${
-                activeTab === key ? 'bg-white text-navy shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                activeTab === key
+                  ? 'bg-white text-navy shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700'
               }`}
             >
               <Icon size={14} />
@@ -293,10 +416,18 @@ export default function CaseDetailPage() {
               ) : (
                 <div className="space-y-2">
                   {documents.slice(0, 3).map((doc) => (
-                    <div key={doc.id} className="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+                    <div
+                      key={doc.id}
+                      className="flex items-center gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-200"
+                    >
                       <FileText size={14} className="text-slate-400 flex-shrink-0" />
-                      <span className="flex-1 text-xs text-slate-700 truncate">{doc.file_name}</span>
-                      <button onClick={() => openViewer(doc)} className="text-navy hover:text-gold transition-colors">
+                      <span className="flex-1 text-xs text-slate-700 truncate">
+                        {doc.file_name}
+                      </span>
+                      <button
+                        onClick={() => openViewer(doc)}
+                        className="text-navy hover:text-gold transition-colors"
+                      >
                         <Eye size={13} />
                       </button>
                     </div>
@@ -322,7 +453,9 @@ export default function CaseDetailPage() {
                         <div className="flex items-center gap-2 flex-wrap">
                           <StatusBadge status={entry.new_status as CaseStatus} />
                         </div>
-                        <p className="text-xs text-slate-400 mt-1">{formatDate(entry.created_at)}</p>
+                        <p className="text-xs text-slate-400 mt-1">
+                          {formatDate(entry.created_at)}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -355,7 +488,10 @@ export default function CaseDetailPage() {
             ) : (
               <div className="divide-y divide-slate-100">
                 {documents.map((doc) => (
-                  <div key={doc.id} className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 transition-colors">
+                  <div
+                    key={doc.id}
+                    className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 transition-colors"
+                  >
                     <div className="w-9 h-9 rounded-lg bg-navy/5 flex items-center justify-center flex-shrink-0">
                       <FileText size={16} className="text-navy" />
                     </div>
@@ -400,7 +536,9 @@ export default function CaseDetailPage() {
                   <div key={entry.id} className="flex gap-4 pb-5 last:pb-0">
                     <div className="flex flex-col items-center">
                       <div className="w-3 h-3 rounded-full bg-navy border-2 border-white shadow flex-shrink-0 mt-1" />
-                      {i < statusHistory.length - 1 && <div className="w-px flex-1 bg-slate-200 mt-1" />}
+                      {i < statusHistory.length - 1 && (
+                        <div className="w-px flex-1 bg-slate-200 mt-1" />
+                      )}
                     </div>
                     <div className="flex-1 pb-1">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -418,8 +556,16 @@ export default function CaseDetailPage() {
                         </p>
                       )}
                       <div className="flex items-center gap-3 mt-1.5 text-xs text-slate-400">
-                        <span className="flex items-center gap-1"><Calendar size={10} />{formatDate(entry.created_at)}</span>
-                        {entry.changed_by_email && <span className="flex items-center gap-1"><User size={10} />{entry.changed_by_email}</span>}
+                        <span className="flex items-center gap-1">
+                          <Calendar size={10} />
+                          {formatDate(entry.created_at)}
+                        </span>
+                        {entry.changed_by_email && (
+                          <span className="flex items-center gap-1">
+                            <User size={10} />
+                            {entry.changed_by_email}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -447,7 +593,11 @@ export default function CaseDetailPage() {
                 disabled={!newNote.trim() || addingNote}
                 className="mt-3 flex items-center gap-2 px-4 py-2 bg-navy text-white rounded-xl text-sm font-semibold hover:bg-navy/90 transition-colors disabled:opacity-50"
               >
-                {addingNote ? <Loader2 size={13} className="animate-spin" /> : <MessageSquare size={13} />}
+                {addingNote ? (
+                  <Loader2 size={13} className="animate-spin" />
+                ) : (
+                  <MessageSquare size={13} />
+                )}
                 Ajouter
               </button>
             </div>
@@ -464,7 +614,9 @@ export default function CaseDetailPage() {
                   <div key={note.id} className="bg-white border border-slate-200 rounded-2xl p-5">
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold bg-navy text-gold px-2 py-0.5 rounded-full">v{note.version}</span>
+                        <span className="text-[10px] font-bold bg-navy text-gold px-2 py-0.5 rounded-full">
+                          v{note.version}
+                        </span>
                         {note.author_email && (
                           <span className="text-xs text-slate-400 flex items-center gap-1">
                             <User size={10} />
@@ -473,7 +625,10 @@ export default function CaseDetailPage() {
                         )}
                       </div>
                       <button
-                        onClick={() => { setEditingNoteId(note.id); setEditingContent(note.content); }}
+                        onClick={() => {
+                          setEditingNoteId(note.id);
+                          setEditingContent(note.content);
+                        }}
                         className="text-slate-400 hover:text-navy transition-colors"
                       >
                         <Edit2 size={13} />
@@ -494,7 +649,11 @@ export default function CaseDetailPage() {
                             disabled={savingEdit}
                             className="flex items-center gap-1.5 px-3 py-1.5 bg-navy text-white rounded-lg text-xs font-semibold hover:bg-navy/90 disabled:opacity-50"
                           >
-                            {savingEdit ? <Loader2 size={11} className="animate-spin" /> : <Check size={11} />}
+                            {savingEdit ? (
+                              <Loader2 size={11} className="animate-spin" />
+                            ) : (
+                              <Check size={11} />
+                            )}
                             Sauvegarder
                           </button>
                           <button
@@ -511,7 +670,10 @@ export default function CaseDetailPage() {
                     )}
 
                     <div className="flex items-center gap-3 mt-3 text-xs text-slate-400">
-                      <span className="flex items-center gap-1"><Calendar size={10} />{formatDate(note.created_at)}</span>
+                      <span className="flex items-center gap-1">
+                        <Calendar size={10} />
+                        {formatDate(note.created_at)}
+                      </span>
                       {note.updated_at && note.updated_at !== note.created_at && (
                         <span className="italic">modifié {formatDate(note.updated_at)}</span>
                       )}
@@ -528,7 +690,10 @@ export default function CaseDetailPage() {
       {viewerDoc && (
         <DocumentViewerModal
           isOpen={viewerOpen}
-          onClose={() => { setViewerOpen(false); setViewerDoc(null); }}
+          onClose={() => {
+            setViewerOpen(false);
+            setViewerDoc(null);
+          }}
           fileUrl={viewerDoc.file_url}
           fileName={viewerDoc.file_name}
           uploadedAt={viewerDoc.uploaded_at}

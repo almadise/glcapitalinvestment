@@ -8,6 +8,12 @@ export const OFFICIAL_WEBSITE_URL = 'https://www.glcapitalinvestment.com';
 
 export const OFFICIAL_WEBSITE_DISPLAY = 'www.glcapitalinvestment.com';
 
+/** URL publique du site (emails, redirections). Priorité : NEXT_PUBLIC_SITE_URL, sinon domaine officiel. */
+export function getPublicSiteUrl(): string {
+  const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  return (fromEnv || OFFICIAL_WEBSITE_URL).replace(/\/$/, '');
+}
+
 export const ENTITY_GL_CAPITAL = 'GL Capital Investment SA';
 export const PARIS_WORLD_OFFICE = 'Paris-France & World Office';
 

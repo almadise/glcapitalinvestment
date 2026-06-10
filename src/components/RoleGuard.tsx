@@ -12,7 +12,11 @@ interface RoleGuardProps {
   children: React.ReactNode;
 }
 
-export default function RoleGuard({ allowedRoles, redirectTo = '/sign-up-login-screen', children }: RoleGuardProps) {
+export default function RoleGuard({
+  allowedRoles,
+  redirectTo = '/sign-up-login-screen',
+  children,
+}: RoleGuardProps) {
   const { user, userRole, loading } = useAuth();
   const router = useRouter();
 

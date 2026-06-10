@@ -19,7 +19,11 @@ export default function DashboardTopbar({ onOpenMobileSidebar }: Props) {
   const unreadCount = useNotificationCount();
 
   const handleSignOut = async () => {
-    try { await signOut(); } catch {}
+    try {
+      await signOut();
+    } catch (_) {
+      /* empty */
+    }
     router.push('/sign-up-login-screen');
   };
 
@@ -88,16 +92,23 @@ export default function DashboardTopbar({ onOpenMobileSidebar }: Props) {
               <User size={14} className="text-white" />
             </div>
             <div className="hidden sm:block text-left">
-              <div className="text-xs font-semibold text-navy leading-tight">{user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Client'}</div>
+              <div className="text-xs font-semibold text-navy leading-tight">
+                {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Client'}
+              </div>
               <div className="text-[10px] text-slate-500 leading-tight">{user?.email || ''}</div>
             </div>
-            <ChevronDown size={13} className={`text-slate-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown
+              size={13}
+              className={`text-slate-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`}
+            />
           </button>
 
           {userMenuOpen && (
             <div className="absolute right-0 top-full mt-1.5 w-52 bg-white border border-slate-200 rounded-xl shadow-xl py-1.5 z-50">
               <div className="px-4 py-2.5 border-b border-slate-100">
-                <div className="text-sm font-semibold text-navy">{user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Client'}</div>
+                <div className="text-sm font-semibold text-navy">
+                  {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Client'}
+                </div>
                 <div className="text-xs text-slate-500">{user?.email || ''}</div>
                 <span className="inline-flex items-center mt-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
                   Client
@@ -110,7 +121,10 @@ export default function DashboardTopbar({ onOpenMobileSidebar }: Props) {
                 {lang === 'fr' ? 'Sécurité & MFA' : 'Security & MFA'}
               </button>
               <div className="border-t border-slate-100 mt-1 pt-1">
-                <button onClick={handleSignOut} className="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                <button
+                  onClick={handleSignOut}
+                  className="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                >
                   {lang === 'fr' ? 'Déconnexion' : 'Sign out'}
                 </button>
               </div>

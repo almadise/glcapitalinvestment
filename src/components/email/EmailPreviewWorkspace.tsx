@@ -33,12 +33,12 @@ const TEMPLATES: TemplateConfig[] = [
     id: 'welcome',
     labelFr: 'Email de bienvenue',
     labelEn: 'Welcome email',
-    descFr: 'Envoyé lors de l\'inscription d\'un nouveau client',
+    descFr: "Envoyé lors de l'inscription d'un nouveau client",
     descEn: 'Sent when a new client registers',
     defaultParams: {
       email: 'client@example.com',
       fullName: 'Jean Dupont',
-      confirmationUrl: 'https://glcapital9393.builtwithrocket.new/auth/callback',
+      confirmationUrl: 'https://www.glcapitalinvestment.com/auth/callback',
       lang: 'fr',
     },
   },
@@ -46,7 +46,7 @@ const TEMPLATES: TemplateConfig[] = [
     id: 'dossier-confirmation',
     labelFr: 'Confirmation de dossier',
     labelEn: 'Dossier confirmation',
-    descFr: 'Envoyé lors de la création d\'un dossier',
+    descFr: "Envoyé lors de la création d'un dossier",
     descEn: 'Sent when a case file is created',
     defaultParams: {
       clientEmail: 'client@example.com',
@@ -60,7 +60,7 @@ const TEMPLATES: TemplateConfig[] = [
     id: 'status-update',
     labelFr: 'Mise à jour de statut',
     labelEn: 'Status update',
-    descFr: 'Envoyé lors d\'un changement de statut de dossier',
+    descFr: "Envoyé lors d'un changement de statut de dossier",
     descEn: 'Sent when a case file status changes',
     defaultParams: {
       clientEmail: 'client@example.com',
@@ -77,14 +77,15 @@ const TEMPLATES: TemplateConfig[] = [
     id: 'request-documents',
     labelFr: 'Demande de documents',
     labelEn: 'Request documents',
-    descFr: 'Envoyé quand l\'admin demande des documents manquants',
+    descFr: "Envoyé quand l'admin demande des documents manquants",
     descEn: 'Sent when admin requests missing documents',
     defaultParams: {
       clientEmail: 'client@example.com',
       clientName: 'Jean Dupont',
       caseTitle: 'Financement infrastructure portuaire',
       caseId: 'CF-2026-001',
-      adminMessage: 'Nous avons besoin de vos relevés bancaires des 3 derniers mois ainsi que de votre business plan mis à jour.',
+      adminMessage:
+        'Nous avons besoin de vos relevés bancaires des 3 derniers mois ainsi que de votre business plan mis à jour.',
       lang: 'fr',
     },
   },
@@ -231,7 +232,7 @@ function buildDossierConfirmationHtml(params: Record<string, string>): string {
             </td></tr>
           </table>
           <div style="text-align:center;">
-            <a href="https://glcapital9393.builtwithrocket.new/client-dashboard/case-files" style="display:inline-block;background:#c9a84c;color:#0a1941;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:14px 32px;border-radius:8px;text-decoration:none;">${isFr ? 'Suivre mon dossier' : 'Track my file'}</a>
+            <a href="https://www.glcapitalinvestment.com/client-dashboard/case-files" style="display:inline-block;background:#c9a84c;color:#0a1941;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:14px 32px;border-radius:8px;text-decoration:none;">${isFr ? 'Suivre mon dossier' : 'Track my file'}</a>
           </div>
         </td></tr>
         <tr><td style="background:#0a1941;border-radius:0 0 12px 12px;padding:24px 40px;text-align:center;">
@@ -274,7 +275,7 @@ function buildRequestDocumentsHtml(params: Record<string, string>): string {
             </td></tr>
           </table>
           <div style="text-align:center;">
-            <a href="https://glcapital9393.builtwithrocket.new/client-dashboard/case-files" style="display:inline-block;background:#f97316;color:#fff;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:14px 32px;border-radius:8px;text-decoration:none;">${isFr ? 'Accéder à mon dossier' : 'Access my file'}</a>
+            <a href="https://www.glcapitalinvestment.com/client-dashboard/case-files" style="display:inline-block;background:#f97316;color:#fff;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:14px 32px;border-radius:8px;text-decoration:none;">${isFr ? 'Accéder à mon dossier' : 'Access my file'}</a>
           </div>
         </td></tr>
         <tr><td style="background:#0a1941;border-radius:0 0 12px 12px;padding:24px 40px;text-align:center;">
@@ -356,7 +357,8 @@ export default function EmailPreviewWorkspace() {
         body = {
           email: sendTo,
           fullName: params.fullName || 'Test User',
-          confirmationUrl: params.confirmationUrl || 'https://glcapital9393.builtwithrocket.new/auth/callback',
+          confirmationUrl:
+            params.confirmationUrl || 'https://www.glcapitalinvestment.com/auth/callback',
           lang: previewLang,
         };
       } else if (selectedTemplate === 'dossier-confirmation') {
@@ -399,12 +401,21 @@ export default function EmailPreviewWorkspace() {
       });
       const data = await res.json();
       if (data.success) {
-        setSendResult({ success: true, message: t(`Email envoyé à ${sendTo}`, `Email sent to ${sendTo}`) });
+        setSendResult({
+          success: true,
+          message: t(`Email envoyé à ${sendTo}`, `Email sent to ${sendTo}`),
+        });
       } else {
-        setSendResult({ success: false, message: data.error || t('Erreur lors de l\'envoi', 'Error sending email') });
+        setSendResult({
+          success: false,
+          message: data.error || t("Erreur lors de l'envoi", 'Error sending email'),
+        });
       }
     } catch (err: any) {
-      setSendResult({ success: false, message: err.message || t('Erreur réseau', 'Network error') });
+      setSendResult({
+        success: false,
+        message: err.message || t('Erreur réseau', 'Network error'),
+      });
     } finally {
       setSending(false);
     }
@@ -466,45 +477,49 @@ export default function EmailPreviewWorkspace() {
           </div>
 
           <div className="bg-white border border-amber-200/80 ring-1 ring-amber-100 rounded-2xl p-5 shadow-sm">
-              <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
-                <div>
-                  <h2 className="text-sm font-bold text-navy">
-                    {t('Export pour Supabase (Confirm signup)', 'Export for Supabase (Confirm signup)')}
-                  </h2>
-                  <p className="text-[11px] font-semibold text-amber-800/90 mt-1 uppercase tracking-wide">
-                    {t('Modèle cible : Confirm signup', 'Target template: Confirm signup')}
-                  </p>
-                </div>
-                {supabaseTemplatesUrl ? (
-                  <a
-                    href={supabaseTemplatesUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 shrink-0 bg-slate-900 text-white text-xs font-semibold px-3 py-2 rounded-xl hover:bg-slate-800 transition-colors"
-                  >
-                    <ExternalLink size={14} />
-                    {t('Ouvrir Auth → Templates (Supabase)', 'Open Auth → Templates (Supabase)')}
-                  </a>
-                ) : (
-                  <span className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1.5 max-w-xs">
-                    {t(
-                      'Définissez NEXT_PUBLIC_SUPABASE_URL (ou NEXT_PUBLIC_SUPABASE_PROJECT_REF) pour activer le lien direct.',
-                      'Set NEXT_PUBLIC_SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_PROJECT_REF) to enable the direct link.'
-                    )}
-                  </span>
-                )}
+            <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+              <div>
+                <h2 className="text-sm font-bold text-navy">
+                  {t(
+                    'Export pour Supabase (Confirm signup)',
+                    'Export for Supabase (Confirm signup)'
+                  )}
+                </h2>
+                <p className="text-[11px] font-semibold text-amber-800/90 mt-1 uppercase tracking-wide">
+                  {t('Modèle cible : Confirm signup', 'Target template: Confirm signup')}
+                </p>
               </div>
-              <p className="text-xs text-slate-600 mb-4">
-                {t(
-                  'Dans le tableau de bord Supabase : choisissez « Confirm signup », collez le sujet puis le corps HTML ci-dessous (la langue suit « Langue de prévisualisation »). Ce bloc reste affiché quel que soit le template d’aperçu à gauche.',
-                  'In the Supabase dashboard: open “Confirm signup”, paste the subject then the HTML body below (language follows “Preview language”). This block stays visible regardless of which preview template is selected on the left.'
-                )}
-              </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide w-full">
-                  {t('Variables utilisées', 'Variables used')}
+              {supabaseTemplatesUrl ? (
+                <a
+                  href={supabaseTemplatesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 shrink-0 bg-slate-900 text-white text-xs font-semibold px-3 py-2 rounded-xl hover:bg-slate-800 transition-colors"
+                >
+                  <ExternalLink size={14} />
+                  {t('Ouvrir Auth → Templates (Supabase)', 'Open Auth → Templates (Supabase)')}
+                </a>
+              ) : (
+                <span className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1.5 max-w-xs">
+                  {t(
+                    'Définissez NEXT_PUBLIC_SUPABASE_URL (ou NEXT_PUBLIC_SUPABASE_PROJECT_REF) pour activer le lien direct.',
+                    'Set NEXT_PUBLIC_SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_PROJECT_REF) to enable the direct link.'
+                  )}
                 </span>
-                {['{{ .ConfirmationURL }}', '{{ .Email }}', '{{ index .Data "full_name" }}'].map((v) => (
+              )}
+            </div>
+            <p className="text-xs text-slate-600 mb-4">
+              {t(
+                'Dans le tableau de bord Supabase : choisissez « Confirm signup », collez le sujet puis le corps HTML ci-dessous (la langue suit « Langue de prévisualisation »). Ce bloc reste affiché quel que soit le template d’aperçu à gauche.',
+                'In the Supabase dashboard: open “Confirm signup”, paste the subject then the HTML body below (language follows “Preview language”). This block stays visible regardless of which preview template is selected on the left.'
+              )}
+            </p>
+            <div className="flex flex-wrap gap-2 mb-4">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide w-full">
+                {t('Variables utilisées', 'Variables used')}
+              </span>
+              {['{{ .ConfirmationURL }}', '{{ .Email }}', '{{ index .Data "full_name" }}'].map(
+                (v) => (
                   <button
                     key={v}
                     type="button"
@@ -514,54 +529,55 @@ export default function EmailPreviewWorkspace() {
                     <Copy size={12} />
                     {v}
                   </button>
-                ))}
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">
-                    {t('Sujet (Subject)', 'Subject')}
-                  </span>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <code className="flex-1 min-w-0 text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 font-mono text-navy break-all">
-                      {getWelcomeSupabaseSubject(previewLang)}
-                    </code>
-                    <button
-                      type="button"
-                      onClick={() => void copyText(getWelcomeSupabaseSubject(previewLang), 'subject')}
-                      className="inline-flex items-center gap-2 shrink-0 bg-navy text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-navy-light transition-colors"
-                    >
-                      {copiedKind === 'subject' ? <Check size={16} /> : <Copy size={16} />}
-                      {copiedKind === 'subject'
-                        ? t('Copié', 'Copied')
-                        : t('Copier le sujet', 'Copy subject')}
-                    </button>
-                  </div>
+                )
+              )}
+            </div>
+            <div className="space-y-3">
+              <div>
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">
+                  {t('Sujet (Subject)', 'Subject')}
+                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <code className="flex-1 min-w-0 text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 font-mono text-navy break-all">
+                    {getWelcomeSupabaseSubject(previewLang)}
+                  </code>
+                  <button
+                    type="button"
+                    onClick={() => void copyText(getWelcomeSupabaseSubject(previewLang), 'subject')}
+                    className="inline-flex items-center gap-2 shrink-0 bg-navy text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-navy-light transition-colors"
+                  >
+                    {copiedKind === 'subject' ? <Check size={16} /> : <Copy size={16} />}
+                    {copiedKind === 'subject'
+                      ? t('Copié', 'Copied')
+                      : t('Copier le sujet', 'Copy subject')}
+                  </button>
                 </div>
-                <div>
-                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">
-                    {t('Corps HTML (Body)', 'HTML body')}
-                  </span>
-                  <div className="flex flex-wrap items-start gap-2">
-                    <textarea
-                      readOnly
-                      value={buildWelcomeHtmlSupabase(previewLang)}
-                      className="flex-1 min-w-0 min-h-[200px] text-xs font-mono bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-800 resize-y"
-                      aria-label={t('HTML Supabase à copier', 'Supabase HTML to copy')}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => void copyText(buildWelcomeHtmlSupabase(previewLang), 'body')}
-                      className="inline-flex items-center gap-2 shrink-0 bg-gold text-navy text-sm font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity"
-                    >
-                      {copiedKind === 'body' ? <Check size={16} /> : <Copy size={16} />}
-                      {copiedKind === 'body'
-                        ? t('Copié', 'Copied')
-                        : t('Copier le HTML', 'Copy HTML')}
-                    </button>
-                  </div>
+              </div>
+              <div>
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide block mb-1.5">
+                  {t('Corps HTML (Body)', 'HTML body')}
+                </span>
+                <div className="flex flex-wrap items-start gap-2">
+                  <textarea
+                    readOnly
+                    value={buildWelcomeHtmlSupabase(previewLang)}
+                    className="flex-1 min-w-0 min-h-[200px] text-xs font-mono bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-800 resize-y"
+                    aria-label={t('HTML Supabase à copier', 'Supabase HTML to copy')}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => void copyText(buildWelcomeHtmlSupabase(previewLang), 'body')}
+                    className="inline-flex items-center gap-2 shrink-0 bg-gold text-navy text-sm font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity"
+                  >
+                    {copiedKind === 'body' ? <Check size={16} /> : <Copy size={16} />}
+                    {copiedKind === 'body'
+                      ? t('Copié', 'Copied')
+                      : t('Copier le HTML', 'Copy HTML')}
+                  </button>
                 </div>
               </div>
             </div>
+          </div>
         </div>
         {/* Left panel: template selector + params */}
         <div className="xl:col-span-1 space-y-4">
@@ -578,11 +594,14 @@ export default function EmailPreviewWorkspace() {
                   onClick={() => handleTemplateChange(tpl.id)}
                   className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition-all ${
                     selectedTemplate === tpl.id
-                      ? 'bg-navy text-white border-navy' :'bg-white text-slate-700 border-slate-200 hover:border-navy/30 hover:bg-slate-50'
+                      ? 'bg-navy text-white border-navy'
+                      : 'bg-white text-slate-700 border-slate-200 hover:border-navy/30 hover:bg-slate-50'
                   }`}
                 >
                   <p className="font-semibold">{lang === 'fr' ? tpl.labelFr : tpl.labelEn}</p>
-                  <p className={`text-xs mt-0.5 ${selectedTemplate === tpl.id ? 'text-slate-300' : 'text-slate-400'}`}>
+                  <p
+                    className={`text-xs mt-0.5 ${selectedTemplate === tpl.id ? 'text-slate-300' : 'text-slate-400'}`}
+                  >
                     {lang === 'fr' ? tpl.descFr : tpl.descEn}
                   </p>
                 </button>
@@ -592,7 +611,9 @@ export default function EmailPreviewWorkspace() {
 
           {/* Language toggle */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-            <h2 className="text-sm font-bold text-navy mb-3">{t('Langue de prévisualisation', 'Preview language')}</h2>
+            <h2 className="text-sm font-bold text-navy mb-3">
+              {t('Langue de prévisualisation', 'Preview language')}
+            </h2>
             <div className="flex gap-2">
               {(['fr', 'en'] as const).map((l) => (
                 <button
@@ -600,7 +621,8 @@ export default function EmailPreviewWorkspace() {
                   onClick={() => setPreviewLang(l)}
                   className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition-all ${
                     previewLang === l
-                      ? 'bg-gold text-navy border-gold' :'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+                      ? 'bg-gold text-navy border-gold'
+                      : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
                   }`}
                 >
                   {l === 'fr' ? '🇫🇷 Français' : '🇬🇧 English'}
@@ -611,13 +633,17 @@ export default function EmailPreviewWorkspace() {
 
           {/* Parameters */}
           <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-            <h2 className="text-sm font-bold text-navy mb-3">{t('Paramètres du template', 'Template parameters')}</h2>
+            <h2 className="text-sm font-bold text-navy mb-3">
+              {t('Paramètres du template', 'Template parameters')}
+            </h2>
             <div className="space-y-3">
               {Object.entries(params)
                 .filter(([key]) => key !== 'lang')
                 .map(([key, value]) => (
                   <div key={key}>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">{key}</label>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                      {key}
+                    </label>
                     {key === 'adminMessage' || key === 'note' ? (
                       <textarea
                         value={value}
@@ -660,8 +686,14 @@ export default function EmailPreviewWorkspace() {
                 {t('Envoyer le test', 'Send test')}
               </button>
               {sendResult && (
-                <div className={`flex items-start gap-2 rounded-xl p-3 text-sm ${sendResult.success ? 'bg-emerald-50 border border-emerald-200 text-emerald-700' : 'bg-red-50 border border-red-200 text-red-700'}`}>
-                  {sendResult.success ? <CheckCircle2 size={14} className="mt-0.5 flex-shrink-0" /> : <AlertCircle size={14} className="mt-0.5 flex-shrink-0" />}
+                <div
+                  className={`flex items-start gap-2 rounded-xl p-3 text-sm ${sendResult.success ? 'bg-emerald-50 border border-emerald-200 text-emerald-700' : 'bg-red-50 border border-red-200 text-red-700'}`}
+                >
+                  {sendResult.success ? (
+                    <CheckCircle2 size={14} className="mt-0.5 flex-shrink-0" />
+                  ) : (
+                    <AlertCircle size={14} className="mt-0.5 flex-shrink-0" />
+                  )}
                   {sendResult.message}
                 </div>
               )}

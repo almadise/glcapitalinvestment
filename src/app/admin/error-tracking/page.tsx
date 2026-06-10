@@ -4,7 +4,19 @@ import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import AdminLayout from '@/app/admin/components/AdminLayout';
-import { AlertTriangle, RefreshCw, Loader2, Search, ChevronDown, Clock, User, Globe, Code2, AlertCircle, Info } from 'lucide-react';
+import {
+  AlertTriangle,
+  RefreshCw,
+  Loader2,
+  Search,
+  ChevronDown,
+  Clock,
+  User,
+  Globe,
+  Code2,
+  AlertCircle,
+  Info,
+} from 'lucide-react';
 
 interface ErrorLog {
   id: string;
@@ -18,9 +30,27 @@ interface ErrorLog {
 }
 
 const LEVEL_CONFIG = {
-  error: { label: 'Error', color: 'text-red-700', bg: 'bg-red-100 border-red-200', dot: 'bg-red-500', icon: AlertTriangle },
-  warn: { label: 'Warning', color: 'text-amber-700', bg: 'bg-amber-100 border-amber-200', dot: 'bg-amber-400', icon: AlertCircle },
-  info: { label: 'Info', color: 'text-blue-700', bg: 'bg-blue-100 border-blue-200', dot: 'bg-blue-400', icon: Info },
+  error: {
+    label: 'Error',
+    color: 'text-red-700',
+    bg: 'bg-red-100 border-red-200',
+    dot: 'bg-red-500',
+    icon: AlertTriangle,
+  },
+  warn: {
+    label: 'Warning',
+    color: 'text-amber-700',
+    bg: 'bg-amber-100 border-amber-200',
+    dot: 'bg-amber-400',
+    icon: AlertCircle,
+  },
+  info: {
+    label: 'Info',
+    color: 'text-blue-700',
+    bg: 'bg-blue-100 border-blue-200',
+    dot: 'bg-blue-400',
+    icon: Info,
+  },
 };
 
 const PAGE_SIZE = 25;
@@ -67,19 +97,44 @@ export default function ErrorTrackingDashboard() {
   const fetchStats = useCallback(async () => {
     try {
       const [errRes, warnRes, infoRes] = await Promise.all([
-        supabase.from('error_logs').select('id', { count: 'exact', head: true }).eq('level', 'error'),
-        supabase.from('error_logs').select('id', { count: 'exact', head: true }).eq('level', 'warn'),
-        supabase.from('error_logs').select('id', { count: 'exact', head: true }).eq('level', 'info'),
+        supabase
+          .from('error_logs')
+          .select('id', { count: 'exact', head: true })
+          .eq('level', 'error'),
+        supabase
+          .from('error_logs')
+          .select('id', { count: 'exact', head: true })
+          .eq('level', 'warn'),
+        supabase
+          .from('error_logs')
+          .select('id', { count: 'exact', head: true })
+          .eq('level', 'info'),
       ]);
-      setStats({ errors: errRes.count || 0, warnings: warnRes.count || 0, infos: infoRes.count || 0 });
-    } catch {}
+      setStats({
+        errors: errRes.count || 0,
+        warnings: warnRes.count || 0,
+        infos: infoRes.count || 0,
+      });
+    } catch (_) {
+      /* empty */
+    }
   }, []);
 
-  useEffect(() => { fetchLogs(); }, [fetchLogs]);
-  useEffect(() => { fetchStats(); }, [fetchStats]);
+  useEffect(() => {
+    fetchLogs();
+  }, [fetchLogs]);
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
 
   const formatDate = (d: string) =>
-    new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    new Date(d).toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
@@ -94,11 +149,16 @@ export default function ErrorTrackingDashboard() {
               {lang === 'fr' ? 'Suivi des erreurs' : 'Error Tracking'}
             </h1>
             <p className="text-slate-500 text-sm mt-1">
-              {lang === 'fr' ? 'Stack traces, erreurs API et logs de production.' : 'Stack traces, API failures, and production logs.'}
+              {lang === 'fr'
+                ? 'Stack traces, erreurs API et logs de production.'
+                : 'Stack traces, API failures, and production logs.'}
             </p>
           </div>
           <button
-            onClick={() => { fetchLogs(); fetchStats(); }}
+            onClick={() => {
+              fetchLogs();
+              fetchStats();
+            }}
             className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 transition-colors"
           >
             <RefreshCw size={14} />
@@ -109,9 +169,27 @@ export default function ErrorTrackingDashboard() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           {[
-            { label: lang === 'fr' ? 'Erreurs' : 'Errors', value: stats.errors, color: 'text-red-600', bg: 'bg-red-50 border-red-200', icon: AlertTriangle },
-            { label: lang === 'fr' ? 'Avertissements' : 'Warnings', value: stats.warnings, color: 'text-amber-600', bg: 'bg-amber-50 border-amber-200', icon: AlertCircle },
-            { label: lang === 'fr' ? 'Informations' : 'Info', value: stats.infos, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-200', icon: Info },
+            {
+              label: lang === 'fr' ? 'Erreurs' : 'Errors',
+              value: stats.errors,
+              color: 'text-red-600',
+              bg: 'bg-red-50 border-red-200',
+              icon: AlertTriangle,
+            },
+            {
+              label: lang === 'fr' ? 'Avertissements' : 'Warnings',
+              value: stats.warnings,
+              color: 'text-amber-600',
+              bg: 'bg-amber-50 border-amber-200',
+              icon: AlertCircle,
+            },
+            {
+              label: lang === 'fr' ? 'Informations' : 'Info',
+              value: stats.infos,
+              color: 'text-blue-600',
+              bg: 'bg-blue-50 border-blue-200',
+              icon: Info,
+            },
           ].map((s) => (
             <div key={s.label} className={`rounded-xl border p-4 ${s.bg}`}>
               <div className="flex items-center gap-2 mb-1">
@@ -130,7 +208,10 @@ export default function ErrorTrackingDashboard() {
             <input
               type="text"
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(0);
+              }}
               placeholder={lang === 'fr' ? 'Rechercher dans les messages…' : 'Search messages…'}
               className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/40 transition-all"
             />
@@ -139,12 +220,29 @@ export default function ErrorTrackingDashboard() {
             {(['ALL', 'error', 'warn', 'info'] as const).map((lvl) => (
               <button
                 key={lvl}
-                onClick={() => { setLevelFilter(lvl); setPage(0); }}
+                onClick={() => {
+                  setLevelFilter(lvl);
+                  setPage(0);
+                }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  levelFilter === lvl ? 'bg-white text-navy shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                  levelFilter === lvl
+                    ? 'bg-white text-navy shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
-                {lvl === 'ALL' ? (lang === 'fr' ? 'Tous' : 'All') : lvl === 'error' ? (lang === 'fr' ? 'Erreurs' : 'Errors') : lvl === 'warn' ? (lang === 'fr' ? 'Warnings' : 'Warnings') : 'Info'}
+                {lvl === 'ALL'
+                  ? lang === 'fr'
+                    ? 'Tous'
+                    : 'All'
+                  : lvl === 'error'
+                    ? lang === 'fr'
+                      ? 'Erreurs'
+                      : 'Errors'
+                    : lvl === 'warn'
+                      ? lang === 'fr'
+                        ? 'Warnings'
+                        : 'Warnings'
+                      : 'Info'}
               </button>
             ))}
           </div>
@@ -171,7 +269,10 @@ export default function ErrorTrackingDashboard() {
               const cfg = LEVEL_CONFIG[log.level];
               const isExpanded = expandedId === log.id;
               return (
-                <div key={log.id} className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-slate-300 transition-colors">
+                <div
+                  key={log.id}
+                  className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-slate-300 transition-colors"
+                >
                   <button
                     onClick={() => setExpandedId(isExpanded ? null : log.id)}
                     className="w-full flex items-start gap-3 px-4 py-3 text-left"
@@ -179,7 +280,9 @@ export default function ErrorTrackingDashboard() {
                     <div className={`flex-shrink-0 mt-0.5 w-2 h-2 rounded-full ${cfg.dot} mt-2`} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${cfg.bg} ${cfg.color}`}>
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${cfg.bg} ${cfg.color}`}
+                        >
                           {cfg.label}
                         </span>
                         <span className="text-xs text-slate-400 flex items-center gap-1">

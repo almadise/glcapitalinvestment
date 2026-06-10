@@ -95,7 +95,8 @@ export function useRealtimeCaseUpdates({
             ELIGIBLE: { fr: 'Éligible', en: 'Eligible' },
             REJETE: { fr: 'Rejeté', en: 'Rejected' },
           };
-          const statusLabel = statusLabels[row?.status]?.[lang === 'fr' ? 'fr' : 'en'] || row?.status;
+          const statusLabel =
+            statusLabels[row?.status]?.[lang === 'fr' ? 'fr' : 'en'] || row?.status;
           toast.info(
             lang === 'fr'
               ? `Dossier "${row?.title}" mis à jour → ${statusLabel}`
